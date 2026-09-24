@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
 :root{
-  --desk:#E9ECE8; --paper:#FFFFFF; --grid:rgba(40,70,120,.08);
+  --desk:#EEF1ED; --paper:#FFFFFF; --grid:rgba(40,70,120,.07);
   --ink:#1B2226; --muted:#5A656B; --line:#D5DAD5; --soft:#F4F6F3;
   --north:#D1382B; --south:#1F8A5B; --copper:#B8672C; --copper-lt:#EFC39A; --iron:#A9B1B4;
   --pen:#2743A6; --pen-soft:#E3E8F8; --on-pen:#FFFFFF;
@@ -45,77 +45,70 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--desk);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;padding-inline:16px;padding-block:0 60px}
-.wrap{max-width:780px;margin:0 auto}
+body{background:var(--desk);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.55;padding-inline:16px;padding-block:0 60px}
+.wrap{max-width:680px;margin:0 auto}
 h1,h2,h3{font-family:var(--display);margin:0;line-height:1.15;text-wrap:balance}
-button,select,input,textarea{font:inherit;color:inherit}
+button{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--pen);outline-offset:2px}
 
-.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--desk);padding-block:12px 10px;border-bottom:1px solid var(--line)}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--desk);padding-block:12px 10px}
 .top-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.top h1{font-size:1.25rem;font-weight:800}
+.top h1{font-size:1.2rem;font-weight:800}
 .top a{color:var(--pen);font-weight:700;font-size:.9rem}
-.tabs{display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:2px;scrollbar-width:thin}
-.tab{flex:none;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:.9rem;white-space:nowrap}
-.tab b{font-family:var(--mono)}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:2px}
+.tab{flex:none;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:.88rem;white-space:nowrap}
 .tab[aria-selected="true"]{background:var(--ink);color:var(--desk);border-color:var(--ink)}
+.tab .pc{color:var(--ok);font-weight:700}
+.tab[aria-selected="true"] .pc{color:inherit}
+.prog{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:.85rem;color:var(--muted)}
+.prog .bar{flex:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.prog .bar i{display:block;height:100%;background:var(--pen);transition:width .3s}
 
-.sheet{margin-top:18px;background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:20px 20px;border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow);overflow:hidden}
-.sheet-head{display:grid;grid-template-columns:auto 1fr;border-bottom:2px solid var(--ink);background:var(--paper)}
-.sheet-head .nr{padding:10px 14px;border-right:2px solid var(--ink);font-family:var(--mono);font-size:.8rem;line-height:1.2;display:flex;flex-direction:column;justify-content:center}
-.sheet-head .nr b{font-size:1.25rem}
-.sheet-head .ttl{padding:10px 14px}
-.sheet-head .ttl small{display:block;color:var(--muted);font-size:.85rem}
-.sheet-head h2{font-size:1.25rem}
-.score{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--soft);border-bottom:1px solid var(--line);font-size:.9rem;flex-wrap:wrap}
-.score .bar{flex:1;min-width:120px;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
-.score .bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .3s}
-.score .reset{margin-left:auto}
-.body{padding:14px 16px 20px;display:grid;gap:22px}
-.intro{background:var(--pen-soft);border-radius:10px;padding:12px 14px;font-size:.95rem}
-.intro b{color:var(--pen)}
+.card{margin-top:14px;background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:20px 20px;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:18px 18px 20px;display:grid;gap:14px}
+.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.eyebrow.learn{color:var(--pen)}
+.card h2{font-size:1.45rem}
+.card p{margin:0}
+.card ul,.card ol{margin:0;padding-left:1.3rem;display:grid;gap:.5rem}
+.card li::marker{color:var(--pen);font-weight:700}
+.orig{font-size:.88rem;color:var(--muted);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;background:var(--paper)}
+.orig b{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;display:block}
+.qs{font-size:1.2rem;font-weight:700;line-height:1.35}
+.merk{background:var(--pen-soft);border-radius:10px;padding:12px 14px}
+.merk b.h{display:block;color:var(--pen);font-family:var(--mono);font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.f{font-family:var(--mono);font-weight:700;color:var(--pen);white-space:nowrap}
+.big{font-family:var(--mono);font-weight:700;font-size:1.3rem;color:var(--pen);text-align:center;padding:8px;background:var(--paper);border:2px solid var(--pen);border-radius:10px}
+.pic{display:flex;justify-content:center}
+.pic svg{width:100%;max-width:400px;height:auto}
+.n{color:var(--north);font-weight:800} .s{color:var(--south);font-weight:800}
+.steps{counter-reset:st;list-style:none;padding:0!important}
+.steps li{counter-increment:st;display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start}
+.steps li::before{content:counter(st);width:26px;height:26px;border-radius:50%;background:var(--pen);color:var(--on-pen);display:grid;place-items:center;font-weight:700;font-size:.85rem;font-family:var(--mono)}
+table.tt{border-collapse:collapse;font-size:.92rem;width:100%}
+table.tt td,table.tt th{border:1px solid var(--line);padding:6px 8px;text-align:left;background:var(--paper)}
+.scroll{overflow-x:auto}
 
-.task{display:grid;gap:10px}
-.task > .qq{display:grid;grid-template-columns:2rem 1fr;gap:4px;font-weight:700}
-.task > .qq span:first-child{font-family:var(--mono);color:var(--muted)}
-.items{display:grid;gap:10px;padding-left:2rem}
-.item label.lbl{display:block;font-size:.92rem;color:var(--muted);margin-bottom:3px}
-textarea{width:100%;min-height:64px;resize:vertical;border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--paper);font-family:var(--body);line-height:1.4}
-.line{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.line .pre{min-width:0;font-size:.95rem}
-select,input.n,input.s{border:1.5px solid var(--line);border-radius:8px;padding:7px 9px;background:var(--paper);max-width:100%}
-input.n{width:9.5rem;font-family:var(--mono)}
-input.s{width:4.5rem;font-family:var(--mono);text-align:center}
-.unit{font-family:var(--mono);font-weight:700}
-.ok-mark{border-color:var(--ok)!important;background:var(--ok-bg)!important}
-.bad-mark{border-color:var(--bad)!important;background:var(--bad-bg)!important}
-.sol{display:none;border-left:4px solid var(--sol);background:var(--sol-soft);border-radius:0 8px 8px 0;padding:8px 12px;font-size:.95rem}
-.sol.show{display:block}
-.sol b.h{color:var(--sol);font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;display:block}
-.kw{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.kw span{font-size:.8rem;border-radius:99px;padding:1px 9px;border:1px solid}
-.kw .y{color:var(--ok);border-color:var(--ok)} .kw .n{color:var(--bad);border-color:var(--bad)}
-.gg{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-family:var(--mono);font-size:.9rem}
-
-.task-foot{display:flex;align-items:center;gap:10px;padding-left:2rem;flex-wrap:wrap}
-.btn{border:0;border-radius:10px;padding:9px 16px;font-weight:700;cursor:pointer;background:var(--pen);color:var(--on-pen)}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;background:var(--paper);border:2px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;line-height:1.35}
+.opt:hover:not(:disabled){border-color:var(--pen)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-bg)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.fb{border-radius:12px;padding:12px 14px;border:2px solid;display:grid;gap:8px}
+.fb.ok{background:var(--ok-bg);border-color:var(--ok)}
+.fb.no{background:var(--bad-bg);border-color:var(--bad)}
+.fb h3{font-size:1.1rem}
+.fb.ok h3{color:var(--ok)} .fb.no h3{color:var(--bad)}
+.write{background:var(--paper);border-left:4px solid var(--sol);border-radius:0 8px 8px 0;padding:8px 12px}
+.write b.h{display:block;color:var(--sol);font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase}
+.nav{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:12px;padding:12px 20px;font-weight:700;cursor:pointer;background:var(--pen);color:var(--on-pen)}
 .btn.ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line)}
-.btn.small{padding:6px 11px;font-size:.85rem}
-.res{font-weight:700;font-size:.95rem}
-.res.good{color:var(--ok)} .res.meh{color:var(--bad)}
+.btn:disabled{opacity:.4;cursor:default}
 
-.figs{display:grid;gap:12px;padding-left:2rem}
-.figs.two{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
-.fig{background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:8px;display:grid;gap:6px}
+.fig{background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:8px;display:grid;gap:6px}
 .fig .cap{font-size:.82rem;color:var(--muted);font-weight:700}
-.fwrap{position:relative;max-width:100%}
 .fwrap svg{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none}
-.fwrap canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.fig.pen .fwrap canvas{pointer-events:auto;touch-action:none;cursor:crosshair}
-.fig.pen{border-color:var(--pen)}
-.tools{display:flex;gap:6px;flex-wrap:wrap}
-.tools button{border:1px solid var(--line);background:var(--soft);border-radius:8px;padding:4px 10px;font-size:.82rem;cursor:pointer}
-.tools button[aria-pressed="true"]{background:var(--pen);color:var(--on-pen);border-color:var(--pen)}
 .chip{cursor:pointer}
 .chip .bg{fill:var(--paper);stroke:var(--pen);stroke-width:2}
 .chip:hover .bg{fill:var(--pen-soft)}
@@ -129,16 +122,12 @@ input.s{width:4.5rem;font-family:var(--mono);text-align:center}
 .zone text{fill:var(--pen);font-size:11px;font-weight:700;font-family:var(--body)}
 g.solg{display:none}
 .fig.showsol g.solg{display:inline}
-.hint{font-size:.85rem;color:var(--muted);padding-left:2rem}
-table.tt{border-collapse:collapse;font-size:.92rem}
-table.tt td,table.tt th{border:1px solid var(--line);padding:5px 8px;text-align:left;background:var(--paper)}
-.scroll{overflow-x:auto}
-.foot{text-align:center;color:var(--muted);font-size:.85rem;margin-top:24px}
-@media (max-width:480px){
-  body{font-size:16px}
-  .items,.figs,.task-foot,.hint{padding-left:0}
-  .body{padding:12px 12px 18px}
-}
+.fig.showsol .chip,.fig.showsol .zone{opacity:.35}
+.done{text-align:center}
+.done .stars{font-size:2.6rem;letter-spacing:6px;color:var(--line)}
+.done .stars .on{color:var(--copper)}
+.done .nav{justify-content:center}
+@media (max-width:480px){ body{font-size:17px} .card{padding:14px 14px 16px} .qs{font-size:1.1rem} }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -146,38 +135,15 @@ table.tt td,table.tt th{border:1px solid var(--line);padding:5px 8px;text-align:
 <div class="wrap">
   <header class="top">
     <div class="top-row">
-      <h1>Arbeitsblätter interaktiv</h1>
+      <h1>Arbeitsblätter Schritt für Schritt</h1>
       <a href="https://claude.ai/artifact/NitAc1VHpBqur5WJqxFm22" target="_blank" rel="noopener">Zum Quiz-Spiel ↗</a>
     </div>
     <nav class="tabs" id="tabs" role="tablist"></nav>
+    <div class="prog"><span id="prog-t"></span><span class="bar"><i id="prog-b"></i></span></div>
   </header>
   <main id="main"></main>
-  <p class="foot">Tipp: Erst selbst lösen, dann „Prüfen“. Zeichnen: „Stift“ antippen und mit dem Finger einzeichnen, danach „Lösung“ einblenden und vergleichen.</p>
 </div>
-
 <script>
-/* ================= Speicher ================= */
-const LS='ab-magnet-v1';
-let DB={};
-try{ DB=JSON.parse(localStorage.getItem(LS)||'{}'); }catch(e){}
-const persist=()=>{ try{ localStorage.setItem(LS,JSON.stringify(DB)); }catch(e){} };
-DB.v=DB.v||{}; DB.r=DB.r||{};
-
-/* ================= Zahlen ================= */
-const SUP={'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-'};
-function parseNum(s){
-  s=String(s||'').trim().replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+/g,m=>'^'+m.split('').map(c=>SUP[c]).join(''));
-  s=s.replace(/−/g,'-').replace(/\s+/g,'').replace(/\^\^/g,'^');
-  let m=s.match(/^(-?[\d]+(?:[.,]\d+)?)(?:[·*x×]10\^?(-?\d+))?/i);
-  if(!m) return NaN;
-  let v=parseFloat(m[1].replace(',','.'));
-  const rest=s.slice(m[0].length);
-  if(m[2]!==undefined) v*=Math.pow(10,+m[2]);
-  else { const e=rest.match(/^e(-?\d+)/i); if(e) v*=Math.pow(10,+e[1]); }
-  return v;
-}
-const de=(x,d=3)=>Number(x).toLocaleString('de-DE',{maximumFractionDigits:d});
-
 /* ================= Zeichen-Bausteine ================= */
 function cond(cx,cy,r,dir){ // dir -1 = ⊗ hinein, +1 = ⊙ heraus
   let s=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--copper-lt)" stroke="var(--copper)" stroke-width="2.5"/>`;
@@ -218,13 +184,6 @@ function chipGlyph(v){
   return `<text y="4.5" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--pen)" font-family="Atkinson Hyperlegible,sans-serif">${v}</text>`;
 }
 const CYC={dir:['?','r','l'],vert:['?','u','d'],rot:['?','cw','ccw'],pole:['?','N','S'],force:['?','u','r','d','l']};
-
-/* ================= Aufgaben-Bausteine ================= */
-const txt=(id,sol,kw=[],label='')=>({t:'text',id,sol,kw,label});
-const sel=(id,label,opts,ans,sol='')=>({t:'sel',id,label,opts,ans,sol});
-const num=(id,label,ans,unit,sol='',tol=.02)=>({t:'num',id,label,ans,unit,sol,tol});
-const str=(id,label,ans,sol='')=>({t:'str',id,label,ans,sol});
-
 /* ================= Abbildungen ================= */
 const FIG={};
 FIG.stab=()=>({w:360,h:240,cap:'Bild 1: Stabmagnet',
@@ -293,7 +252,7 @@ function panel(topPole,I,cap){
   return {w:170,h:210,cap,
     base:b,
     sol:ring(85,105,24,cw)+arrow(85+fx[0]*20,105+fx[1]*20,85+fx[0]*62,105+fx[1]*62)+`<text x="${85+fx[0]*64}" y="${fx[1]?105+fx[1]*64:92}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700" font-size="14" fill="var(--sol)">F</text>`,
-    zones:[{k:'L',x:13,y:44,w:52,h:122,g:'s',a:strong==='L',lab:'stark?'},{k:'R',x:105,y:44,w:52,h:122,g:'s',a:strong==='R',lab:'stark?'}],
+    zones:[{k:'L',x:13,y:44,w:52,h:122,g:'s',a:strong==='L',lab:'stärker?'},{k:'R',x:105,y:44,w:52,h:122,g:'s',a:strong==='R',lab:'stärker?'}],
     chips:[{k:'f',x:85,y:148,c:'force',a:F}],
     explain:`Feld von N nach S zeigt ${topPole==='N'?'nach unten':'nach oben'}. Leiterfeld: ${cw?'⊗ im Uhrzeigersinn':'⊙ gegen den Uhrzeigersinn'}. ${strong==='L'?'Links':'Rechts'} zeigen beide Felder gleich → verstärkt, ${strong==='L'?'rechts':'links'} geschwächt. Der Leiter wird zur schwachen Seite gedrückt: F ${DN[F]}. Rechte Hand: Daumen ${I<0?'ins Blatt':'aus dem Blatt'}, Zeigefinger ${topPole==='N'?'nach unten':'nach oben'} → Mittelfinger ${DN[F]}.`
   };
@@ -333,311 +292,417 @@ const handSVG=`<svg viewBox="0 0 360 200" style="width:100%;max-width:360px;heig
   <text x="10" y="138" font-family="JetBrains Mono,monospace" font-weight="700" font-size="14" fill="var(--sol)">Mittelfinger = F</text>
   <text x="180" y="190" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="13" fill="var(--muted)">rechte Hand · alle drei Finger senkrecht zueinander</text></svg>`;
 
-/* ================= Blätter ================= */
+
+/* ================= Bausteine für die Schritte ================= */
+const L=(title,html)=>({t:'L',title,html});
+const Q=(blatt,orig,q,right,wrong,why,write)=>({t:'Q',blatt,orig,q,right,wrong,why,write});
+const F=(blatt,orig,q,fig,steps)=>({t:'F',blatt,orig,q,fig,steps});
+const merk=(h)=>`<div class="merk"><b class="h">Merksatz</b>${h}</div>`;
+
+// fertige Lösungsbilder zum Erklären (ohne Tipp-Kreise)
+function solved(def){ return `<div class="pic"><svg viewBox="0 0 ${def.w} ${def.h}" role="img" aria-label="${def.cap}">${def.base}${def.sol}</svg></div>`; }
+function poles(kind){
+  const bar=(x,l,r)=>pole(x,40,60,34,l,16)+pole(x+60,40,60,34,r,16);
+  if(kind==='an'){
+    let s=bar(20,'N','S')+bar(220,'N','S');
+    [48,57,66].forEach(y=>{ s+=`<line x1="220" y1="${y}" x2="140" y2="${y}" stroke="var(--sol)" stroke-width="2"/>`+head(176,y,'l','var(--sol)',4); });
+    return `<svg viewBox="0 0 360 110" role="img" aria-label="Anziehung">${s}<text x="180" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="var(--ok)">S und N: ziehen sich an</text></svg>`;
+  }
+  let s=pole(20,40,60,34,'S',16)+pole(80,40,60,34,'N',16)+pole(220,40,60,34,'N',16)+pole(280,40,60,34,'S',16);
+  s+=solp('M140 50C165 45 165 20 160 5')+solp('M220 50C195 45 195 20 200 5')+solp('M140 64C165 69 165 94 160 109')+solp('M220 64C195 69 195 94 200 109');
+  return `<svg viewBox="0 0 360 115" role="img" aria-label="Abstoßung">${s}<text x="180" y="62" text-anchor="middle" font-size="13" font-weight="700" fill="var(--bad)">N und N: stoßen ab</text></svg>`;
+}
+const pfeil=`<svg viewBox="0 0 360 110" role="img" aria-label="Pfeil von hinten und von vorne">
+  <line x1="30" y1="55" x2="120" y2="55" stroke="var(--ink)" stroke-width="3"/><path d="M120 45L140 55L120 65z" fill="var(--ink)"/><path d="M30 55l-12 -10M30 55l-12 10M42 55l-12 -10M42 55l-12 10" stroke="var(--copper)" stroke-width="3"/>
+  ${cond(210,55,20,-1)}${cond(310,55,20,1)}
+  <text x="210" y="100" text-anchor="middle" font-size="13" fill="var(--muted)">von hinten: Federn</text>
+  <text x="310" y="100" text-anchor="middle" font-size="13" fill="var(--muted)">von vorne: Spitze</text></svg>`;
+
+/* ================= Inhalte ================= */
 const SHEETS=[
-{id:'b51',nr:'5.1',title:'Magnete und magnetische Feldlinien (1)',sub:'Magnetisches Feld',tasks:[
-  {n:1,q:'Was versteht man unter einem Dauermagneten?',items:[txt('51-1','Dauermagnete sind Stoffe, die den Magnetismus über eine lange Zeit behalten.',['lang','behalt|behält|bleib'])]},
-  {n:2,q:'An welchen Stellen eines Dauermagneten ist die magnetische Kraftwirkung am größten?',items:[txt('51-2','An den Magnetpolen.',['pol'])]},
-  {n:3,q:'a) Was versteht man unter einem magnetischen Feld, b) was sind magnetische Feldlinien?',items:[
-    txt('51-3a','Der Raum, in dem magnetische Kraftwirkungen festzustellen sind.',['raum|bereich|umgebung','kraft'],'a) Magnetisches Feld'),
-    txt('51-3b','Gedachte Linien, die den magnetischen Zustand sichtbar machen sollen. Sie geben die Richtung und den Betrag der magnetischen Kraftwirkung an.',['gedacht|vorgestellt','richtung','betrag|stärke|staerke'],'b) Magnetische Feldlinien')]},
-  {n:4,q:'Nennen Sie drei Merkmale für magnetische Feldlinien.',items:[txt('51-4','• Magnetische Feldlinien sind immer geschlossene Linien.<br>• Sie treten aus der Magnetoberfläche senkrecht aus bzw. ein.<br>• Außerhalb des Magneten verlaufen sie vom Nord- zum Südpol, innerhalb vom Süd- zum Nordpol.<br><i>(Außerdem: Sie kreuzen sich nie.)</i>',['geschlossen','senkrecht','nord|n nach|n zu|n→|n->'])]},
-  {n:5,q:'a) Zeichnen Sie im Bild 1 den Verlauf von vier magnetischen Feldlinien außerhalb und innerhalb des Stabmagneten. b) Tragen Sie die Richtung der Feldlinien ein.',hint:'Tippe auf die Kreise, um die Pfeilrichtung zu wählen. Mit „Stift“ kannst du die Linien selbst zeichnen.',figs:['stab']},
-  {n:6,q:'Der Hufeisenmagnet im Bild 2 hat die angegebenen Pole. Zeichnen Sie den Verlauf und die Richtung der magnetischen Feldlinien ein.',figs:['hufeisen']},
-  {n:7,q:'a) Zeichnen Sie zwischen den Magnetpolen den Feldlinienverlauf ein. b) Geben Sie an, ob die Kraftwirkung anziehend oder abstoßend ist.',
-   pre:`<div class="scroll"><table class="tt"><tr><th>Anordnung</th><th>Gegenüberliegende Pole</th></tr><tr><td><b style="color:var(--north)">N</b><b style="color:var(--south)">S</b> &nbsp; <b style="color:var(--north)">N</b><b style="color:var(--south)">S</b></td><td>S gegenüber N</td></tr><tr><td><b style="color:var(--south)">S</b><b style="color:var(--north)">N</b> &nbsp; <b style="color:var(--north)">N</b><b style="color:var(--south)">S</b></td><td>N gegenüber N</td></tr><tr><td><b style="color:var(--north)">N</b><b style="color:var(--south)">S</b> &nbsp; <b style="color:var(--south)">S</b><b style="color:var(--north)">N</b></td><td>S gegenüber S</td></tr></table></div>`,
-   items:[
-    sel('51-7a','1) S gegenüber N – Kraftwirkung:',['anziehend','abstoßend'],'anziehend','Ungleiche Pole: Die Feldlinien laufen direkt von N nach S hinüber → anziehend.'),
-    sel('51-7b','2) N gegenüber N – Kraftwirkung:',['anziehend','abstoßend'],'abstoßend','Gleiche Pole: Die Feldlinien weichen einander aus und biegen seitlich weg → abstoßend.'),
-    sel('51-7c','3) S gegenüber S – Kraftwirkung:',['anziehend','abstoßend'],'abstoßend','Gleiche Pole → abstoßend. Die Feldlinien laufen in die Pole hinein und biegen voneinander weg.'),
-    sel('51-7d','Wie zeichnest du die Feldlinien zwischen zwei gleichen Polen?',['Sie laufen direkt von einem Pol zum anderen','Sie weichen einander aus und biegen zur Seite','Man zeichnet keine Feldlinien'],'Sie weichen einander aus und biegen zur Seite')]},
+{id:'b51',nr:'5.1',title:'Magnete und Feldlinien',steps:[
+  L('Was ist ein Magnet?',`<p>Jeder Magnet hat <b>zwei Pole</b>: den <span class="n">Nordpol (N)</span> und den <span class="s">Südpol (S)</span>.</p>
+    <p>Ein <b>Dauermagnet</b> ist ein Magnet, der <b>lange Zeit</b> magnetisch bleibt, zum Beispiel ein Kühlschrankmagnet. Er braucht keinen Strom.</p>
+    <p>Am stärksten zieht ein Magnet <b>an seinen Polen</b>, also an den Enden. In der Mitte ist er am schwächsten.</p>`+merk('Dauermagnet = bleibt lange magnetisch. Am stärksten an den Polen.')),
+  Q('Aufgabe 1','Was versteht man unter einem Dauermagneten?','Was ist ein Dauermagnet?','Ein Stoff, der seinen Magnetismus lange Zeit behält',['Ein Magnet, der nur mit Strom funktioniert','Ein Stück Kupfer','Ein Magnet, der keine Pole hat'],
+    'Ein Dauermagnet bleibt von selbst magnetisch. Ein Magnet, der Strom braucht, ist ein Elektromagnet.','Dauermagnete sind Stoffe, die den Magnetismus über eine lange Zeit behalten.'),
+  Q('Aufgabe 2','An welchen Stellen eines Dauermagneten ist die magnetische Kraftwirkung am größten?','Wo zieht ein Magnet am stärksten?','An den Polen (an den Enden)',['In der Mitte','Überall gleich stark','Nur am Nordpol'],
+    'Halte eine Büroklammer an einen Magneten: An den Enden bleibt sie hängen, in der Mitte kaum. Die Enden sind die Pole.','An den Magnetpolen.'),
+  L('Feld und Feldlinien',`<p>Um einen Magneten herum gibt es einen Bereich, in dem er Eisen anzieht. Diesen Bereich nennt man <b>magnetisches Feld</b>.</p>
+    <p>Das Feld kann man nicht sehen. Deshalb zeichnet man <b>Feldlinien</b>. Das sind <b>gedachte Linien</b>, die das Feld sichtbar machen.</p>
+    <ul><li>Die <b>Pfeile</b> auf den Linien zeigen die <b>Richtung</b>.</li><li>Wo die Linien <b>dicht</b> liegen, ist das Feld <b>stark</b>.</li></ul>`),
+  Q('Aufgabe 3a','Was versteht man unter einem magnetischen Feld?','Was ist ein magnetisches Feld?','Der Raum um den Magneten, in dem man magnetische Kräfte feststellen kann',['Die Linien, die auf den Magneten gemalt sind','Der Strom im Magneten','Nur die Fläche am Nordpol'],
+    'Feld = Raum. Überall, wo der Magnet noch etwas anziehen kann, ist sein Feld.','Der Raum, in dem magnetische Kraftwirkungen festzustellen sind.'),
+  Q('Aufgabe 3b','Was sind magnetische Feldlinien?','Was sind Feldlinien?','Gedachte Linien, die Richtung und Stärke des Feldes zeigen',['Echte Linien im Magneten','Elektrische Leitungen','Linien, die nur am Südpol sind'],
+    'Feldlinien gibt es nicht wirklich. Wir zeichnen sie, damit man das Feld sehen kann.','Gedachte Linien, die den magnetischen Zustand sichtbar machen. Sie geben die Richtung und den Betrag der magnetischen Kraftwirkung an.'),
+  L('Die 3 Regeln für Feldlinien',`<ol class="steps">
+      <li><span>Feldlinien sind <b>immer geschlossen</b>. Sie haben keinen Anfang und kein Ende.</span></li>
+      <li><span>Sie kommen <b>senkrecht</b> (gerade, im rechten Winkel) aus dem Magneten heraus.</span></li>
+      <li><span><b>Außen</b> laufen sie von <span class="n">N</span> nach <span class="s">S</span>. <b>Innen</b> im Magneten laufen sie von <span class="s">S</span> zurück nach <span class="n">N</span>.</span></li>
+    </ol>${solved(FIG.stab())}`+merk('Draußen von Nord nach Süd, drinnen wieder zurück.')),
+  Q('Aufgabe 4','Nennen Sie drei Merkmale für magnetische Feldlinien.','Welche drei Merkmale gehören zu Feldlinien?','Geschlossen · treten senkrecht aus · außen von N nach S, innen von S nach N',['Offen · treten schräg aus · außen von S nach N','Geschlossen · kreuzen sich an den Polen · innen von N nach S','Gerade Linien · nur außen · von S nach N'],
+    'Das sind genau die 3 Regeln von eben.','• Magnetische Feldlinien sind immer geschlossene Linien.<br>• Sie treten senkrecht aus der Magnetoberfläche aus bzw. ein.<br>• Außerhalb verlaufen sie vom Nord- zum Südpol, innerhalb vom Süd- zum Nordpol.'),
+  F('Aufgabe 5','Zeichnen Sie im Bild 1 den Verlauf von vier Feldlinien außerhalb und innerhalb des Stabmagneten. Tragen Sie die Richtung ein.','Welche Richtung haben die Feldlinien? Tippe auf jedes ? bis der Pfeil stimmt.',FIG.stab,
+    ['Links ist <span class="n">N</span>, rechts ist <span class="s">S</span>.','Außen (oben und unten) läuft die Linie von N nach S. Also zeigt der Pfeil <b>nach rechts</b>.','Innen im Magneten läuft sie zurück, von S nach N. Also zeigt der Pfeil <b>nach links</b>.']),
+  F('Aufgabe 6','Der Hufeisenmagnet im Bild 2 hat die angegebenen Pole. Zeichnen Sie den Verlauf und die Richtung der Feldlinien ein.','Wie laufen die Feldlinien durch das Eisen? Tippe auf jedes ?.',FIG.hufeisen,
+    ['Oben ist <span class="n">N</span>. Dort kommen die Linien heraus und gehen nach rechts ins Eisen.','Im Eisen laufen sie <b>nach unten</b>.','Unten gehen sie nach links zurück zum <span class="s">S</span>.','Im Magneten (links) laufen sie von S nach N, also <b>nach oben</b>. So ist der Kreis geschlossen.']),
+  L('Anziehen oder Abstoßen?',`<p><b>Verschiedene</b> Pole (N und S) ziehen sich <b>an</b>. Die Feldlinien laufen direkt von N hinüber zu S.</p><div class="pic">${poles('an')}</div>
+    <p><b>Gleiche</b> Pole (N und N oder S und S) stoßen sich <b>ab</b>. Die Feldlinien weichen sich aus und biegen zur Seite weg.</p><div class="pic">${poles('ab')}</div>`+merk('Verschieden zieht sich an, gleich stößt sich ab.')),
+  Q('Aufgabe 7','Geben Sie an, ob die Kraftwirkung anziehend oder abstoßend ist.','Links liegt S gegenüber von N. Was passiert?','Anziehend',['Abstoßend','Nichts'],'S und N sind verschieden, also ziehen sie sich an. Die Feldlinien laufen gerade hinüber.','Kraftwirkung: anziehend'),
+  Q('Aufgabe 7','Geben Sie an, ob die Kraftwirkung anziehend oder abstoßend ist.','N liegt gegenüber von N. Was passiert?','Abstoßend',['Anziehend','Nichts'],'Zwei gleiche Pole stoßen sich ab. Die Feldlinien biegen voneinander weg.','Kraftwirkung: abstoßend'),
+  Q('Aufgabe 7','Geben Sie an, ob die Kraftwirkung anziehend oder abstoßend ist.','S liegt gegenüber von S. Was passiert?','Abstoßend',['Anziehend','Nichts'],'Auch zwei Südpole sind gleich, also stoßen sie sich ab.','Kraftwirkung: abstoßend'),
 ]},
-{id:'b53',nr:'5.3',title:'Elektromagnetismus (1)',sub:'Magnetisches Feld',tasks:[
-  {n:1,q:'a) Welche Form hat das Magnetfeld um einen stromdurchflossenen Leiter? b) Wodurch wird die Magnetfeldrichtung bestimmt?',items:[
-    txt('53-1a','Kreisförmig um den Leiter herum (konzentrische Kreise). Der Abstand der Kreise wird mit zunehmender Entfernung vom Leiter größer.',['kreis','abstand|entfernung|weiter'],'a)'),
-    txt('53-1b','Die Magnetfeldrichtung wird von der Stromrichtung bestimmt.',['strom'],'b)')]},
-  {n:2,q:'Skizzieren Sie im Bild 1 die Magnetfelder der stromdurchflossenen Leiter mit drei Feldlinien. Geben Sie die Feldlinienrichtung an.',figs:['leiter']},
-  {n:3,q:'Skizzieren Sie im Bild 2 das Magnetfeld einer stromdurchflossenen Leiterschleife (Windung).',hint:'Wähle die Drehrichtung um jeden Leiter und die Feldrichtung in der Mitte der Schleife.',figs:['schleife']},
-  {n:4,q:'Tragen Sie in die Spule (Bild 3) ein: a) das Magnetfeld um die Leiter, b) das resultierende Magnetfeld der Spule, c) die Magnetpole der Spule.',hint:'Obere Kreise: Drehrichtung um einen oberen und einen unteren Leiter. Mitte: Feldrichtung innen. Seiten: Pole.',figs:['spule']},
-  {n:5,q:'Worin unterscheidet sich die magnetische Wirkung von a) einem langgestreckten Leiter und b) einem zu einer Spule gewickelten Leiter, wenn beide von einem Strom gleicher Stärke durchflossen werden?',items:[
-    txt('53-5a','Bei einem langgestreckten Leiter verteilt sich das Magnetfeld auf die ganze Länge (schwache Wirkung).',['verteil'],'a)'),
-    txt('53-5b','Bei einer Spule konzentriert sich das Magnetfeld innerhalb der Spule. Es entsteht ein Elektromagnet mit Nord- und Südpol (starke Wirkung).',['konzentr|bündel|buendel|innen|inner','elektromagnet|pol'],'b)')]},
-  {n:6,q:'Zeichnen Sie im Innern der stromdurchflossenen Ringspule den Verlauf des Magnetfeldes ein.',figs:['ringspule']},
-  {n:7,q:'Wie nennt man allgemein die geschlossene Form der magnetischen Feldlinien?',items:[txt('53-7','Wirbelfeld (magnetische Feldlinien haben keinen Anfang und kein Ende).',['wirbel'])]},
+{id:'b53',nr:'5.3',title:'Strom macht ein Magnetfeld',steps:[
+  L('Strom macht ein Magnetfeld',`<p>Fließt Strom durch einen Draht, entsteht um den Draht herum ein <b>Magnetfeld</b>.</p>
+    <p>Die Feldlinien sind <b>Kreise um den Draht</b>. Je weiter weg vom Draht, desto größer ist der Abstand zwischen den Kreisen. Das Feld wird also schwächer.</p>
+    <p>Die <b>Stromrichtung</b> bestimmt, in welche Richtung sich die Kreise drehen.</p>`),
+  Q('Aufgabe 1a','Welche Form hat das Magnetfeld um einen stromdurchflossenen Leiter?','Wie sieht das Feld um einen Draht mit Strom aus?','Kreise um den Draht herum',['Gerade Linien neben dem Draht','Wie bei einem Stabmagneten von N nach S','Es gibt kein Feld'],
+    'Die Feldlinien sind Kreise um den Leiter. Weiter weg liegen sie weiter auseinander.','Kreisförmig um den Leiter herum. Der Abstand der Kreise wird mit zunehmender Entfernung vom Leiter größer.'),
+  Q('Aufgabe 1b','Wodurch wird die Magnetfeldrichtung bestimmt?','Was bestimmt die Richtung des Feldes?','Die Stromrichtung',['Die Dicke des Drahtes','Das Material des Drahtes','Die Farbe des Kabels'],
+    'Dreht man den Strom um, dreht sich auch das Feld um.','Die Magnetfeldrichtung wird von der Stromrichtung bestimmt.'),
+  L('Was bedeuten ⊗ und ⊙?',`<p>Stell dir den Strom wie einen <b>Pfeil</b> vor.</p><div class="pic">${pfeil}</div>
+    <ul><li><b>⊗ (Kreuz):</b> Du siehst den Pfeil <b>von hinten</b>, also die Federn. Der Strom fließt <b>ins Blatt hinein</b>.</li>
+    <li><b>⊙ (Punkt):</b> Du siehst die <b>Pfeilspitze</b>. Der Strom kommt <b>aus dem Blatt heraus</b>, auf dich zu.</li></ul>`),
+  L('Rechte-Faust-Regel',`<ol class="steps"><li><span>Mach mit der <b>rechten Hand</b> eine Faust und strecke den Daumen aus.</span></li>
+    <li><span>Der <b>Daumen</b> zeigt in die <b>Stromrichtung</b>.</span></li>
+    <li><span>Die <b>gekrümmten Finger</b> zeigen, wie sich das Feld dreht.</span></li></ol>
+    ${solved(FIG.leiter())}`+merk('<b>⊗ Kreuz → im Uhrzeigersinn.</b> ⊙ Punkt → gegen den Uhrzeigersinn.<br>Wie eine Schraube: Beim Reindrehen (ins Blatt) dreht man im Uhrzeigersinn.')),
+  F('Aufgabe 2','Skizzieren Sie im Bild 1 die Magnetfelder der stromdurchflossenen Leiter mit drei Feldlinien. Geben Sie die Feldlinienrichtung an.','In welche Richtung drehen sich die Felder? Tippe auf die beiden ?.',FIG.leiter,
+    ['Links ist ein <b>Kreuz ⊗</b>: Strom geht ins Blatt → <b>im Uhrzeigersinn</b>.','Rechts ist ein <b>Punkt ⊙</b>: Strom kommt heraus → <b>gegen den Uhrzeigersinn</b>.']),
+  F('Aufgabe 3','Skizzieren Sie im Bild 2 das Magnetfeld einer stromdurchflossenen Leiterschleife (Windung).','Tippe die Drehrichtung um jeden Leiter an und die Richtung in der Mitte.',FIG.schleife,
+    ['Schau jeden Leiter einzeln an. Links ⊙ → gegen den Uhrzeigersinn. Rechts ⊗ → im Uhrzeigersinn.','Zwischen den Leitern zeigen beide Felder in die gleiche Richtung, nämlich <b>nach oben</b>. Dort ist das Feld besonders stark.']),
+  L('Die Spule: ein Elektromagnet',`<p>Wickelt man den Draht zu einer <b>Spule</b>, addieren sich die Felder aller Windungen. Innen wird das Feld <b>stark</b>. Die Spule wird zu einem <b>Elektromagneten</b> mit Nordpol und Südpol.</p>
+    ${solved(FIG.spule())}
+    <ol class="steps"><li><span>Bestimme bei einem oberen und einem unteren Leiter die Drehrichtung (Kreuz = Uhrzeigersinn).</span></li>
+    <li><span>Innen in der Spule zeigen beide Felder in dieselbe Richtung. Hier: <b>nach rechts</b>.</span></li>
+    <li><span>Wo die Feldlinien <b>herauskommen</b>, ist der <span class="n">Nordpol</span>. Auf der anderen Seite ist der <span class="s">Südpol</span>.</span></li></ol>`
+    +merk('Innen zeigt das Feld zum Nordpol.')),
+  F('Aufgabe 4','Tragen Sie in die Spule ein: a) das Magnetfeld um die Leiter, b) das resultierende Magnetfeld der Spule, c) die Magnetpole der Spule.','Tippe alle ? an: Drehrichtung oben und unten, Richtung innen und die beiden Pole.',FIG.spule,
+    ['Oben sind Punkte ⊙ → gegen den Uhrzeigersinn. Unten sind Kreuze ⊗ → im Uhrzeigersinn.','Innen zeigen beide nach <b>rechts</b>.','Rechts kommen die Linien heraus → rechts ist <span class="n">N</span>, links ist <span class="s">S</span>.']),
+  Q('Aufgabe 5a','Worin unterscheidet sich die magnetische Wirkung von a) einem langgestreckten Leiter …','Was passiert beim langen, geraden Draht?','Das Feld verteilt sich auf die ganze Länge, es ist eher schwach',['Das Feld sammelt sich an einer Stelle','Es entsteht ein Nordpol und ein Südpol','Es gibt kein Feld'],
+    'Beim geraden Draht ist das Feld überall entlang des Drahtes verteilt.','Bei einem langgestreckten Leiter verteilt sich das Magnetfeld auf die ganze Länge.'),
+  Q('Aufgabe 5b','… und b) einem zu einer Spule gewickelten Leiter (gleicher Strom)?','Was passiert, wenn der Draht zu einer Spule gewickelt ist?','Das Feld konzentriert sich im Inneren der Spule, es entsteht ein Elektromagnet',['Das Feld verschwindet','Das Feld wird schwächer als beim geraden Draht','Nichts ändert sich'],
+    'Die Felder aller Windungen addieren sich im Inneren. So wird die Spule zu einem Magneten mit N und S.','Bei einer Spule konzentriert sich das Magnetfeld innerhalb der Spule. Es entsteht ein Elektromagnet.'),
+  F('Aufgabe 6','Zeichnen Sie im Innern der stromdurchflossenen Ringspule den Verlauf des Magnetfeldes ein.','In welche Richtung läuft das Feld im Eisenring? Tippe auf das ?.',FIG.ringspule,
+    ['Außen sind Punkte ⊙, innen sind Kreuze ⊗.','Im Eisenring verstärken sich beide Felder. Das Feld läuft <b>im Uhrzeigersinn</b> im Ring herum.','Die Ringspule hat nach außen keine Pole. Das Feld bleibt im Ring.']),
+  Q('Aufgabe 7','Wie nennt man allgemein die geschlossene Form der magnetischen Feldlinien?','Wie heißt ein Feld mit geschlossenen Feldlinien?','Wirbelfeld',['Quellenfeld','Streufeld','Kreisstrom'],
+    'Magnetische Feldlinien haben keinen Anfang und kein Ende. So ein Feld heißt Wirbelfeld.','Wirbelfeld'),
 ]},
-{id:'b55',nr:'5.5',title:'Magnetische Größen (1)',sub:'Magnetisches Feld',tasks:[
-  {n:1,q:'Was versteht man unter magnetischem Fluss?',items:[txt('55-1','Der magnetische Fluss Φ ist die Gesamtheit aller Feldlinien eines Magneten bzw. einer Spule.',['gesamt|alle|summe|anzahl','feldlinie'])]},
-  {n:2,q:'Ergänzen Sie Tabelle 1: Magnetischer Fluss.',items:[
-    sel('55-2a','Formelzeichen',['Φ','Θ','B','H'],'Φ'),sel('55-2b','Einheitenzeichen',['Wb','T','A','A/m'],'Wb','1 Wb = 1 Vs'),sel('55-2c','Einheitenname',['Weber','Tesla','Ampere','Newton'],'Weber')]},
-  {n:3,q:'Nennen Sie die Formel für die Durchflutung einer Spule.',items:[sel('55-3','Durchflutung einer Spule:',['Θ = I · N','Θ = I / N','Θ = U · I','Θ = N / l'],'Θ = I · N','Durchflutung = Strom · Windungszahl')]},
-  {n:4,q:'Die drei Luftspulen im Bild 1 sollen magnetisch gleichwertig sein. Ergänzen Sie die Stromstärken. a) 1 Windung, I = 10 A.',items:[
-    num('55-4b','b) Spule mit 10 Windungen: I =',1,'A','Θ = 10 A · 1 = 10 A → I = Θ / N = 10 A / 10 = 1 A'),
-    num('55-4c','c) Spule mit 40 Windungen: I =',0.25,'A','I = 10 A / 40 = 0,25 A')]},
-  {n:5,q:'Ergänzen Sie Tabelle 2: Durchflutung.',items:[
-    sel('55-5a','Formelzeichen',['Φ','Θ','B','H'],'Θ'),sel('55-5b','Einheitenzeichen',['Wb','T','A','V'],'A'),sel('55-5c','Einheitenname',['Weber','Tesla','Ampere','Volt'],'Ampere')]},
-  {n:6,q:'Nennen Sie die Formel für die magnetische Feldstärke H.',items:[sel('55-6','magnetische Feldstärke H:',['H = I · N / lₘ','H = Φ / A','H = I · B · l','H = U / R'],'H = I · N / lₘ','H = Θ / lₘ, Einheit A/m. lₘ = mittlere Feldlinienlänge.')]},
-  {n:7,q:'Berechnen Sie für Bild 2 den notwendigen Spulenstrom, um eine magnetische Feldstärke von 4 A/cm im Eisenkern zu erreichen. (lₘ = 12 cm, N = 1000)',items:[
-    num('55-7','I =',0.048,'A','<span class="gg"><span>Geg.:</span><span>H = 4 A/cm; lₘ = 12 cm; N = 1000</span><span>Ges.:</span><span>I</span></span>H = I · N / lₘ → I = H · lₘ / N = 4 A/cm · 12 cm / 1000 = <b>0,048 A = 48 mA</b>')]},
-  {n:8,q:'Nennen Sie die Formel für die magnetische Flussdichte B.',items:[sel('55-8','magnetische Flussdichte B:',['B = Φ / A','B = Φ · A','B = I · N','B = F · l'],'B = Φ / A','Einheit: Tesla, 1 T = 1 Vs/m²')]},
-  {n:9,q:'Vergleichen Sie im Bild 3 die magnetische Flussdichte in den beiden Querschnittsflächen (gleicher Fluss Φ).',items:[
-    sel('55-9a','große Querschnittsfläche → Flussdichte:',['klein','groß'],'klein'),sel('55-9b','kleine Querschnittsfläche → Flussdichte:',['klein','groß'],'groß','B = Φ / A: gleicher Fluss durch kleinere Fläche → größere Flussdichte.')]},
-  {n:10,q:'Rechnen Sie die Beispiele mit der Einheit Vs/cm² in die Einheit Tesla um. Umrechnung: 1 T = 1 · 10⁻⁴ Vs/cm²',hint:'Eingabe z. B. als 5*10^-5 oder 0,00005',items:[
-    num('55-10a','Erdmagnetismus 5 · 10⁻⁹ Vs/cm² =',5e-5,'T','5 · 10⁻⁹ · 10⁴ = 5 · 10⁻⁵ T = 0,00005 T'),
-    num('55-10b','Pol am Dauermagnet 5 · 10⁻⁵ Vs/cm² =',0.5,'T','5 · 10⁻⁵ · 10⁴ = 5 · 10⁻¹ T = 0,5 T'),
-    num('55-10c','Pol am Elektromagnet 3 · 10⁻⁴ Vs/cm² =',3,'T','3 · 10⁻⁴ · 10⁴ = 3 T')]},
+{id:'b55',nr:'5.5',title:'Magnetische Größen',steps:[
+  L('Die 4 Größen: kurz erklärt',`<div class="scroll"><table class="tt">
+    <tr><th>Größe</th><th>Zeichen</th><th>Einfach gesagt</th><th>Einheit</th></tr>
+    <tr><td>Magnetischer Fluss</td><td><b>Φ</b> (Phi)</td><td>alle Feldlinien zusammen</td><td>Wb (Weber)</td></tr>
+    <tr><td>Durchflutung</td><td><b>Θ</b> (Theta)</td><td>Strom mal Windungen: <span class="f">Θ = I · N</span></td><td>A (Ampere)</td></tr>
+    <tr><td>Feldstärke</td><td><b>H</b></td><td>Durchflutung pro Länge: <span class="f">H = I · N / lₘ</span></td><td>A/m</td></tr>
+    <tr><td>Flussdichte</td><td><b>B</b></td><td>wie dicht die Linien sind: <span class="f">B = Φ / A</span></td><td>T (Tesla)</td></tr></table></div>
+    <p><b>lₘ</b> ist die mittlere Feldlinienlänge, also wie lang der Weg der Feldlinien ist. <b>A</b> ist die Fläche.</p>`),
+  Q('Aufgabe 1','Was versteht man unter magnetischem Fluss?','Was ist der magnetische Fluss Φ?','Die Gesamtheit aller Feldlinien',['Der Strom in der Spule','Die Zahl der Windungen','Die Kraft auf einen Draht'],
+    'Fluss = alle Feldlinien zusammen, also die „Menge“ des Magnetfelds.','Der magnetische Fluss ist die Gesamtheit aller Feldlinien eines Magneten.'),
+  Q('Aufgabe 2','Ergänzen Sie Tabelle 1: Magnetischer Fluss (Formelzeichen, Einheitenzeichen, Einheitenname).','Welche Zeile ist richtig für den magnetischen Fluss?','Φ · Wb · Weber',['Θ · A · Ampere','B · T · Tesla','H · A/m · Ampere pro Meter'],
+    'Der Fluss hat das Zeichen Φ und wird in Weber gemessen. 1 Wb = 1 Vs.','Formelzeichen: Φ · Einheitenzeichen: Wb · Einheitenname: Weber'),
+  Q('Aufgabe 3','Nennen Sie die Formel für die Durchflutung einer Spule.','Wie rechnet man die Durchflutung Θ aus?','Θ = I · N',['Θ = I / N','Θ = U · I','Θ = B · A'],
+    'Strom mal Windungszahl. Mehr Strom oder mehr Windungen machen die Spule stärker.','Θ = I · N'),
+  L('Gleichwertige Spulen',`<p>Zwei Spulen sind gleich stark, wenn ihre <b>Durchflutung Θ gleich</b> ist.</p>
+    <p>Spule a) hat 1 Windung und 10 A: <span class="f">Θ = 10 A · 1 = 10 A</span></p>
+    <p>Jede andere Spule muss also auch <b>10 A</b> Durchflutung haben. Den Strom rechnest du so aus:</p>
+    <div class="big">I = Θ / N</div>`+merk('Mehr Windungen → weniger Strom nötig.')),
+  Q('Aufgabe 4b','Die drei Luftspulen sollen magnetisch gleichwertig sein. b) Spule mit 10 Windungen: I = ?','Spule mit 10 Windungen. Welcher Strom ist nötig?','1 A',['10 A','100 A','0,1 A'],
+    'I = Θ / N = 10 A / 10 = 1 A','I = 10 A / 10 = 1 A'),
+  Q('Aufgabe 4c','c) Spule mit 40 Windungen: I = ?','Spule mit 40 Windungen. Welcher Strom ist nötig?','0,25 A',['4 A','400 A','2,5 A'],
+    'I = Θ / N = 10 A / 40 = 0,25 A','I = 10 A / 40 = 0,25 A'),
+  Q('Aufgabe 5','Ergänzen Sie Tabelle 2: Durchflutung.','Welche Zeile ist richtig für die Durchflutung?','Θ · A · Ampere',['Φ · Wb · Weber','B · T · Tesla','Θ · V · Volt'],
+    'Θ = I · N. Die Windungszahl hat keine Einheit, deshalb bleibt Ampere übrig.','Formelzeichen: Θ · Einheitenzeichen: A · Einheitenname: Ampere'),
+  Q('Aufgabe 6','Nennen Sie die Formel für die magnetische Feldstärke H.','Wie rechnet man die Feldstärke H aus?','H = I · N / lₘ',['H = Φ / A','H = I · B · l','H = U / R'],
+    'Die Durchflutung (I · N) wird auf die Länge lₘ verteilt.','H = I · N / lₘ'),
+  L('Rechnen mit H: Schritt für Schritt',`<p>Aufgabe: H soll <b>4 A/cm</b> sein. lₘ = <b>12 cm</b>, N = <b>1000</b>. Welcher Strom I?</p>
+    <ol class="steps"><li><span>Formel: <span class="f">H = I · N / lₘ</span></span></li>
+    <li><span>Nach I umstellen: <span class="f">I = H · lₘ / N</span></span></li>
+    <li><span>Einsetzen: <span class="f">I = 4 A/cm · 12 cm / 1000</span></span></li>
+    <li><span>cm kürzt sich weg: 4 · 12 = 48, dann 48 / 1000 = <b>0,048 A</b></span></li></ol>`),
+  Q('Aufgabe 7','Berechnen Sie den notwendigen Spulenstrom für H = 4 A/cm (lₘ = 12 cm, N = 1000).','Welcher Strom kommt heraus?','0,048 A (= 48 mA)',['48 A','333 A','0,48 A'],
+    'I = H · lₘ / N = 4 A/cm · 12 cm / 1000 = 0,048 A. Wer 48 A hat, hat vergessen, durch 1000 zu teilen.','Geg.: H = 4 A/cm; lₘ = 12 cm; N = 1000 · Ges.: I<br>I = H · lₘ / N = 4 A/cm · 12 cm / 1000 = 0,048 A'),
+  Q('Aufgabe 8','Nennen Sie die Formel für die magnetische Flussdichte B.','Wie rechnet man die Flussdichte B aus?','B = Φ / A',['B = Φ · A','B = I · N','B = A / Φ'],
+    'Fluss geteilt durch Fläche. Einheit: Tesla (T).','B = Φ / A'),
+  Q('Aufgabe 9','Vergleichen Sie die magnetische Flussdichte in den beiden Querschnittsflächen.','Der gleiche Fluss geht durch eine große und eine kleine Fläche. Wo ist B größer?','In der kleinen Fläche',['In der großen Fläche','Überall gleich'],
+    'Gleich viele Feldlinien auf weniger Platz → sie liegen dichter → B ist größer.','Kleine Querschnittsfläche: große Flussdichte. Große Fläche: kleine Flussdichte.'),
+  L('Umrechnen in Tesla',`<p>Auf dem Blatt steht: <span class="f">1 T = 1 · 10⁻⁴ Vs/cm²</span></p>
+    <p>Das heißt: Einen Wert in Vs/cm² rechnest du in Tesla um, indem du mit <b>10⁴ = 10 000</b> malnimmst.</p>
+    <p>Mit Zehnerpotenzen ist das leicht: Du rechnest einfach <b>+4 bei der Hochzahl</b>.</p>
+    <p>Beispiel: 5 · 10⁻⁵ → Hochzahl −5 + 4 = −1 → 5 · 10⁻¹ T = <b>0,5 T</b></p>`),
+  Q('Aufgabe 10','Erdmagnetismus: 5 · 10⁻⁹ Vs/cm² = ? T','Erdmagnetismus: 5 · 10⁻⁹ Vs/cm² sind wie viel Tesla?','5 · 10⁻⁵ T',['5 · 10⁻¹³ T','5 · 10⁻⁴ T','5 · 10⁴ T'],'Hochzahl: −9 + 4 = −5 → 5 · 10⁻⁵ T','5 · 10⁻⁵ T'),
+  Q('Aufgabe 10','Pol am Dauermagnet: 5 · 10⁻⁵ Vs/cm² = ? T','Dauermagnet: 5 · 10⁻⁵ Vs/cm² sind wie viel Tesla?','0,5 T',['5 T','0,05 T','5 · 10⁻⁹ T'],'Hochzahl: −5 + 4 = −1 → 5 · 10⁻¹ T = 0,5 T','5 · 10⁻¹ T = 0,5 T'),
+  Q('Aufgabe 10','Pol am Elektromagnet: 3 · 10⁻⁴ Vs/cm² = ? T','Elektromagnet: 3 · 10⁻⁴ Vs/cm² sind wie viel Tesla?','3 T',['0,3 T','30 T','3 · 10⁻⁸ T'],'Hochzahl: −4 + 4 = 0 → 3 · 10⁰ T = 3 T','3 T'),
 ]},
-{id:'b59',nr:'5.9',title:'Stromdurchflossene Leiter im Magnetfeld (2), Motorprinzip',sub:'Magnetisches Feld',
- intro:`<b>Rechte-Hand-Regel (wie im Unterricht):</b> Daumen = Stromrichtung, Zeigefinger = äußeres Magnetfeld (N → S), Mittelfinger = Kraftwirkung. ⊗ = Daumen zeigt ins Blatt, ⊙ = Daumen zeigt aus dem Blatt.${handSVG}`,
- tasks:[
-  {n:'5a',q:'Zeichnen Sie im Bild 1 das entstehende Gesamtmagnetfeld ein und tragen Sie Richtungspfeile für die Kraftwirkung ein.',hint:'Tippe die Seite an, auf der das Feld verstärkt wird („stark?“). Dann wähle die Richtung von F im Kreis unter dem Leiter.',figs:[()=>panel('N',-1,'Bild 1a'),()=>panel('S',1,'Bild 1b'),()=>panel('N',1,'Bild 1c'),()=>panel('S',-1,'Bild 1d')],two:true},
-  {n:'5b',q:'Bild 2: Stromdurchflossene Leiterschleife im Magnetfeld eines Elektromagneten. Tragen Sie die Kraftrichtungen ein.',figs:[()=>emPanel('S',1,-1,'Bild 2a'),()=>emPanel('N',1,-1,'Bild 2b')]},
-  {n:6,q:'Von welchen zwei Ursachen wird die Richtung der Ablenkkraft bestimmt?',items:[txt('59-6','• Von der Richtung des fremden Magnetfeldes<br>• Von der Stromrichtung (eigenes Magnetfeld des Leiters)',['magnetfeld|feld','strom'])]},
-  {n:7,q:'Nennen Sie drei Einflussgrößen, welche die Kraft auf den stromdurchflossenen Leiter verstärken.',items:[txt('59-7','• größere Leiterstromstärke I<br>• größere wirksame Leiterlänge l im Magnetfeld<br>• größere Magnetflussdichte B',['strom','länge|laenge|lang','fluss|dichte|magnetfeld'])]},
-  {n:8,q:'Wie lautet die Formel zur Berechnung der Ablenkkraft auf einen stromdurchflossenen Leiter im Magnetfeld?',items:[sel('59-8','F =',['I · B · l','U · I','B / (I · l)','I · N'],'I · B · l')]},
-  {n:9,q:'Entwickeln Sie mithilfe der Formel die Einheit der Kraft in N (Newton).',items:[sel('59-9','1 T (Tesla) entspricht in dieser Rechnung:',['N / (A · m)','V · s','A / m','N · m'],'N / (A · m)','[F] = A · T · m = A · N/(A·m) · m = <b>N</b>')]},
-  {n:10,q:'Durch einen Leiter fließt ein Strom von 5 A. Er befindet sich im Feld eines Magneten mit der magnetischen Flussdichte 3 Tesla. Die wirksame Leiterlänge beträgt 20 mm. Berechnen Sie die Kraft auf den Leiter.',items:[
-    num('59-10','F =',0.3,'N','<span class="gg"><span>Geg.:</span><span>I = 5 A; B = 3 T; l = 20 mm = 0,02 m</span><span>Ges.:</span><span>F</span></span>F = I · B · l = 5 A · 3 T · 0,02 m = <b>0,3 N</b>')]},
-  {n:11,q:'Stellen Sie die Formel F = I · B · l um nach a) der Stromstärke, b) der Magnetflussdichte und c) der wirksamen Leiterlänge.',items:[
-    sel('59-11a','a) I =',['F / (B · l)','F · B · l','B · l / F','F / B'],'F / (B · l)'),
-    sel('59-11b','b) B =',['F / (I · l)','F · I / l','I · l / F','F / l'],'F / (I · l)'),
-    sel('59-11c','c) l =',['F / (I · B)','F · I · B','I · B / F','F / I'],'F / (I · B)')]},
+{id:'b59',nr:'5.9',title:'Motorprinzip und 3-Finger-Regel',steps:[
+  L('Was passiert hier?',`<p>Ein Draht mit Strom liegt zwischen den Polen eines Magneten. Dann wird der Draht <b>zur Seite gedrückt</b>.</p>
+    <p>Diese Kraft heißt <b>Ablenkkraft F</b>. So funktioniert ein <b>Elektromotor</b>.</p>
+    <p>In welche Richtung der Draht gedrückt wird, findest du mit der <b>Rechten-Hand-Regel</b> heraus (3-Finger-Regel).</p>`),
+  L('Die 3-Finger-Regel (rechte Hand)',`<div class="pic">${handSVG}</div>
+    <ol class="steps"><li><span><b>Daumen</b> in die <b>Stromrichtung</b>.<br>⊗ → Daumen zeigt vom Gesicht weg aufs Blatt. ⊙ → Daumen zeigt zu dir.</span></li>
+    <li><span><b>Zeigefinger</b> in Richtung <b>Magnetfeld</b>, also von <span class="n">N</span> nach <span class="s">S</span>.</span></li>
+    <li><span>Der <b>Mittelfinger</b> zeigt jetzt die <b>Kraft F</b>, also wohin der Draht gedrückt wird.</span></li></ol>`
+    +merk('Daumen = Strom, Zeigefinger = Feld, Mittelfinger = Kraft.<br>Ursache – Vermittlung – Wirkung (U-V-W).')),
+  L('Warum wird der Draht weggedrückt?',`<p>Der Draht hat sein <b>eigenes Feld</b> (Kreise). Das Magnetfeld zwischen N und S kommt dazu.</p>
+    <ul><li>Auf einer Seite zeigen beide Felder <b>gleich</b> → das Feld wird <b>stärker</b> (verstärkt).</li>
+    <li>Auf der anderen Seite zeigen sie <b>gegeneinander</b> → das Feld wird <b>schwächer</b>.</li></ul>
+    <p>Der Draht wird von der starken Seite <b>zur schwachen Seite</b> gedrückt.</p>
+    ${solved(panel('N',-1,'Beispiel'))}
+    <p>Beispiel oben: Feld nach unten, Draht ⊗ dreht im Uhrzeigersinn. Rechts zeigen beide nach unten → verstärkt. Also wird der Draht <b>nach links</b> gedrückt.</p>`),
+  F('Aufgabe 5a','Zeichnen Sie das entstehende Gesamtmagnetfeld ein. Tragen Sie Richtungspfeile für die Kraftwirkung ein.','Wo ist das Feld stärker? Und wohin zeigt F? Tippe die Seite und das ? an.',()=>panel('N',-1,'Bild 1a'),
+    ['Feld von N nach S: <b>nach unten</b>. Kreuz ⊗ → Kreise im Uhrzeigersinn.','Rechts vom Draht zeigt der Kreis nach unten, genau wie das Magnetfeld → <b>rechts verstärkt</b>.','Der Draht wird zur schwachen Seite gedrückt → F <b>nach links</b>.']),
+  F('Aufgabe 5a','Tragen Sie Richtungspfeile für die Kraftwirkung ein.','Bild 1b: Wo ist das Feld stärker? Wohin zeigt F?',()=>panel('S',1,'Bild 1b'),
+    ['Jetzt ist <span class="s">S</span> oben: Feld von N nach S zeigt <b>nach oben</b>.','Punkt ⊙ → gegen den Uhrzeigersinn. Rechts vom Draht zeigt der Kreis nach oben → <b>rechts verstärkt</b>.','Also F <b>nach links</b>. 3-Finger-Probe: Daumen zu dir, Zeigefinger nach oben → Mittelfinger nach links.']),
+  F('Aufgabe 5a','Tragen Sie Richtungspfeile für die Kraftwirkung ein.','Bild 1c: Wo ist das Feld stärker? Wohin zeigt F?',()=>panel('N',1,'Bild 1c'),
+    ['Feld <b>nach unten</b> (N oben).','Punkt ⊙ → gegen den Uhrzeigersinn. Links vom Draht zeigt der Kreis nach unten → <b>links verstärkt</b>.','Also F <b>nach rechts</b>.']),
+  F('Aufgabe 5a','Tragen Sie Richtungspfeile für die Kraftwirkung ein.','Bild 1d: Wo ist das Feld stärker? Wohin zeigt F?',()=>panel('S',-1,'Bild 1d'),
+    ['Feld <b>nach oben</b> (S oben).','Kreuz ⊗ → im Uhrzeigersinn. Links vom Draht zeigt der Kreis nach oben → <b>links verstärkt</b>.','Also F <b>nach rechts</b>.']),
+  F('Aufgabe 5b','Bild 2: Leiterschleife im Feld eines Elektromagneten. Tragen Sie die Kraftrichtungen ein.','Wohin wird jeder der beiden Drähte gedrückt?',()=>emPanel('S',1,-1,'Bild 2a'),
+    ['Feld von N (rechts) nach S (links): <b>nach links</b>.','Linker Draht ⊙: Daumen zu dir, Zeigefinger nach links → Mittelfinger <b>nach unten</b>.','Rechter Draht ⊗: Daumen weg von dir → Mittelfinger <b>nach oben</b>.','Die beiden Kräfte zeigen gegeneinander → die Schleife <b>dreht sich</b>. Das ist der Motor!']),
+  F('Aufgabe 5b','Tragen Sie die Kraftrichtungen ein.','Jetzt ist N links. Wohin werden die Drähte gedrückt?',()=>emPanel('N',1,-1,'Bild 2b'),
+    ['Feld von N (links) nach S (rechts): <b>nach rechts</b>.','Linker Draht ⊙ → F <b>nach oben</b>. Rechter Draht ⊗ → F <b>nach unten</b>.','Die Schleife dreht sich jetzt andersherum.']),
+  Q('Aufgabe 6','Von welchen zwei Ursachen wird die Richtung der Ablenkkraft bestimmt?','Wovon hängt ab, in welche Richtung der Draht gedrückt wird?','Von der Richtung des Magnetfelds und von der Stromrichtung',['Von der Dicke und Länge des Drahtes','Von Spannung und Widerstand','Nur von der Farbe der Pole'],
+    'Dreht man den Strom ODER das Feld um, dreht sich die Kraft um. Dreht man beides um, bleibt sie gleich.','• Von der Richtung des fremden Magnetfeldes<br>• Von der Stromrichtung (eigenes Magnetfeld)'),
+  Q('Aufgabe 7','Nennen Sie drei Einflussgrößen, welche die Kraft auf den Leiter verstärken.','Womit wird die Kraft größer?','Mehr Strom I · längerer Draht im Feld l · stärkeres Magnetfeld B',['Dickere Isolierung · mehr Farbe · kälterer Raum','Weniger Strom · kürzerer Draht · schwächerer Magnet','Höherer Widerstand · mehr Spannung · Holzkern'],
+    'Das sind genau die drei Buchstaben aus der Formel F = I · B · l.','• größere Stromstärke I<br>• größere wirksame Leiterlänge l im Magnetfeld<br>• größere Flussdichte B'),
+  Q('Aufgabe 8','Wie lautet die Formel zur Berechnung der Ablenkkraft?','Wie lautet die Formel für die Kraft?','F = I · B · l',['F = U · I','F = I · N','F = B / l'],
+    'Kraft = Strom · Flussdichte · Länge. Merkhilfe: „F-I-B-L“, wie eine Fibel.','F = I · B · l'),
+  Q('Aufgabe 9','Entwickeln Sie die Einheit der Kraft in N (Newton).','[F] = A · T · m. Was ist 1 Tesla, damit am Ende Newton herauskommt?','1 T = 1 N / (A · m)',['1 T = 1 V · s','1 T = 1 A / m','1 T = 1 N · m'],
+    'A · N/(A·m) · m: Das A kürzt sich weg und das m auch. Übrig bleibt N.','[F] = A · T · m = A · N/(A·m) · m = N'),
+  L('Rechnen mit F = I · B · l',`<ol class="steps"><li><span>Schreib auf, was gegeben ist (Geg.) und was gesucht ist (Ges.).</span></li>
+    <li><span><b>Wichtig:</b> Die Länge muss in <b>Meter</b> sein. mm durch 1000 teilen! 20 mm = 0,02 m.</span></li>
+    <li><span>Alles in die Formel einsetzen und ausrechnen.</span></li></ol>`),
+  Q('Aufgabe 10','I = 5 A, B = 3 T, wirksame Leiterlänge 20 mm. Berechnen Sie die Kraft.','Wie groß ist F?','0,3 N',['300 N','15 N','0,03 N'],
+    'F = 5 A · 3 T · 0,02 m = 0,3 N. Bei 300 N wurden die mm nicht in m umgerechnet. Bei 15 N wurde die Länge vergessen.','Geg.: I = 5 A; B = 3 T; l = 20 mm = 0,02 m · Ges.: F<br>F = I · B · l = 5 A · 3 T · 0,02 m = 0,3 N'),
+  L('Formel umstellen: der Trick',`<p>Du willst eine Größe allein haben? Dann <b>teile durch die anderen beiden</b>.</p>
+    <div class="big">F = I · B · l</div>
+    <ul><li>I gesucht → <span class="f">I = F / (B · l)</span></li><li>B gesucht → <span class="f">B = F / (I · l)</span></li><li>l gesucht → <span class="f">l = F / (I · B)</span></li></ul>`),
+  Q('Aufgabe 11a','Stellen Sie die Formel nach der Stromstärke um.','I = ?','F / (B · l)',['F · B · l','B · l / F','F / B'],'F durch die beiden anderen teilen.','I = F / (B · l)'),
+  Q('Aufgabe 11b','… nach der Magnetflussdichte.','B = ?','F / (I · l)',['F · I · l','I · l / F','F / l'],'F durch die beiden anderen teilen.','B = F / (I · l)'),
+  Q('Aufgabe 11c','… nach der wirksamen Leiterlänge.','l = ?','F / (I · B)',['F · I · B','I · B / F','F / I'],'F durch die beiden anderen teilen.','l = F / (I · B)'),
 ]},
-{id:'tafel',nr:'Tafel',title:'Transformator: Einführung',sub:'Unterricht 18.09.',tasks:[
-  {n:'A',q:'Beschriften Sie den Transformator.',figs:['trafo']},
-  {n:'B',q:'Was versteht man unter Induktion?',items:[txt('tf-ind','Induktion ist das Entstehen von Spannung in einem Leiter durch die Änderung des Magnetfeldes.',['spannung','änder|aender'])]},
-  {n:'C',q:'Was versteht man unter galvanischer Trennung? Nennen Sie zwei Bauteile, die galvanisch trennen.',items:[txt('tf-gal','Zwei getrennte Stromkreise, die keine direkte elektrische Verbindung haben. Beispiele: Transformator (Übertragung über Magnetfeld), Optokoppler (Übertragung über Licht).',['getrennt|trenn','verbindung','trafo|transformator','optokoppler'])]},
-  {n:'D',q:'Wie lautet die Formel für das Übersetzungsverhältnis ü?',items:[sel('tf-ue','ü =',['U₁/U₂ = N₁/N₂ = I₂/I₁','U₁/U₂ = N₂/N₁ = I₁/I₂','U₁ · U₂','I₁/I₂ = N₁/N₂'],'U₁/U₂ = N₁/N₂ = I₂/I₁','Spannungen verhalten sich wie die Windungszahlen, die Ströme umgekehrt.')]},
-  {n:1,q:'Ein Steckernetzteil mit den Bemessungswerten 230 V / 24 V besitzt sekundärseitig 30 Windungen. Berechnen Sie a) das Übersetzungsverhältnis und b) die Windungszahl der Primärwicklung.',items:[
-    num('tf1a','a) ü =',230/24,'','ü = U₁ / U₂ = 230 V / 24 V ≈ <b>9,58</b>',.01),
-    num('tf1b','b) N₁ =',287.5,'','N₁ = N₂ · U₁ / U₂ = 30 · 230 V / 24 V = <b>287,5 ≈ 288 Windungen</b>',.01)],
-   note:'Achtung: Auf der Tafel steht N₂ = 30. In deinem Heft steht bei „geg.“ N₂ = 80 – vergleiche nochmal.'},
-  {n:2,q:'Ein idealer Einphasentransformator mit einer Bauleistung von 120 VA und einer Nennausgangsspannung von 9,2 V besitzt ein Übersetzungsverhältnis ü = 25 sowie eine Primärwindungszahl von 600. Berechnen Sie a) U₁, b) N₂, c) I₂, d) I₁.',items:[
-    num('tf2a','a) U₁ =',230,'V','U₁ = ü · U₂ = 25 · 9,2 V = <b>230 V</b>'),
-    num('tf2b','b) N₂ =',24,'','N₂ = N₁ / ü = 600 / 25 = <b>24</b>'),
-    num('tf2c','c) I₂ =',120/9.2,'A','I₂ = S / U₂ = 120 VA / 9,2 V ≈ <b>13,04 A</b>'),
-    num('tf2d','d) I₁ =',120/230,'A','I₁ = S / U₁ = 120 VA / 230 V ≈ <b>0,52 A</b> (oder I₁ = I₂ / ü)')]},
-  {n:3,q:'Ein Staubsauger hat eine Leistung von 900 W. Wie viel kostet es, eine halbe Stunde zu saugen, wenn der Strompreis 42 Cent pro kWh beträgt?',items:[
-    num('tf3','Kosten =',18.9,'ct','W = P · t = 0,9 kW · 0,5 h = 0,45 kWh<br>Kosten = 0,45 kWh · 42 ct/kWh = <b>18,9 ct</b>')]},
+{id:'tafel',nr:'Trafo 1',title:'Transformator: Grundlagen (Tafel)',steps:[
+  L('Wie funktioniert ein Transformator?',`${solved(FIG.trafo())}
+    <ol class="steps"><li><span>Die <b>Primärspule</b> (Eingang) bekommt <b>Wechselspannung</b>.</span></li>
+    <li><span>Dadurch entsteht ein Magnetfeld, das sich <b>ständig ändert</b>.</span></li>
+    <li><span>Der <b>Eisenkern</b> leitet das Feld zur <b>Sekundärspule</b> (Ausgang).</span></li>
+    <li><span>Dort entsteht durch das sich ändernde Feld eine Spannung. Das heißt <b>Induktion</b>.</span></li></ol>`
+    +merk('Ohne Änderung keine Induktion. Deshalb geht ein Trafo nur mit Wechselspannung.')),
+  F('Tafel','Beschriften Sie den Transformator.','Tippe so lange auf die Felder, bis der richtige Name steht.',FIG.trafo,
+    ['Links (Eingang) ist die <b>Primärspule</b>.','Rechts (Ausgang) ist die <b>Sekundärspule</b>.','Das graue Viereck ist der <b>Eisenkern</b>.']),
+  Q('Tafel','Was versteht man unter Induktion?','Was ist Induktion?','Es entsteht eine Spannung in einem Leiter, weil sich das Magnetfeld ändert',['Ein Draht wird warm, weil Strom fließt','Zwei Magnete ziehen sich an','Man wickelt Draht um Eisen'],
+    'Das Magnetfeld muss sich ändern, dann entsteht Spannung.','Induktion ist das Entstehen von Spannung in einem Leiter durch die Änderung des Magnetfeldes.'),
+  L('Galvanische Trennung',`<p>Primärspule und Sekundärspule berühren sich <b>nicht</b>. Die Energie geht nur über das Magnetfeld hinüber.</p>
+    <p>So hat man <b>zwei getrennte Stromkreise ohne direkte elektrische Verbindung</b>. Das nennt man <b>galvanische Trennung</b>.</p>
+    <p>Ein <b>Optokoppler</b> trennt auch galvanisch. Er überträgt das Signal mit Licht.</p>`),
+  Q('Tafel','Was versteht man unter galvanischer Trennung?','Was bedeutet galvanische Trennung?','Zwei getrennte Stromkreise ohne direkte elektrische Verbindung',['Ein Stromkreis ohne Sicherung','Zwei Drähte, die zusammengelötet sind','Ein Kurzschluss'],
+    'Getrennt = kein Draht verbindet die beiden Seiten.','2 getrennte Stromkreise, die keine direkte elektrische Verbindung haben.'),
+  L('Die Trafo-Formel',`<div class="big">U₁ / U₂ = N₁ / N₂ = I₂ / I₁ = ü</div>
+    <ul><li><b>Spannung</b> und <b>Windungen</b> gehören zusammen: mehr Windungen → mehr Spannung.</li>
+    <li>Beim <b>Strom</b> ist es <b>umgekehrt</b>: Die Seite mit mehr Spannung hat weniger Strom.</li>
+    <li><b>ü</b> heißt Übersetzungsverhältnis. Es sagt, wie stark der Trafo die Spannung herunter- oder hochsetzt.</li></ul>`
+    +merk('Viele Windungen = hohe Spannung = kleiner Strom.')),
+  Q('Tafel','Wie lautet die Formel für das Übersetzungsverhältnis?','Welche Formel ist richtig?','U₁/U₂ = N₁/N₂ = I₂/I₁',['U₁/U₂ = N₂/N₁ = I₁/I₂','U₁/U₂ = N₁/N₂ = I₁/I₂','U₁ · U₂ = N₁ · N₂'],
+    'Beim Strom ist es umgekehrt: I₂ steht oben.','ü = U₁/U₂ = N₁/N₂ = I₂/I₁'),
+  Q('Aufgabe 1a','Steckernetzteil 230 V / 24 V, sekundär 30 Windungen. a) Übersetzungsverhältnis?','Wie groß ist ü?','ü ≈ 9,58',['ü ≈ 0,104','ü = 206','ü = 7,67'],
+    'ü = U₁ / U₂ = 230 V / 24 V ≈ 9,58','Geg.: U₁ = 230 V; U₂ = 24 V; N₂ = 30 · Ges.: ü, N₁<br>ü = U₁ / U₂ = 230 V / 24 V ≈ 9,58'),
+  Q('Aufgabe 1b','b) die Windungszahl der Primärwicklung','Wie viele Windungen hat die Primärspule (N₁)?','N₁ ≈ 288',['N₁ ≈ 3','N₁ = 30','N₁ ≈ 767'],
+    'N₁ = N₂ · ü = 30 · 9,58 ≈ 287,5 → 288. Primär ist die Spannung höher, also braucht sie mehr Windungen.','N₁ = N₂ · U₁ / U₂ = 30 · 230 V / 24 V ≈ 288'),
+  Q('Aufgabe 2a','Idealer Trafo: 120 VA, U₂ = 9,2 V, ü = 25, N₁ = 600. a) U₁?','Wie groß ist die Eingangsspannung U₁?','230 V',['0,37 V','34,2 V','2300 V'],
+    'U₁ = ü · U₂ = 25 · 9,2 V = 230 V','U₁ = ü · U₂ = 25 · 9,2 V = 230 V'),
+  Q('Aufgabe 2b','b) Windungszahl N₂','Wie viele Windungen hat die Sekundärspule (N₂)?','24',['15 000','625','240'],
+    'N₂ = N₁ / ü = 600 / 25 = 24. Sekundär ist die Spannung klein, also wenige Windungen.','N₂ = N₁ / ü = 600 / 25 = 24'),
+  L('Ströme ausrechnen mit der Leistung',`<p>Beim idealen Trafo ist die <b>Leistung</b> vorne und hinten gleich groß: <span class="f">S = U · I</span></p>
+    <p>Wenn du die Leistung kennst, bekommst du den Strom so:</p><div class="big">I = S / U</div>`),
+  Q('Aufgabe 2c','c) Strom I₂','Wie groß ist I₂? (S = 120 VA, U₂ = 9,2 V)','≈ 13,04 A',['≈ 0,52 A','1104 A','≈ 0,077 A'],
+    'I₂ = S / U₂ = 120 VA / 9,2 V ≈ 13,04 A','I₂ = S / U₂ = 120 VA / 9,2 V ≈ 13,04 A'),
+  Q('Aufgabe 2d','d) Strom I₁','Wie groß ist I₁? (S = 120 VA, U₁ = 230 V)','≈ 0,52 A',['≈ 13,04 A','27 600 A','≈ 1,92 A'],
+    'I₁ = S / U₁ = 120 VA / 230 V ≈ 0,52 A. Hohe Spannung → kleiner Strom.','I₁ = S / U₁ = 120 VA / 230 V ≈ 0,52 A'),
+  L('Extra: Stromkosten',`<ol class="steps"><li><span>Leistung in <b>kW</b> umrechnen: 900 W = 0,9 kW</span></li>
+    <li><span>Energie: <span class="f">W = P · t</span> = 0,9 kW · 0,5 h = 0,45 kWh</span></li>
+    <li><span>Kosten: 0,45 kWh · 42 ct/kWh = <b>18,9 ct</b></span></li></ol>`),
+  Q('Extra','Staubsauger 900 W, eine halbe Stunde, 42 ct pro kWh. Wie viel kostet es?','Was kostet eine halbe Stunde Saugen?','18,9 ct',['37,8 ct','18 900 ct','189 €'],
+    '0,9 kW · 0,5 h = 0,45 kWh. 0,45 · 42 ct = 18,9 ct. Wer 37,8 ct hat, hat die halbe Stunde vergessen.','W = P · t = 0,9 kW · 0,5 h = 0,45 kWh · Kosten = 0,45 kWh · 42 ct/kWh = 18,9 ct'),
 ]},
-{id:'b135',nr:'13.5',title:'Übersetzungen beim Einphasentransformator (2)',sub:'Elektrische Maschinen',tasks:[
-  {n:5,q:'Ein Einphasentransformator mit einer Bemessungsleistung von 500 VA soll eine Eingangsspannung von 230 V auf 24 V herabtransformieren. Die Eingangswindungszahl beträgt 470. Berechnen Sie a) ü, b) den Eingangsstrom, c) den Ausgangsstrom, d) die Ausgangswindungszahl. (Verluste vernachlässigen)',items:[
-    num('135-5a','a) ü =',230/24,'','ü = U₁ / U₂ = 230 V / 24 V ≈ <b>9,58</b>',.01),
-    num('135-5b','b) I₁ =',500/230,'A','I₁ = S / U₁ = 500 VA / 230 V ≈ <b>2,17 A</b>'),
-    num('135-5c','c) I₂ =',500/24,'A','I₂ = S / U₂ = 500 VA / 24 V ≈ <b>20,83 A</b>'),
-    num('135-5d','d) N₂ =',470*24/230,'','N₂ = N₁ · U₂ / U₁ = 470 · 24 V / 230 V ≈ <b>49 Windungen</b>')]},
-  {n:6,q:'Nennen Sie je einen Vorteil und Nachteil von Spartransformatoren.',items:[
-    txt('135-6a','Kleiner, leichter und billiger, weil weniger Kupfer und Eisen gebraucht wird (ein Teil der Wicklung wird doppelt genutzt).',['klein|leicht|billig|günstig|guenstig|kupfer|material'],'Vorteil'),
-    txt('135-6b','Keine galvanische Trennung zwischen Eingangs- und Ausgangsseite.',['galvanisch|trennung|verbunden'],'Nachteil')]},
-  {n:7,q:'Nennen Sie je ein Beispiel, wo a) Spartransformatoren eingesetzt werden und b) keine Spartransformatoren verwendet werden dürfen.',items:[
-    txt('135-7a','z. B. Anpassung von Netzspannungen (400 V / 230 V), Stelltransformator, Anlasstransformator für Motoren.',['anpass|stell|anlass|400|netz'],'a)'),
-    txt('135-7b','Überall, wo galvanische Trennung nötig ist: Sicherheitstransformator für Schutzkleinspannung (Klingel-, Spielzeugtrafo), Trenntransformator.',['klein|klingel|spielzeug|trenn|sicherheit'],'b)')]},
-  {n:8,q:'Bei Spartransformatoren unterscheidet man a) die Durchgangsleistung S_D und b) die Bauleistung S_B. Was versteht man darunter?',items:[
-    txt('135-8a','Die gesamte Leistung, die vom Eingang zum Ausgang (zur Last) übertragen wird: S_D = U₂ · I₂.',['gesamt|last|ausgang|übertragen|uebertragen'],'a) Durchgangsleistung'),
-    txt('135-8b','Der Teil der Leistung, der wirklich transformatorisch (über das Magnetfeld) übertragen wird. Sie bestimmt die Baugröße: S_B = S_D · (U₁ − U₂) / U₁.',['magnet|transformatorisch|baugröße|baugroesse|größe|groesse'],'b) Bauleistung')]},
-  {n:9,q:'Ein Spartransformator 400/230 V hat eine Durchgangsleistung von 480 VA bei einem Wirkungsgrad von 0,9. Berechnen Sie a) die Bauleistung, b) den Eingangsstrom und c) den Ausgangsstrom.',items:[
-    num('135-9a','a) S_B =',204,'VA','S_B = S_D · (U₁ − U₂) / U₁ = 480 VA · (400 V − 230 V) / 400 V = <b>204 VA</b>'),
-    num('135-9b','b) I₁ =',480/0.9/400,'A','Aufgenommene Leistung S₁ = S_D / η = 480 VA / 0,9 ≈ 533 VA<br>I₁ = S₁ / U₁ = 533 VA / 400 V ≈ <b>1,33 A</b>'),
-    num('135-9c','c) I₂ =',480/230,'A','I₂ = S_D / U₂ = 480 VA / 230 V ≈ <b>2,09 A</b>')],
-   note:'Bei b) und c) kann eure Lehrkraft den Wirkungsgrad anders ansetzen. Vergleiche mit deinem Heft.'},
+{id:'b135',nr:'13.5',title:'Übersetzungen und Spartransformator',steps:[
+  L('So gehst du bei Trafo-Aufgaben vor',`<ol class="steps"><li><span>Geg. und Ges. aufschreiben.</span></li>
+    <li><span><b>ü</b> = U₁ / U₂</span></li><li><span><b>Ströme</b> über die Leistung: I = S / U</span></li>
+    <li><span><b>Windungen:</b> N₂ = N₁ · U₂ / U₁ (Windungen verhalten sich wie Spannungen)</span></li></ol>
+    <p>Beispiel: 500 VA, 230 V → 24 V, N₁ = 470</p>`),
+  Q('Aufgabe 5a','500 VA, 230 V → 24 V, N₁ = 470. a) Übersetzungsverhältnis','ü = ?','≈ 9,58',['≈ 0,104','19,6','2,13'],'ü = 230 V / 24 V ≈ 9,58','ü = U₁ / U₂ = 230 V / 24 V ≈ 9,58'),
+  Q('Aufgabe 5b','b) Eingangsstrom','I₁ = ?','≈ 2,17 A',['≈ 20,83 A','115 000 A','≈ 0,46 A'],'I₁ = S / U₁ = 500 VA / 230 V ≈ 2,17 A','I₁ = S / U₁ = 500 VA / 230 V ≈ 2,17 A'),
+  Q('Aufgabe 5c','c) Ausgangsstrom','I₂ = ?','≈ 20,83 A',['≈ 2,17 A','12 000 A','≈ 0,048 A'],'I₂ = S / U₂ = 500 VA / 24 V ≈ 20,83 A. Kleine Spannung → großer Strom.','I₂ = S / U₂ = 500 VA / 24 V ≈ 20,83 A'),
+  Q('Aufgabe 5d','d) Ausgangswindungszahl','N₂ = ?','≈ 49',['≈ 4504','470','≈ 9,58'],'N₂ = N₁ · U₂ / U₁ = 470 · 24 / 230 ≈ 49','N₂ = N₁ · U₂ / U₁ = 470 · 24 V / 230 V ≈ 49'),
+  L('Der Spartransformator',`<p>Ein Spartrafo hat nur <b>eine Wicklung</b>. Ein Teil davon wird für Eingang und Ausgang gemeinsam benutzt.</p>
+    <ul><li><b>Vorteil:</b> weniger Kupfer und Eisen → <b>kleiner, leichter, billiger</b>.</li>
+    <li><b>Nachteil:</b> Eingang und Ausgang sind verbunden → <b>keine galvanische Trennung</b>.</li>
+    <li><b>Einsatz:</b> Spannung anpassen, z. B. 400 V → 230 V, oder als Stelltrafo.</li>
+    <li><b>Verboten</b>, wo Sicherheit wichtig ist: Schutzkleinspannung (Klingeltrafo, Spielzeugtrafo) und Trenntrafo.</li></ul>`
+    +merk('Spartrafo = spart Material, aber keine Trennung.')),
+  Q('Aufgabe 6','Nennen Sie einen Vorteil von Spartransformatoren.','Was ist ein Vorteil?','Kleiner, leichter und billiger',['Galvanische Trennung','Funktioniert mit Gleichspannung','Braucht keinen Eisenkern'],'Man spart Material, weil ein Teil der Wicklung doppelt genutzt wird.','Vorteil: kleiner, leichter, billiger (weniger Kupfer und Eisen).'),
+  Q('Aufgabe 6','Nennen Sie einen Nachteil von Spartransformatoren.','Was ist der Nachteil?','Keine galvanische Trennung',['Sehr schwer','Sehr teuer','Nur für Gleichspannung'],'Eingang und Ausgang hängen an derselben Wicklung, also sind sie elektrisch verbunden.','Nachteil: keine galvanische Trennung zwischen Eingang und Ausgang.'),
+  Q('Aufgabe 7a','Nennen Sie ein Beispiel, wo Spartransformatoren eingesetzt werden.','Wo darf man einen Spartrafo benutzen?','Zum Anpassen von 400 V auf 230 V',['Als Klingeltrafo','Als Spielzeugtrafo','Als Trenntrafo im Bad'],'Hier geht es nur darum, die Spannung etwas zu ändern. Eine Trennung ist nicht nötig.','z. B. Anpassung 400 V / 230 V, Stelltransformator'),
+  Q('Aufgabe 7b','Nennen Sie ein Beispiel, wo keine Spartransformatoren verwendet werden dürfen.','Wo ist ein Spartrafo verboten?','Bei Schutzkleinspannung, z. B. Klingel- oder Spielzeugtrafo',['Beim Anpassen von 400 V auf 230 V','Als Stelltrafo im Labor','Beim Anlassen von Motoren'],'Ohne Trennung könnte gefährliche Netzspannung am Ausgang anliegen.','Bei Sicherheitstransformatoren für Schutzkleinspannung (Klingel-, Spielzeugtrafo) und Trenntransformatoren.'),
+  L('Durchgangsleistung und Bauleistung',`<ul><li><b>Durchgangsleistung S_D:</b> die ganze Leistung, die von vorne nach hinten zur Last geht.</li>
+    <li><b>Bauleistung S_B:</b> nur der Teil, der wirklich über das Magnetfeld übertragen wird. Davon hängt ab, wie groß der Trafo gebaut werden muss.</li></ul>
+    <div class="big">S_B = S_D · (U₁ − U₂) / U₁</div>`),
+  Q('Aufgabe 8a','Was versteht man unter der Durchgangsleistung S_D?','Was ist die Durchgangsleistung?','Die gesamte Leistung, die zur Last übertragen wird',['Nur die Leistung im Magnetfeld','Die Verlustleistung','Die Leistung ohne Last'],'Durchgang = alles, was durchgeht.','Die gesamte vom Eingang zum Ausgang übertragene Leistung (S_D = U₂ · I₂).'),
+  Q('Aufgabe 8b','Was versteht man unter der Bauleistung S_B?','Was ist die Bauleistung?','Der Teil, der über das Magnetfeld übertragen wird; er bestimmt die Baugröße',['Die gesamte Leistung zur Last','Die Leistung beim Einschalten','Das Gewicht des Trafos'],'Bau = so groß muss man ihn bauen.','Der Teil der Leistung, der transformatorisch übertragen wird. Er bestimmt die Baugröße.'),
+  Q('Aufgabe 9a','Spartrafo 400/230 V, S_D = 480 VA, η = 0,9. a) Bauleistung','S_B = ?','204 VA',['480 VA','276 VA','533 VA'],'S_B = 480 VA · (400 − 230) / 400 = 480 · 170 / 400 = 204 VA','S_B = S_D · (U₁ − U₂) / U₁ = 480 VA · 170 V / 400 V = 204 VA'),
+  Q('Aufgabe 9b','b) Eingangsstrom','I₁ = ?','≈ 1,33 A',['1,2 A','≈ 2,09 A','≈ 0,75 A'],'Zuerst die aufgenommene Leistung: 480 VA / 0,9 ≈ 533 VA. Dann I₁ = 533 VA / 400 V ≈ 1,33 A. (Ohne Wirkungsgrad wären es 1,2 A, vergleiche mit deinem Heft.)','S₁ = S_D / η ≈ 533 VA · I₁ = S₁ / U₁ ≈ 1,33 A'),
+  Q('Aufgabe 9c','c) Ausgangsstrom','I₂ = ?','≈ 2,09 A',['≈ 1,33 A','≈ 0,48 A','110 400 A'],'I₂ = S_D / U₂ = 480 VA / 230 V ≈ 2,09 A','I₂ = S_D / U₂ = 480 VA / 230 V ≈ 2,09 A'),
 ]},
-{id:'b136',nr:'13.6',title:'Berechnungen am Einphasentransformator',sub:'Elektrische Maschinen',
- intro:'Berechnen Sie aus den angegebenen Werten der Transformatoren Nr. 1 bis Nr. 8 den Wert der jeweils gesuchten Größe. Verluste vernachlässigen. <b>Merke:</b> U₁/U₂ = N₁/N₂ = I₂/I₁',
- tasks:[
-  {n:1,q:'N₁ = 1000, N₂ = 435, U₁ = 230 V',items:[num('136-1','U₂ =',100.05,'V','U₂ = U₁ · N₂ / N₁ = 230 V · 435 / 1000 = <b>100,05 V</b>')]},
-  {n:2,q:'N₁ = 880, N₂ = 500, U₂ = 24 V',items:[num('136-2','U₁ =',42.24,'V','U₁ = U₂ · N₁ / N₂ = 24 V · 880 / 500 = <b>42,24 V</b><br><i>(Im Heft steht hier eine andere Rechnung – N₁/N₂ ist 880/500, nicht durch 920 teilen.)</i>')]},
-  {n:3,q:'I₂ = 1 A, U₁ = 230 V, U₂ = 12 V',items:[num('136-3','I₁ =',12/230,'A','I₁ = I₂ · U₂ / U₁ = 1 A · 12 V / 230 V ≈ <b>0,052 A = 52 mA</b>')]},
-  {n:4,q:'I₁ = 10 A, U₁ = 20 kV, U₂ = 230 V',items:[num('136-4','I₂ =',10*20000/230,'A','I₂ = I₁ · U₁ / U₂ = 10 A · 20 000 V / 230 V ≈ <b>869,57 A</b>')]},
-  {n:5,q:'N₁ = 2300, N₂ = 80, I₁ = 1 A',items:[num('136-5','I₂ =',28.75,'A','I₂ = I₁ · N₁ / N₂ = 1 A · 2300 / 80 = <b>28,75 A</b>')]},
-  {n:6,q:'N₂ = 800, I₁ = 10 A, I₂ = 500 mA',items:[num('136-6','N₁ =',40,'','N₁ = N₂ · I₂ / I₁ = 800 · 0,5 A / 10 A = <b>40</b>')]},
-  {n:7,q:'N₁ = 700, U₁ = 230 V, U₂ = 46 V',items:[num('136-7','N₂ =',140,'','N₂ = N₁ · U₂ / U₁ = 700 · 46 V / 230 V = <b>140</b>')]},
-  {n:8,q:'N₁ = 750, N₂ = 100, I₂ = 5 A',items:[num('136-8','I₁ =',100*5/750,'A','I₁ = I₂ · N₂ / N₁ = 5 A · 100 / 750 ≈ <b>0,67 A = 670 mA</b>')]},
+{id:'b136',nr:'13.6',title:'Berechnungen am Trafo (Nr. 1–8)',steps:[
+  L('Das Rezept für alle 8 Aufgaben',`<div class="big">U₁ / U₂ = N₁ / N₂ = I₂ / I₁</div>
+    <ol class="steps"><li><span>Schau, welche zwei <b>Paare</b> du hast (U, N oder I).</span></li>
+    <li><span><b>U und N</b> verhalten sich <b>gleich</b>: U₂ = U₁ · N₂ / N₁</span></li>
+    <li><span><b>I</b> ist <b>umgekehrt</b>: I₂ = I₁ · N₁ / N₂ oder I₂ = I₁ · U₁ / U₂</span></li>
+    <li><span><b>Kontrolle:</b> Hat die Seite mit mehr Windungen auch mehr Spannung und weniger Strom?</span></li></ol>`),
+  Q('Nr. 1','N₁ = 1000, N₂ = 435, U₁ = 230 V, U₂ = ?','U₂ = ?','100,05 V',['528,7 V','43,5 V','230 V'],'U₂ = U₁ · N₂ / N₁ = 230 V · 435 / 1000 = 100,05 V','U₂ = 230 V · 435 / 1000 = 100,05 V'),
+  Q('Nr. 2','N₁ = 880, N₂ = 500, U₂ = 24 V, U₁ = ?','U₁ = ?','42,24 V',['13,64 V','22,96 V','24 V'],'U₁ = U₂ · N₁ / N₂ = 24 V · 880 / 500 = 42,24 V. Achtung: In deinem Heft steht „/ 920“, das ist falsch. Es muss / 500 heißen.','U₁ = 24 V · 880 / 500 = 42,24 V'),
+  Q('Nr. 3','I₂ = 1 A, U₁ = 230 V, U₂ = 12 V, I₁ = ?','I₁ = ?','≈ 0,052 A (52 mA)',['≈ 19,2 A','1 A','12 A'],'I₁ = I₂ · U₂ / U₁ = 1 A · 12 V / 230 V ≈ 0,052 A. Die 230-V-Seite hat den kleinen Strom.','I₁ = 1 A · 12 V / 230 V ≈ 0,052 A'),
+  Q('Nr. 4','I₁ = 10 A, U₁ = 20 kV, U₂ = 230 V, I₂ = ?','I₂ = ?','≈ 869,57 A',['≈ 0,115 A','10 A','46 000 A'],'20 kV = 20 000 V. I₂ = I₁ · U₁ / U₂ = 10 A · 20 000 V / 230 V ≈ 869,57 A','I₂ = 10 A · 20 000 V / 230 V ≈ 869,57 A'),
+  Q('Nr. 5','N₁ = 2300, N₂ = 80, I₁ = 1 A, I₂ = ?','I₂ = ?','28,75 A',['≈ 0,035 A','1 A','2220 A'],'I₂ = I₁ · N₁ / N₂ = 1 A · 2300 / 80 = 28,75 A. Wenige Windungen → großer Strom.','I₂ = 1 A · 2300 / 80 = 28,75 A'),
+  Q('Nr. 6','N₂ = 800, I₁ = 10 A, I₂ = 500 mA, N₁ = ?','N₁ = ?','40',['16 000','400','8000'],'500 mA = 0,5 A. N₁ = N₂ · I₂ / I₁ = 800 · 0,5 A / 10 A = 40','N₁ = 800 · 0,5 A / 10 A = 40'),
+  Q('Nr. 7','N₁ = 700, U₁ = 230 V, U₂ = 46 V, N₂ = ?','N₂ = ?','140',['3500','46','700'],'N₂ = N₁ · U₂ / U₁ = 700 · 46 V / 230 V = 140','N₂ = 700 · 46 V / 230 V = 140'),
+  Q('Nr. 8','N₁ = 750, N₂ = 100, I₂ = 5 A, I₁ = ?','I₁ = ?','≈ 0,67 A',['37,5 A','5 A','≈ 0,13 A'],'I₁ = I₂ · N₂ / N₁ = 5 A · 100 / 750 ≈ 0,67 A','I₁ = 5 A · 100 / 750 ≈ 0,67 A'),
 ]},
-{id:'praefix',nr:'Präfixe',title:'Vorsätze für Einheiten',sub:'Grundlagen',
- intro:'Trage Zeichen und Zehnerpotenz ein. Beispiel: Kilo → k → 3 (also 10³). Achte auf Groß- und Kleinschreibung: M (Mega) ≠ m (Milli)!',
- tasks:[
-  ...[['Giga','G',9,'1 000 000 000'],['Mega','M',6,'1 000 000'],['Kilo','k',3,'1000'],['Milli','m',-3,'0,001'],['Mikro','µ',-6,'0,000 001'],['Nano','n',-9,'0,000 000 001'],['Piko','p',-12,'0,000 000 000 001'],['Femto','f',-15,'0,000 000 000 000 001']]
-   .map(([n,z,e,d],i)=>({n:i+1,q:n,items:[str('pf-z'+i,'Zeichen:',z),num('pf-e'+i,'Faktor 10 hoch',e,'',`${n} = ${z} = 10${String(e).replace('-','⁻').replace(/\d/g,c=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[c])} = ${d}`,0)],inline:true})),
-  {n:9,q:'Umrechnen',items:[
-    num('pf-u1','500 mA =',0.5,'A','500 · 10⁻³ A = 0,5 A',0.001),
-    num('pf-u2','20 mm =',0.02,'m','20 · 10⁻³ m = 0,02 m',0.001),
-    num('pf-u3','20 kV =',20000,'V','20 · 10³ V = 20 000 V',0.001),
-    num('pf-u4','0,048 A =',48,'mA','0,048 · 1000 = 48 mA',0.001)]},
- ]},
+{id:'praefix',nr:'Präfixe',title:'Vorsätze: kilo, milli, mikro …',steps:[
+  L('Die Vorsätze',`<div class="scroll"><table class="tt"><tr><th>Name</th><th>Zeichen</th><th>Faktor</th></tr>
+    <tr><td>Giga</td><td>G</td><td>10⁹ = 1 000 000 000</td></tr><tr><td>Mega</td><td>M</td><td>10⁶ = 1 000 000</td></tr><tr><td>Kilo</td><td>k</td><td>10³ = 1000</td></tr>
+    <tr><td>Milli</td><td>m</td><td>10⁻³ = 0,001</td></tr><tr><td>Mikro</td><td>µ</td><td>10⁻⁶ = 0,000 001</td></tr><tr><td>Nano</td><td>n</td><td>10⁻⁹</td></tr>
+    <tr><td>Piko</td><td>p</td><td>10⁻¹²</td></tr><tr><td>Femto</td><td>f</td><td>10⁻¹⁵</td></tr></table></div>`
+    +merk('Die Hochzahl springt immer um 3. Großes M = Mega (riesig), kleines m = milli (winzig).')),
+  Q('Präfixe','Mega','Was bedeutet M (Mega)?','10⁶ = 1 000 000',['10³ = 1000','10⁻³ = 0,001','10⁹'],'Mega = Million.','M = 10⁶'),
+  Q('Präfixe','milli','Was bedeutet m (milli)?','10⁻³ = 0,001',['10³ = 1000','10⁻⁶','10⁶'],'Milli = Tausendstel. 1 mm = 0,001 m.','m = 10⁻³'),
+  Q('Präfixe','Mikro','Welches Zeichen hat Mikro?','µ',['m','M','n'],'µ ist ein griechischer Buchstabe (my). Mikro = 10⁻⁶.','µ = 10⁻⁶'),
+  Q('Präfixe','Nano','Was bedeutet n (nano)?','10⁻⁹',['10⁹','10⁻⁶','10⁻¹²'],'Nano = Milliardstel.','n = 10⁻⁹'),
+  Q('Präfixe','Giga','Was bedeutet G (Giga)?','10⁹',['10⁶','10¹²','10⁻⁹'],'Giga = Milliarde, wie bei Gigabyte.','G = 10⁹'),
+  Q('Präfixe','Piko / Femto','Was ist kleiner?','f (femto) = 10⁻¹⁵',['p (piko) = 10⁻¹²'],'Je negativer die Hochzahl, desto kleiner. −15 ist kleiner als −12.','p = 10⁻¹², f = 10⁻¹⁵'),
+  Q('Umrechnen','500 mA = ? A','500 mA sind wie viel Ampere?','0,5 A',['500 000 A','5 A','0,05 A'],'milli heißt durch 1000 teilen: 500 / 1000 = 0,5','500 mA = 0,5 A'),
+  Q('Umrechnen','20 mm = ? m','20 mm sind wie viel Meter?','0,02 m',['0,2 m','2 m','20 000 m'],'20 / 1000 = 0,02. Das brauchst du bei F = I · B · l!','20 mm = 0,02 m'),
+  Q('Umrechnen','20 kV = ? V','20 kV sind wie viel Volt?','20 000 V',['0,02 V','200 V','2000 V'],'kilo heißt mal 1000: 20 · 1000 = 20 000','20 kV = 20 000 V'),
+  Q('Umrechnen','0,048 A = ? mA','0,048 A sind wie viel Milliampere?','48 mA',['0,000 048 mA','4,8 mA','480 mA'],'In mA umrechnen heißt mal 1000: 0,048 · 1000 = 48','0,048 A = 48 mA'),
+]},
 ];
 
-/* ================= Rendern ================= */
+/* ================= Ablauf ================= */
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const LS='ab-magnet-v2';
+let DB={}; try{ DB=JSON.parse(localStorage.getItem(LS)||'{}'); }catch(e){}
+const save=()=>{ try{ localStorage.setItem(LS,JSON.stringify(DB)); }catch(e){} };
+DB.pos=DB.pos||{}; DB.first=DB.first||{};
+
 const main=document.getElementById('main'), tabs=document.getElementById('tabs');
-let figReg={};  // figId -> {def, el}
-let itemReg={}; // itemId -> item
+let cur=null, idx=0;
 
-function renderItem(it){
-  itemReg[it.id]=it;
-  const v=DB.v[it.id]??'';
-  const esc=s=>String(s).replace(/"/g,'&quot;');
-  if(it.t==='text') return `<div class="item">${it.label?`<label class="lbl" for="${it.id}">${it.label}</label>`:''}<textarea id="${it.id}" placeholder="Deine Antwort …">${v.replace(/</g,'&lt;')}</textarea><div class="sol" id="sol-${it.id}"><b class="h">Lösung</b>${it.sol}<div class="kw" id="kw-${it.id}"></div></div></div>`;
-  if(it.t==='sel') return `<div class="item"><div class="line"><label class="pre" for="${it.id}">${it.label}</label><select id="${it.id}"><option value="">– wählen –</option>${it.opts.map(o=>`<option${o===v?' selected':''}>${o}</option>`).join('')}</select></div>${it.sol?`<div class="sol" id="sol-${it.id}">${it.sol}</div>`:''}</div>`;
-  if(it.t==='num') return `<div class="item"><div class="line"><label class="pre" for="${it.id}">${it.label}</label><input class="n" id="${it.id}" inputmode="text" autocomplete="off" value="${esc(v)}"><span class="unit">${it.unit}</span></div>${it.sol?`<div class="sol" id="sol-${it.id}"><b class="h">Lösungsweg</b>${it.sol}</div>`:''}</div>`;
-  if(it.t==='str') return `<div class="item"><div class="line"><label class="pre" for="${it.id}">${it.label}</label><input class="s" id="${it.id}" autocomplete="off" autocapitalize="off" value="${esc(v)}"></div></div>`;
+function tasksOf(sh){ return sh.steps.map((s,i)=>i).filter(i=>sh.steps[i].t!=='L'); }
+function pct(sh){ const ts=tasksOf(sh); const f=DB.first[sh.id]||{}; const done=ts.filter(i=>i in f); if(!done.length) return ''; return ' ✓'+done.filter(i=>f[i]).length+'/'+ts.length; }
+function refreshTabs(){ tabs.querySelectorAll('.tab').forEach(t=>{ const sh=SHEETS.find(s=>s.id===t.dataset.id); t.querySelector('.pc').textContent=pct(sh); t.setAttribute('aria-selected',cur&&t.dataset.id===cur.id); }); }
+function setProg(){
+  const n=cur.steps.length;
+  document.getElementById('prog-t').textContent = idx<n ? `Blatt ${cur.nr} · Schritt ${idx+1} von ${n}` : `Blatt ${cur.nr} · fertig`;
+  document.getElementById('prog-b').style.width=(Math.min(idx+1,n)/n*100)+'%';
 }
+function record(ok){ const f=DB.first[cur.id]=DB.first[cur.id]||{}; if(!(idx in f)){ f[idx]=ok; save(); refreshTabs(); } }
 
-function buildFig(def,fid){
-  const cs=DB.v['fig:'+fid]||{};
-  let s=`<svg viewBox="0 0 ${def.w} ${def.h}" role="img" aria-label="${def.cap}">${def.base}<g class="solg">${def.sol}</g>`;
-  (def.zones||[]).forEach(z=>{
-    const on=cs['z:'+z.g]===z.k;
-    s+=`<g class="zone${on?' on':''}" data-z="${z.k}" data-g="${z.g}" tabindex="0" role="button" aria-label="Seite ${z.k==='L'?'links':'rechts'} wählen"><rect x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" rx="6"/><text x="${z.x+z.w/2}" y="${z.y+14}" text-anchor="middle">${on?'verstärkt':z.lab}</text></g>`;
-  });
-  def.chips.forEach(c=>{
-    const cyc=Array.isArray(c.c)?c.c:CYC[c.c];
-    const val=cs[c.k]||'?';
-    const bg=c.wide?`<rect class="bg" x="-50" y="-13" width="100" height="26" rx="13"/>`:`<circle class="bg" r="15"/><circle r="22" fill="transparent"/>`;
-    s+=`<g class="chip" data-k="${c.k}" transform="translate(${c.x} ${c.y})" tabindex="0" role="button" aria-label="Auswahl ändern">${bg}<g class="gl">${chipGlyph(val)}</g></g>`;
-  });
-  s+='</svg>';
-  return `<div class="fig" id="${fid}"><span class="cap">${def.cap}</span><div class="fwrap">${s}<canvas></canvas></div>
-    <div class="tools"><button type="button" data-a="pen" aria-pressed="false">✎ Stift</button><button type="button" data-a="clear">Zeichnung löschen</button><button type="button" data-a="sol" aria-pressed="false">Lösung</button></div>
-    <div class="sol" id="sol-${fid}"><b class="h">Erklärung</b>${def.explain}</div></div>`;
+function navHTML(nextLabel,nextDisabled){
+  return `<div class="nav">${idx>0?'<button class="btn ghost" id="prev">← Zurück</button>':''}<button class="btn" id="next"${nextDisabled?' disabled':''}>${nextLabel}</button></div>`;
 }
-
-function renderSheet(sh){
-  figReg={}; itemReg={};
-  let h=`<article class="sheet"><div class="sheet-head"><div class="nr">Blatt-Nr.:<b>${sh.nr}</b></div><div class="ttl"><small>${sh.sub}</small><h2>${sh.title}</h2></div></div>
-  <div class="score"><span id="score-t">Noch nichts geprüft</span><span class="bar"><i id="score-b"></i></span><button class="btn ghost small reset" id="reset">Blatt leeren</button></div><div class="body">`;
-  if(sh.intro) h+=`<div class="intro">${sh.intro}</div>`;
-  sh.tasks.forEach((t,ti)=>{
-    const tid=sh.id+'-t'+ti;
-    h+=`<section class="task" data-t="${ti}"><div class="qq"><span>${t.n}.</span><span>${t.q}</span></div>`;
-    if(t.pre) h+=`<div class="items">${t.pre}</div>`;
-    if(t.hint) h+=`<p class="hint" style="margin:0">${t.hint}</p>`;
-    if(t.figs){
-      h+=`<div class="figs${t.two?' two':''}">`;
-      t.figs.forEach((f,fi)=>{ const def=typeof f==='string'?FIG[f]():f(); const fid=tid+'-f'+fi; figReg[fid]={def,t:ti}; h+=buildFig(def,fid); });
-      h+='</div>';
-    }
-    if(t.items) h+=`<div class="items${t.inline?' inl':''}">${t.items.map(renderItem).join('')}</div>`;
-    if(t.note) h+=`<p class="hint" style="margin:0">${t.note}</p>`;
-    h+=`<div class="task-foot"><button class="btn" data-check="${ti}">Prüfen</button><span class="res" id="res-${ti}"></span></div></section>`;
-  });
-  h+='</div></article>';
-  main.innerHTML=h;
-  wire(sh);
-  updateScore(sh);
+function wireNav(){
+  const p=document.getElementById('prev'); if(p) p.onclick=()=>go(idx-1);
+  document.getElementById('next').onclick=()=>go(idx+1);
 }
+function go(i){ idx=Math.max(0,i); DB.pos[cur.id]=idx; save(); render(); window.scrollTo(0,0); }
 
-function checkItem(it){
-  const el=document.getElementById(it.id); const v=el.value;
-  const solEl=document.getElementById('sol-'+it.id);
-  if(solEl) solEl.classList.add('show');
-  if(it.t==='text'){
-    const low=v.toLowerCase();
-    const kw=document.getElementById('kw-'+it.id);
-    if(it.kw.length && v.trim()){
-      kw.innerHTML='<span style="border:0;padding:0;color:var(--muted)">Schlüsselwörter:</span>'+it.kw.map(k=>{const alts=k.split('|');const hit=alts.some(a=>low.includes(a));return `<span class="${hit?'y':'n'}">${hit?'✓':'✗'} ${alts[0]}</span>`;}).join('');
-    } else kw.innerHTML='';
-    return null; // selbst vergleichen
+function render(){
+  setProg();
+  if(idx>=cur.steps.length) return renderDone();
+  const st=cur.steps[idx];
+  if(st.t==='L'){
+    main.innerHTML=`<article class="card"><span class="eyebrow learn">Erklärung</span><h2>${st.title}</h2>${st.html}${navHTML('Verstanden, weiter →')}</article>`;
+    wireNav(); return;
   }
-  let ok;
-  if(it.t==='sel') ok = v===it.ans;
-  if(it.t==='str') ok = v.trim()===it.ans || (it.ans==='µ' && ['u','μ'].includes(v.trim()));
-  if(it.t==='num'){ const x=parseNum(v); ok = !isNaN(x) && Math.abs(x-it.ans) <= Math.max(Math.abs(it.ans)*it.tol, 1e-9); }
-  el.classList.toggle('ok-mark',ok); el.classList.toggle('bad-mark',!ok);
-  return ok;
-}
-function checkFig(fid){
-  const {def}=figReg[fid]; const root=document.getElementById(fid); const cs=DB.v['fig:'+fid]||{};
-  let all=true;
-  def.chips.forEach(c=>{ const ok=(cs[c.k]||'?')===c.a; all=all&&ok; const g=root.querySelector(`.chip[data-k="${c.k}"]`); g.classList.toggle('ok',ok); g.classList.toggle('bad',!ok); });
-  const groups={};
-  (def.zones||[]).forEach(z=>{ groups[z.g]=groups[z.g]||[]; groups[z.g].push(z); });
-  Object.entries(groups).forEach(([g,zs])=>{
-    const picked=cs['z:'+g]; const right=zs.find(z=>z.a).k; const ok=picked===right; all=all&&ok;
-    zs.forEach(z=>{ const el=root.querySelector(`.zone[data-z="${z.k}"]`); el.classList.remove('ok','bad'); if(z.k===right) el.classList.add(ok?'ok':'bad'); });
-  });
-  root.classList.add('showsol'); root.querySelector('[data-a="sol"]').setAttribute('aria-pressed','true');
-  document.getElementById('sol-'+fid).classList.add('show');
-  return all;
-}
-function checkTask(sh,ti){
-  const t=sh.tasks[ti]; let n=0,r=0,self=0;
-  const tid=sh.id+'-t'+ti;
-  (t.figs||[]).forEach((f,fi)=>{ const ok=checkFig(tid+'-f'+fi); n++; if(ok) r++; DB.r[tid+'-f'+fi]=ok; });
-  (t.items||[]).forEach(it=>{ const ok=checkItem(it); if(ok===null){self++; return;} n++; if(ok) r++; DB.r[it.id]=ok; });
-  persist();
-  const res=document.getElementById('res-'+ti);
-  if(n) { res.textContent=`${r} von ${n} richtig`+(self?' · Text selbst vergleichen':''); res.className='res '+(r===n?'good':'meh'); }
-  else { res.textContent='Vergleiche mit der Lösung'; res.className='res'; }
-  updateScore(sh);
-}
-function autoIds(sh){
-  const ids=[];
-  sh.tasks.forEach((t,ti)=>{ (t.figs||[]).forEach((f,fi)=>ids.push(sh.id+'-t'+ti+'-f'+fi)); (t.items||[]).forEach(it=>{ if(it.t!=='text') ids.push(it.id); }); });
-  return ids;
-}
-function updateScore(sh){
-  const ids=autoIds(sh); const done=ids.filter(i=>i in DB.r); const ok=done.filter(i=>DB.r[i]);
-  document.getElementById('score-t').textContent = done.length ? `${ok.length} von ${ids.length} Aufgabenteilen richtig` : `${ids.length} Aufgabenteile zum Prüfen`;
-  document.getElementById('score-b').style.width=(ok.length/ids.length*100)+'%';
-  const tab=tabs.querySelector(`[data-id="${sh.id}"] .pc`); if(tab) tab.textContent= done.length?` ${Math.round(ok.length/ids.length*100)}%`:'';
-}
-
-function wire(sh){
-  main.querySelectorAll('textarea,select,input').forEach(el=>{
-    el.addEventListener('input',()=>{ DB.v[el.id]=el.value; persist(); el.classList.remove('ok-mark','bad-mark'); });
-  });
-  main.querySelectorAll('input.n,input.s').forEach(el=>el.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); el.closest('.task').querySelector('[data-check]').click(); }}));
-  main.querySelectorAll('[data-check]').forEach(b=>b.onclick=()=>checkTask(sh,+b.dataset.check));
-  document.getElementById('reset').onclick=e=>{
-    const b=e.currentTarget;
-    if(!b.dataset.sure){ b.dataset.sure=1; b.textContent='Wirklich leeren? Nochmal tippen'; return; }
-    Object.keys(DB.v).forEach(k=>{ if(main.querySelector('#'+CSS.escape(k))||k.startsWith('fig:'+sh.id)) delete DB.v[k]; });
-    autoIds(sh).forEach(i=>delete DB.r[i]); persist(); renderSheet(sh);
-  };
-  Object.keys(figReg).forEach(fid=>wireFig(fid));
-}
-
-function wireFig(fid){
-  const {def}=figReg[fid]; const root=document.getElementById(fid);
-  const key='fig:'+fid; DB.v[key]=DB.v[key]||{};
-  const cs=DB.v[key];
-  const reset=()=>{ root.querySelectorAll('.chip,.zone').forEach(g=>g.classList.remove('ok','bad')); };
+  const origBox=`<div class="orig"><b>${st.blatt} · Auf dem Arbeitsblatt steht</b>${st.orig}</div>`;
+  if(st.t==='Q'){
+    const opts=shuffle([{t:st.right,ok:true},...st.wrong.map(t=>({t}))]);
+    main.innerHTML=`<article class="card"><span class="eyebrow">Aufgabe zum Antippen</span>${origBox}<p class="qs">${st.q}</p>
+      <div class="opts">${opts.map((o,k)=>`<button class="opt" data-k="${k}">${o.t}</button>`).join('')}</div><div id="fb"></div>${navHTML('Weiter →',true)}</article>`;
+    main.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      const o=opts[+b.dataset.k];
+      main.querySelectorAll('.opt').forEach((x,j)=>{ x.disabled=true; if(opts[j].ok) x.classList.add('right'); else if(x===b) x.classList.add('wrong'); });
+      record(!!o.ok);
+      document.getElementById('fb').innerHTML=`<div class="fb ${o.ok?'ok':'no'}"><h3>${o.ok?'Richtig!':'Nicht ganz. Richtig ist: '+st.right}</h3><p>${st.why}</p>${st.write?`<div class="write"><b class="h">So schreibst du es aufs Blatt</b>${st.write}</div>`:''}</div>`;
+      document.getElementById('next').disabled=false;
+      document.getElementById('fb').scrollIntoView({behavior:'smooth',block:'nearest'});
+    });
+    wireNav(); return;
+  }
+  // Zeichenaufgabe
+  const def=st.fig(); const state={};
+  let svg=`<svg viewBox="0 0 ${def.w} ${def.h}" role="img" aria-label="${def.cap}">${def.base}<g class="solg">${def.sol}</g>`;
+  (def.zones||[]).forEach(z=>{ svg+=`<g class="zone" data-z="${z.k}" data-g="${z.g}" tabindex="0" role="button"><rect x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" rx="6"/><text x="${z.x+z.w/2}" y="${z.y+14}" text-anchor="middle">${z.lab}</text></g>`; });
+  def.chips.forEach(c=>{ const bg=c.wide?`<rect class="bg" x="-50" y="-13" width="100" height="26" rx="13"/>`:`<circle class="bg" r="15"/><circle r="22" fill="transparent"/>`; svg+=`<g class="chip" data-k="${c.k}" transform="translate(${c.x} ${c.y})" tabindex="0" role="button">${bg}<g class="gl">${chipGlyph('?')}</g></g>`; });
+  svg+='</svg>';
+  main.innerHTML=`<article class="card"><span class="eyebrow">Zeichenaufgabe zum Antippen</span>${origBox}<p class="qs">${st.q}</p>
+    <div class="fig" id="fig"><span class="cap">${def.cap}</span><div class="fwrap">${svg}</div></div>
+    <div class="nav"><button class="btn" id="check">Prüfen</button><button class="btn ghost" id="tip">Ich weiß nicht weiter: Tipp zeigen</button></div>
+    <div id="tipbox" hidden><div class="merk"><b class="h">So gehst du vor</b><ol class="steps">${st.steps.map(s=>`<li><span>${s}</span></li>`).join('')}</ol></div></div>
+    <div id="fb"></div>${navHTML('Weiter →',true)}</article>`;
+  const root=document.getElementById('fig');
+  const clear=()=>root.querySelectorAll('.chip,.zone').forEach(g=>g.classList.remove('ok','bad'));
   root.querySelectorAll('.chip').forEach(g=>{
     const c=def.chips.find(x=>x.k===g.dataset.k); const cyc=Array.isArray(c.c)?c.c:CYC[c.c];
-    const act=()=>{ const cur=cs[c.k]||'?'; const nx=cyc[(cyc.indexOf(cur)+1)%cyc.length]; cs[c.k]=nx; g.querySelector('.gl').innerHTML=chipGlyph(nx); reset(); persist(); };
-    g.addEventListener('click',act); g.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();act();} });
+    const act=()=>{ if(root.classList.contains('showsol')) return; const v=state[c.k]||'?'; const nx=cyc[(cyc.indexOf(v)+1)%cyc.length]; state[c.k]=nx; g.querySelector('.gl').innerHTML=chipGlyph(nx); clear(); };
+    g.onclick=act; g.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();act();} };
   });
   root.querySelectorAll('.zone').forEach(g=>{
-    const act=()=>{ const grp=g.dataset.g; cs['z:'+grp]=g.dataset.z; root.querySelectorAll(`.zone[data-g="${grp}"]`).forEach(o=>{ const on=o===g; o.classList.toggle('on',on); const z=def.zones.find(z=>z.k===o.dataset.z); o.querySelector('text').textContent=on?'verstärkt':z.lab; }); reset(); persist(); };
-    g.addEventListener('click',act); g.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();act();} });
+    const act=()=>{ if(root.classList.contains('showsol')) return; state['z:'+g.dataset.g]=g.dataset.z; root.querySelectorAll(`.zone[data-g="${g.dataset.g}"]`).forEach(o=>{ const on=o===g; o.classList.toggle('on',on); o.querySelector('text').textContent=on?'verstärkt':def.zones.find(z=>z.k===o.dataset.z).lab; }); clear(); };
+    g.onclick=act; g.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();act();} };
   });
-  // Freihand-Zeichnen
-  const cv=root.querySelector('canvas'), ctx=cv.getContext('2d');
-  let drawing=false, sized=false;
-  const size=()=>{ const r=cv.getBoundingClientRect(), d=devicePixelRatio||1; if(!r.width) return; cv.width=r.width*d; cv.height=r.height*d; ctx.setTransform(d,0,0,d,0,0); sized=true; };
-  const pos=e=>{ const r=cv.getBoundingClientRect(); return [e.clientX-r.left,e.clientY-r.top]; };
-  cv.addEventListener('pointerdown',e=>{ if(!sized) size(); drawing=true; cv.setPointerCapture(e.pointerId); const [x,y]=pos(e); ctx.strokeStyle=getComputedStyle(root).getPropertyValue('--pen'); ctx.lineWidth=2.5; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.beginPath(); ctx.moveTo(x,y); });
-  cv.addEventListener('pointermove',e=>{ if(!drawing) return; const [x,y]=pos(e); ctx.lineTo(x,y); ctx.stroke(); });
-  const end=()=>{ drawing=false; };
-  cv.addEventListener('pointerup',end); cv.addEventListener('pointercancel',end);
-  root.querySelector('[data-a="pen"]').onclick=e=>{ const on=!root.classList.contains('pen'); root.classList.toggle('pen',on); e.currentTarget.setAttribute('aria-pressed',on); if(on&&!sized) size(); };
-  root.querySelector('[data-a="clear"]').onclick=()=>{ ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,cv.width,cv.height); ctx.restore(); };
-  root.querySelector('[data-a="sol"]').onclick=e=>{ const on=!root.classList.contains('showsol'); root.classList.toggle('showsol',on); e.currentTarget.setAttribute('aria-pressed',on); document.getElementById('sol-'+fid).classList.toggle('show',on); };
+  document.getElementById('tip').onclick=()=>{ document.getElementById('tipbox').hidden=false; document.getElementById('tip').hidden=true; };
+  document.getElementById('check').onclick=()=>{
+    let all=true;
+    def.chips.forEach(c=>{ const ok=(state[c.k]||'?')===c.a; all=all&&ok; const g=root.querySelector(`.chip[data-k="${c.k}"]`); g.classList.toggle('ok',ok); g.classList.toggle('bad',!ok); });
+    const groups={}; (def.zones||[]).forEach(z=>{ (groups[z.g]=groups[z.g]||[]).push(z); });
+    Object.entries(groups).forEach(([gname,zs])=>{ const right=zs.find(z=>z.a).k; const ok=state['z:'+gname]===right; all=all&&ok; const el=root.querySelector(`.zone[data-z="${right}"]`); el.classList.add(ok?'ok':'bad'); });
+    record(all);
+    const fb=document.getElementById('fb');
+    if(all){
+      root.classList.add('showsol');
+      fb.innerHTML=`<div class="fb ok"><h3>Richtig! So sieht die fertige Zeichnung aus:</h3><p>${def.explain}</p></div>`;
+      document.getElementById('check').hidden=true; document.getElementById('next').disabled=false;
+    } else {
+      fb.innerHTML=`<div class="fb no"><h3>Noch nicht ganz.</h3><p>Die <b>rot</b> umrandeten Felder stimmen noch nicht. Tippe sie nochmal an, oder schau dir die Lösung an.</p><div class="nav"><button class="btn ghost" id="showsol">Lösung zeigen</button></div></div>`;
+      document.getElementById('tipbox').hidden=false; document.getElementById('tip').hidden=true;
+      document.getElementById('showsol').onclick=()=>{ root.classList.add('showsol'); fb.innerHTML=`<div class="fb ok"><h3>Die Lösung (in Pink):</h3><p>${def.explain}</p></div>`; document.getElementById('check').hidden=true; document.getElementById('next').disabled=false; };
+    }
+    fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+  };
+  wireNav();
 }
 
-function show(id){
-  const sh=SHEETS.find(s=>s.id===id)||SHEETS[0];
-  tabs.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.id===sh.id));
-  renderSheet(sh);
-  try{ localStorage.setItem(LS+'-tab',sh.id); }catch(e){}
-  try{ history.replaceState(null,'','#'+sh.id); }catch(e){}
-  window.scrollTo(0,0);
+function renderDone(){
+  const ts=tasksOf(cur), f=DB.first[cur.id]||{}, r=ts.filter(i=>f[i]).length;
+  const p=r/ts.length, st=p>=.9?3:p>=.7?2:p>=.4?1:0;
+  const ni=SHEETS.indexOf(cur)+1;
+  main.innerHTML=`<article class="card done"><div class="stars">${[0,1,2].map(i=>`<span class="${i<st?'on':''}">★</span>`).join('')}</div>
+    <h2>Blatt ${cur.nr} geschafft!</h2><p>${r} von ${ts.length} Aufgaben beim ersten Versuch richtig.</p>
+    <div class="nav">${ni<SHEETS.length?`<button class="btn" id="nextsheet">Nächstes Blatt: ${SHEETS[ni].nr} →</button>`:''}<button class="btn ghost" id="again">Blatt nochmal machen</button></div></article>`;
+  const ns=document.getElementById('nextsheet'); if(ns) ns.onclick=()=>open(SHEETS[ni].id,true);
+  document.getElementById('again').onclick=()=>{ delete DB.first[cur.id]; save(); refreshTabs(); go(0); };
 }
-tabs.innerHTML=SHEETS.map(s=>`<button class="tab" role="tab" data-id="${s.id}" aria-selected="false">${/^\d/.test(s.nr)?'<b>'+s.nr+'</b>':s.nr}<span class="pc"></span></button>`).join('');
-tabs.querySelectorAll('.tab').forEach(t=>t.onclick=()=>show(t.dataset.id));
-// Prozentzahlen in den Tabs
-SHEETS.forEach(sh=>{ const ids=autoIds(sh), done=ids.filter(i=>i in DB.r), ok=done.filter(i=>DB.r[i]); if(done.length) tabs.querySelector(`[data-id="${sh.id}"] .pc`).textContent=` ${Math.round(ok.length/ids.length*100)}%`; });
-let start=(location.hash||'').slice(1);
-if(!SHEETS.some(s=>s.id===start)){ try{ start=localStorage.getItem(LS+'-tab')||''; }catch(e){ start=''; } }
-show(start||'b51');
+
+function open(id,fresh){
+  cur=SHEETS.find(s=>s.id===id)||SHEETS[0];
+  idx=fresh?0:(DB.pos[cur.id]||0);
+  if(idx>cur.steps.length) idx=0;
+  try{ localStorage.setItem(LS+'-tab',cur.id); }catch(e){}
+  refreshTabs(); render(); window.scrollTo(0,0);
+}
+tabs.innerHTML=SHEETS.map(s=>`<button class="tab" role="tab" data-id="${s.id}">${s.nr}<span class="pc"></span></button>`).join('');
+tabs.querySelectorAll('.tab').forEach(t=>t.onclick=()=>open(t.dataset.id));
+let startId='b51'; try{ startId=localStorage.getItem(LS+'-tab')||'b51'; }catch(e){}
+open(startId);
 </script>
 </body>
 </html>
