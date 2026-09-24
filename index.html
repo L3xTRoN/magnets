@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Magnetlabor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --paper:#F2F4F1; --grid:rgba(40,70,120,.07); --card:#FFFFFF; --card2:#F7F8F6;
+  --ink:#1B2226; --muted:#5A656B; --line:#D9DED9;
+  --north:#D1382B; --south:#1F8A5B; --copper:#B8672C; --copper-lt:#E9B888;
+  --pen:#2743A6; --pen-soft:#E3E8F8; --on-pen:#FFFFFF; --force:#6A3FC2;
+  --ok:#1F8A5B; --ok-bg:#E2F3EA; --bad:#C23324; --bad-bg:#FBE5E2;
+  --shadow:0 1px 0 rgba(0,0,0,.04),0 6px 18px -10px rgba(20,40,60,.25);
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#14191C; --grid:rgba(140,170,220,.06); --card:#1D2428; --card2:#232B30;
+    --ink:#E8ECEA; --muted:#9AA6AB; --line:#323C41;
+    --north:#F0645A; --south:#3DBB84; --copper:#E08A48; --copper-lt:#7A4A26;
+    --pen:#8FA6FF; --pen-soft:#27305A; --on-pen:#10163A; --force:#B394FF;
+    --ok:#3DBB84; --ok-bg:#16352A; --bad:#F0645A; --bad-bg:#3E1F1C;
+    --shadow:0 1px 0 rgba(0,0,0,.2),0 8px 20px -12px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#14191C; --grid:rgba(140,170,220,.06); --card:#1D2428; --card2:#232B30;
+  --ink:#E8ECEA; --muted:#9AA6AB; --line:#323C41;
+  --north:#F0645A; --south:#3DBB84; --copper:#E08A48; --copper-lt:#7A4A26;
+  --pen:#8FA6FF; --pen-soft:#27305A; --on-pen:#10163A; --force:#B394FF;
+  --ok:#3DBB84; --ok-bg:#16352A; --bad:#F0645A; --bad-bg:#3E1F1C;
+  --shadow:0 1px 0 rgba(0,0,0,.2),0 8px 20px -12px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px;
+  color:var(--ink); font-family:var(--body); font-size:17px; line-height:1.5;
+  padding-inline:16px; padding-block:0 48px; min-height:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+button{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--pen);outline-offset:2px}
+
+/* Kopf */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:18px 10px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:linear-gradient(var(--paper) 75%,transparent)}
+.brand{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;cursor:pointer}
+.brand h1{font-size:1.45rem;font-weight:800;letter-spacing:-.01em}
+.logo{width:34px;height:34px;flex:none}
+.xp{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.85rem;font-weight:700;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px;white-space:nowrap}
+.xp b{color:var(--copper)}
+
+/* Home */
+.hero{padding-block:14px 8px}
+.hero p{margin:.4rem 0 0;color:var(--muted);max-width:60ch}
+.hero h2{font-size:clamp(1.7rem,6vw,2.4rem);font-weight:800}
+.hero h2 .n{color:var(--north)} .hero h2 .s{color:var(--south)}
+.levels{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:18px}
+.lvl{display:flex;gap:14px;align-items:flex-start;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;box-shadow:var(--shadow);transition:transform .12s ease,border-color .12s}
+.lvl:hover{transform:translateY(-2px);border-color:var(--pen)}
+.badge{flex:none;width:52px;height:52px;border-radius:12px;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.35rem;color:var(--card)}
+.lvl h3{font-size:1.05rem}
+.lvl p{margin:.2rem 0 .35rem;color:var(--muted);font-size:.9rem;line-height:1.35}
+.stars{font-size:1rem;letter-spacing:2px;color:var(--line)}
+.stars .on{color:var(--copper)}
+.lvl.boss{grid-column:1/-1;border:2px solid var(--ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.btn{border:0;border-radius:12px;padding:13px 20px;font-weight:700;cursor:pointer;background:var(--pen);color:var(--on-pen);font-size:1rem}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:default}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+
+/* Merken */
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.learn h2{font-size:1.6rem;margin:.2rem 0 .8rem}
+.learn ul{margin:0;padding-left:1.15rem;display:grid;gap:.45rem}
+.learn li::marker{color:var(--copper)}
+.f{font-family:var(--mono);font-weight:700;background:var(--pen-soft);color:var(--pen);padding:1px 7px;border-radius:6px;white-space:nowrap}
+.fbox{display:grid;gap:8px;margin:14px 0 4px}
+.fbox div{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;background:var(--card2);border:1px dashed var(--line);border-radius:10px;padding:10px 12px}
+.fbox .big{font-family:var(--mono);font-weight:700;font-size:1.15rem;color:var(--pen)}
+.fig{margin:14px 0 4px;display:flex;justify-content:center}
+.fig svg{width:100%;max-width:380px;height:auto}
+.tip{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--pen-soft);font-size:.95rem}
+.tip b{color:var(--pen)}
+table.t{border-collapse:collapse;width:100%;font-size:.95rem}
+table.t td,table.t th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}
+table.t td:nth-child(3){font-family:var(--mono);font-variant-numeric:tabular-nums}
+.scroll{overflow-x:auto}
+
+/* Quiz */
+.qhead{display:flex;align-items:center;gap:12px;margin-block:4px 14px}
+.bar{flex:1;height:10px;background:var(--card);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--copper);width:0;transition:width .3s ease}
+.combo{font-family:var(--mono);font-size:.8rem;font-weight:700;color:var(--copper);min-width:64px;text-align:right}
+.x{background:none;border:0;font-size:1.4rem;cursor:pointer;color:var(--muted);padding:0 4px;line-height:1}
+.q{font-size:1.2rem;font-weight:700;line-height:1.35;margin:.1rem 0 .6rem}
+.scene{display:flex;justify-content:center;margin:6px 0 12px}
+.scene svg{width:100%;max-width:340px;height:auto;background:var(--card2);border-radius:12px;border:1px solid var(--line)}
+.opts{display:grid;gap:10px}
+.opts.grid2{grid-template-columns:1fr 1fr}
+.opt{text-align:left;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;font-size:1rem;line-height:1.35;transition:border-color .1s,background .1s}
+.opt:hover:not(:disabled){border-color:var(--pen)}
+.opt.arrow{text-align:center;font-weight:700}
+.opt.arrow span{display:block;font-size:1.6rem;line-height:1.1}
+.opt.right{border-color:var(--ok);background:var(--ok-bg)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.opt:disabled{cursor:default}
+.numrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.numrow input{flex:1;min-width:0;max-width:220px;font:inherit;font-family:var(--mono);font-size:1.15rem;padding:11px 12px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+.numrow .unit{font-family:var(--mono);font-weight:700;font-size:1.1rem}
+.fb{margin-top:14px;border-radius:14px;padding:14px 16px;border:2px solid}
+.fb.ok{background:var(--ok-bg);border-color:var(--ok)}
+.fb.no{background:var(--bad-bg);border-color:var(--bad)}
+.fb h3{font-size:1.1rem;margin-bottom:.3rem}
+.fb.ok h3{color:var(--ok)} .fb.no h3{color:var(--bad)}
+.fb p{margin:.25rem 0}
+.fb .btn{margin-top:10px}
+
+/* Ergebnis */
+.result{text-align:center;padding-block:10px}
+.result .bigstars{font-size:3rem;letter-spacing:6px;color:var(--line)}
+.result .bigstars .on{color:var(--copper)}
+.result h2{font-size:1.9rem;margin:.3rem 0}
+.result .score{font-family:var(--mono);font-size:1.1rem}
+.result .row{justify-content:center}
+.review{margin-top:18px;text-align:left;display:grid;gap:8px}
+.review div{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:10px;padding:10px 12px;font-size:.93rem}
+
+/* Spick */
+.spick{display:grid;gap:14px}
+.spick h3{font-size:1.2rem;margin-bottom:.5rem}
+.foot{margin-top:28px;text-align:center;color:var(--muted);font-size:.85rem}
+.linkbtn{background:none;border:0;color:var(--pen);text-decoration:underline;cursor:pointer;padding:0}
+
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+@media (max-width:420px){
+  body{font-size:16px}
+  .opts.grid2{gap:8px}
+  .q{font-size:1.1rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <button class="brand" id="home-btn" aria-label="Zur Startseite">
+      <svg class="logo" viewBox="0 0 40 40" aria-hidden="true">
+        <path d="M8 6h9v18a3 3 0 0 0 6 0V6h9v18a12 12 0 0 1-24 0z" fill="var(--north)"/>
+        <rect x="8" y="6" width="9" height="7" fill="var(--card2)" stroke="var(--ink)" stroke-width="1.5"/>
+        <rect x="23" y="6" width="9" height="7" fill="var(--card2)" stroke="var(--ink)" stroke-width="1.5"/>
+        <path d="M23 24V13h9v11a12 12 0 0 1-12 12v-9a3 3 0 0 0 3-3z" fill="var(--south)"/>
+      </svg>
+      <h1>Magnetlabor</h1>
+    </button>
+    <div class="xp" title="Erfahrungspunkte"><span id="xp-lvl">Stufe 1</span> · <b id="xp-num">0</b> XP</div>
+  </header>
+  <main id="app"></main>
+</div>
+<canvas id="confetti"></canvas>
+
+<script>
+/* ============ Hilfsfunktionen ============ */
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const rnd = a => a[Math.floor(Math.random()*a.length)];
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const de = (x,d=3) => Number(x).toLocaleString('de-DE',{maximumFractionDigits:d});
+let uid = 0;
+
+const store = {
+  get(){ try { return JSON.parse(localStorage.getItem('magnetlabor')||'{}'); } catch(e){ return {}; } },
+  set(v){ try { localStorage.setItem('magnetlabor', JSON.stringify(v)); } catch(e){} }
+};
+let save = Object.assign({xp:0, stars:{}}, store.get());
+
+function updateXP(){
+  $('#xp-num').textContent = save.xp;
+  $('#xp-lvl').textContent = 'Stufe ' + (1 + Math.floor(save.xp/150));
+}
+
+/* ============ SVG-Szenen ============ */
+// Leiter-Symbol: dir = -1 -> ⊗ (hinein), +1 -> ⊙ (heraus)
+function conductor(cx,cy,r,dir){
+  let s = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--copper-lt)" stroke="var(--copper)" stroke-width="3"/>`;
+  if (dir < 0){
+    const d = r*0.55;
+    s += `<path d="M${cx-d} ${cy-d}L${cx+d} ${cy+d}M${cx+d} ${cy-d}L${cx-d} ${cy+d}" stroke="var(--ink)" stroke-width="3.5" stroke-linecap="round"/>`;
+  } else {
+    s += `<circle cx="${cx}" cy="${cy}" r="${r*0.2}" fill="var(--ink)"/>`;
+  }
+  return s;
+}
+function arrowDefs(id,color){
+  return `<marker id="${id}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${color}"/></marker>`;
+}
+/* Szene für die Rechte-Hand-Regel.
+   o = {orient:'v'|'h', nFirst:bool (N oben bzw. links), I:+1/-1, F:[x,y]|null, hidePoles:bool} */
+function sceneMotor(o){
+  const id = 'm'+(++uid), fid = 'f'+uid;
+  const W=320,H=230;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Leiter im Magnetfeld"><defs>${arrowDefs(id,'var(--muted)')}${arrowDefs(fid,'var(--force)')}</defs>`;
+  const pole = (x,y,w,h,isN)=>{
+    const c = o.hidePoles ? 'var(--muted)' : (isN?'var(--north)':'var(--south)');
+    const t = o.hidePoles ? '?' : (isN?'N':'S');
+    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="${c}"/><text x="${x+w/2}" y="${y+h/2+9}" text-anchor="middle" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="26" fill="#fff">${t}</text>`;
+  };
+  const cx=160, cy=118;
+  if (o.orient==='v'){
+    s += pole(50,8,220,42,o.nFirst) + pole(50,186,220,42,!o.nFirst);
+    [85,125,195,235].forEach(x=>{
+      const [y1,y2] = o.nFirst ? [52,184] : [184,52];
+      if (!o.hidePoles) s += `<line x1="${x}" y1="${y1}" x2="${x}" y2="${(y1+y2)/2 + (o.nFirst?6:-6)}" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#${id})"/><line x1="${x}" y1="${(y1+y2)/2}" x2="${x}" y2="${y2}" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/>`;
+      else s += `<line x1="${x}" y1="52" x2="${x}" y2="184" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/>`;
+    });
+  } else {
+    s += pole(8,20,42,196,o.nFirst) + pole(270,20,42,196,!o.nFirst);
+    [48,83,153,188].forEach(y=>{
+      const [x1,x2] = o.nFirst ? [52,268] : [268,52];
+      if (!o.hidePoles) s += `<line x1="${x1}" y1="${y}" x2="${(x1+x2)/2 + (o.nFirst?6:-6)}" y2="${y}" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#${id})"/><line x1="${(x1+x2)/2}" y1="${y}" x2="${x2}" y2="${y}" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/>`;
+      else s += `<line x1="52" y1="${y}" x2="268" y2="${y}" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/>`;
+    });
+  }
+  if (o.I) s += conductor(cx,cy,22,o.I);
+  else s += `<circle cx="${cx}" cy="${cy}" r="22" fill="var(--copper-lt)" stroke="var(--copper)" stroke-width="3"/><text x="${cx}" y="${cy+9}" text-anchor="middle" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="26" fill="var(--ink)">?</text>`;
+  if (o.F){
+    const [fx,fy] = o.F, x1=cx+fx*26, y1=cy-fy*26, x2=cx+fx*72, y2=cy-fy*72;
+    s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--force)" stroke-width="5" marker-end="url(#${fid})"/><text x="${x2+(fx?fx*12:14)}" y="${y2+(fy? -fy*14:6)+6}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700" font-size="20" fill="var(--force)">F</text>`;
+  }
+  return s + '</svg>';
+}
+// Feld um einen einzelnen Leiter (ohne Pfeile oder mit)
+function sceneRing(I, showDir){
+  const id='r'+(++uid);
+  let s = `<svg viewBox="0 0 320 200" role="img" aria-label="Stromdurchflossener Leiter"><defs>${arrowDefs(id,'var(--pen)')}</defs>`;
+  [45,70,95].forEach(r=>{
+    s += `<circle cx="160" cy="100" r="${r}" fill="none" stroke="var(--pen)" stroke-width="2" stroke-dasharray="${showDir?'0':'6 5'}" opacity=".75"/>`;
+    if (showDir){
+      // Pfeilspitzen oben und unten: ⊗ (I=-1) im Uhrzeigersinn
+      const d = I<0 ? 1 : -1, yt = 100-r, yb = 100+r;
+      s += `<path d="M${160-6*d} ${yt-6}L${160+3*d} ${yt}L${160-6*d} ${yt+6}M${160+6*d} ${yb-6}L${160-3*d} ${yb}L${160+6*d} ${yb+6}" fill="none" stroke="var(--pen)" stroke-width="2.5" stroke-linejoin="round"/>`;
+    }
+  });
+  return s + conductor(160,100,22,I) + '</svg>';
+}
+// Rechte Hand: Daumen hoch, Zeigefinger weg vom Betrachter, Mittelfinger nach links
+function sceneHand(){
+  const a='h'+(++uid), b='h'+(++uid), c='h'+(++uid);
+  return `<svg viewBox="0 0 360 230" role="img" aria-label="Rechte-Hand-Regel">
+  <defs>${arrowDefs(a,'var(--copper)')}${arrowDefs(b,'var(--pen)')}${arrowDefs(c,'var(--force)')}</defs>
+  <path d="M170 150 q-10 40 20 60 h50 q20-20 10-60z" fill="var(--card2)" stroke="var(--muted)" stroke-width="2"/>
+  <line x1="180" y1="150" x2="180" y2="42" stroke="var(--copper)" stroke-width="9" stroke-linecap="round" marker-end="url(#${a})"/>
+  <line x1="190" y1="150" x2="285" y2="85" stroke="var(--pen)" stroke-width="9" stroke-linecap="round" marker-end="url(#${b})"/>
+  <line x1="175" y1="160" x2="68" y2="160" stroke="var(--force)" stroke-width="9" stroke-linecap="round" marker-end="url(#${c})"/>
+  <text x="192" y="36" font-family="JetBrains Mono,monospace" font-weight="700" font-size="15" fill="var(--copper)">Daumen = Strom I</text>
+  <text x="222" y="70" font-family="JetBrains Mono,monospace" font-weight="700" font-size="15" fill="var(--pen)">Zeigefinger = B</text>
+  <text x="222" y="88" font-family="Atkinson Hyperlegible,sans-serif" font-size="13" fill="var(--muted)">(von N nach S)</text>
+  <text x="8" y="146" font-family="JetBrains Mono,monospace" font-weight="700" font-size="15" fill="var(--force)">Mittelfinger = F</text>
+  <text x="194" y="224" font-family="Atkinson Hyperlegible,sans-serif" font-size="13" fill="var(--muted)" text-anchor="middle">rechte Hand</text>
+  </svg>`;
+}
+function sceneMagnets(){
+  return `<svg viewBox="0 0 340 120" role="img" aria-label="Stabmagnet mit Feldlinien">
+  <path d="M60 50 C 60 0, 280 0, 280 50" fill="none" stroke="var(--pen)" stroke-width="2"/>
+  <path d="M60 70 C 60 120, 280 120, 280 70" fill="none" stroke="var(--pen)" stroke-width="2"/>
+  <path d="M40 55 C 10 -30, 330 -30, 300 55" fill="none" stroke="var(--pen)" stroke-width="2" opacity=".6"/>
+  <path d="M40 65 C 10 150, 330 150, 300 65" fill="none" stroke="var(--pen)" stroke-width="2" opacity=".6"/>
+  <path d="M166 13 l10 -5 l-10 -5" transform="translate(0,1)" fill="none" stroke="var(--pen)" stroke-width="2.5"/>
+  <path d="M166 104 l10 5 l-10 5" fill="none" stroke="var(--pen)" stroke-width="2.5"/>
+  <rect x="60" y="42" width="110" height="36" fill="var(--north)"/><rect x="170" y="42" width="110" height="36" fill="var(--south)"/>
+  <text x="115" y="68" text-anchor="middle" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="22" fill="#fff">N</text>
+  <text x="225" y="68" text-anchor="middle" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="22" fill="#fff">S</text>
+  <line x1="250" y1="60" x2="95" y2="60" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M100 55 l-8 5 l8 5" fill="none" stroke="#fff" stroke-width="2.5"/>
+  </svg>`;
+}
+function sceneTrafo(){
+  let coil = (x)=>{ let s=''; for(let i=0;i<5;i++) s+=`<ellipse cx="${x}" cy="${62+i*18}" rx="22" ry="7" fill="none" stroke="var(--copper)" stroke-width="4"/>`; return s; };
+  return `<svg viewBox="0 0 340 200" role="img" aria-label="Transformator">
+  <path d="M60 30h220v140H60z M100 70h140v60H100z" fill="var(--muted)" fill-rule="evenodd" opacity=".45"/>
+  ${coil(80)}${coil(260)}
+  <text x="80" y="22" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700" font-size="14" fill="var(--ink)">N₁ · U₁ · I₁</text>
+  <text x="260" y="22" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700" font-size="14" fill="var(--ink)">N₂ · U₂ · I₂</text>
+  <text x="80" y="192" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="13" fill="var(--muted)">Primärspule</text>
+  <text x="260" y="192" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="13" fill="var(--muted)">Sekundärspule</text>
+  <text x="170" y="104" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="13" fill="var(--ink)">Eisenkern</text>
+  </svg>`;
+}
+
+/* ============ Physik für die Szenen ============ */
+// F = I × B mit I = (0,0,Iz), B = (bx,by,0)  ->  F = (-Iz·by, Iz·bx)
+function force(I,B){ return [-I*B[1], I*B[0]]; }
+const dirName = v => v[0]>0?'nach rechts':v[0]<0?'nach links':v[1]>0?'nach oben':'nach unten';
+const dirArrow = v => v[0]>0?'→':v[0]<0?'←':v[1]>0?'↑':'↓';
+const iName = I => I<0 ? 'in die Zeichenebene hinein (⊗)' : 'aus der Zeichenebene heraus (⊙)';
+const thumb = I => I<0 ? 'Daumen zeigt von dir weg, ins Blatt hinein' : 'Daumen zeigt aus dem Blatt heraus, zu dir';
+function fieldVec(orient,nFirst){ return orient==='v' ? [0, nFirst?-1:1] : [nFirst?1:-1, 0]; }
+
+const DIRS = [[0,1],[0,-1],[-1,0],[1,0]];
+function genMotorForce(){
+  const orient = rnd(['v','h']), nFirst = Math.random()<.5, I = rnd([-1,1]);
+  const B = fieldVec(orient,nFirst), F = force(I,B);
+  return {
+    type:'mc', grid:true, arrows:true,
+    q:'Rechte-Hand-Regel: In welche Richtung wird der Leiter gedrückt?',
+    svg: sceneMotor({orient,nFirst,I}),
+    opts: DIRS.map(d=>({t:dirName(d), a:dirArrow(d), ok: d[0]===F[0]&&d[1]===F[1]})),
+    e:`Strom fließt ${iName(I)} → ${thumb(I)}. Zeigefinger zeigt in Feldrichtung, also von N nach S: ${dirName(B)}. Dann zeigt der Mittelfinger ${dirName(F)}. Die Kraft F wirkt ${dirName(F)}.`
+  };
+}
+function genMotorCurrent(){
+  const orient = rnd(['v','h']), nFirst = Math.random()<.5, I = rnd([-1,1]);
+  const B = fieldVec(orient,nFirst), F = force(I,B);
+  return {
+    type:'mc', grid:true,
+    q:'Die Kraft F ist eingezeichnet. In welche Richtung fließt der Strom?',
+    svg: sceneMotor({orient,nFirst,I:0,F}),
+    opts:[{t:'⊗ in die Ebene hinein',ok:I<0},{t:'⊙ aus der Ebene heraus',ok:I>0}],
+    keep:true,
+    e:`Zeigefinger ${dirName(B)} (N → S), Mittelfinger ${dirName(F)} (Kraft). Jetzt zeigt dein Daumen ${I<0?'ins Blatt hinein':'aus dem Blatt heraus'}: Der Strom fließt ${iName(I)}.`
+  };
+}
+function genMotorPoles(){
+  const nFirst = Math.random()<.5, I = rnd([-1,1]);
+  const B = fieldVec('v',nFirst), F = force(I,B);
+  return {
+    type:'mc', grid:true,
+    q:'Strom und Kraft sind bekannt. Wo liegt der Nordpol?',
+    svg: sceneMotor({orient:'v',nFirst,I,F,hidePoles:true}),
+    opts:[{t:'Nordpol oben',ok:nFirst},{t:'Nordpol unten',ok:!nFirst}],
+    keep:true,
+    e:`Daumen: ${thumb(I)}. Mittelfinger ${dirName(F)} (Kraft). Dann zeigt der Zeigefinger ${dirName(B)}. Das Feld läuft von N nach S, also ist der Nordpol ${nFirst?'oben':'unten'}.`
+  };
+}
+function genRing(){
+  const I = rnd([-1,1]);
+  return {
+    type:'mc', q:'In welche Richtung laufen die Feldlinien um diesen Leiter?',
+    svg: sceneRing(I,false), keep:true,
+    opts:[{t:'im Uhrzeigersinn',ok:I<0},{t:'gegen den Uhrzeigersinn',ok:I>0}],
+    e:`Rechte Faust: Daumen in Stromrichtung (${I<0?'ins Blatt hinein':'aus dem Blatt heraus'}), die gekrümmten Finger zeigen die Feldrichtung. ${I<0?'⊗ → im Uhrzeigersinn':'⊙ → gegen den Uhrzeigersinn'}. Eselsbrücke: ⊗ ist das Ende eines Pfeils, der von dir wegfliegt, wie eine Schraube, die man im Uhrzeigersinn reindreht.`
+  };
+}
+
+/* ============ Rechenaufgaben (zufällig) ============ */
+function num(q,ans,unit,e,tol){ return {type:'num',q,ans,unit,e,tol:tol??0.02}; }
+function genF(){
+  const I=rnd([2,4,5,8,10,12]), B=rnd([0.5,0.8,1.2,1.5,2]), lmm=rnd([10,20,50,80,150]);
+  const F=I*B*lmm/1000;
+  return num(`Ein Leiter führt I = ${de(I)} A im Feld mit B = ${de(B)} T. Wirksame Leiterlänge l = ${lmm} mm. Wie groß ist die Kraft F?`, F,'N',
+    `F = I · B · l = ${de(I)} A · ${de(B)} T · ${de(lmm/1000)} m = ${de(F,4)} N. Achtung: mm erst in m umrechnen (÷ 1000)!`);
+}
+function genFI(){
+  const I=rnd([2,4,5,6,10]), B=rnd([0.5,1,1.5,2]), lmm=rnd([20,40,50,100]);
+  const F=I*B*lmm/1000;
+  return num(`Auf einen Leiter (l = ${lmm} mm) wirkt im Feld B = ${de(B)} T eine Kraft von F = ${de(F,4)} N. Wie groß ist der Strom I?`, I,'A',
+    `Umstellen: I = F / (B · l) = ${de(F,4)} N / (${de(B)} T · ${de(lmm/1000)} m) = ${de(I)} A.`);
+}
+function genTrafoU(){
+  const N1=rnd([1000,1200,2300,500,880]), N2=rnd([50,100,120,200,435]), U1=230;
+  const U2=U1*N2/N1;
+  return num(`Trafo: N₁ = ${N1}, N₂ = ${N2}, U₁ = 230 V. Wie groß ist U₂?`, U2,'V',
+    `U₂ = U₁ · N₂ / N₁ = 230 V · ${N2} / ${N1} = ${de(U2,2)} V.`);
+}
+function genTrafoN(){
+  const U2=rnd([6,12,24,42,48]), N1=rnd([460,690,920,1150]);
+  const N2=N1*U2/230;
+  return num(`Trafo: U₁ = 230 V, U₂ = ${U2} V, N₁ = ${N1}. Wie viele Windungen hat die Sekundärspule (N₂)?`, N2,'',
+    `N₂ = N₁ · U₂ / U₁ = ${N1} · ${U2} V / 230 V = ${de(N2,1)}.`, 0.02);
+}
+function genTrafoI(){
+  const U1=230, U2=rnd([12,23,46]), I2=rnd([1,2,5,10]);
+  const I1=I2*U2/U1;
+  return num(`Trafo 230 V / ${U2} V. Sekundär fließen I₂ = ${I2} A. Wie groß ist der Primärstrom I₁?`, I1,'A',
+    `Ströme verhalten sich umgekehrt zu den Spannungen: I₁ = I₂ · U₂ / U₁ = ${I2} A · ${U2} V / 230 V = ${de(I1,3)} A. Die Seite mit der kleinen Spannung hat den großen Strom.`);
+}
+function genTheta(){
+  const I=rnd([0.5,2,4,5,10]), N=rnd([40,100,250,500,1000]);
+  return num(`Eine Spule hat N = ${N} Windungen und führt I = ${de(I)} A. Wie groß ist die Durchflutung Θ?`, I*N,'A',
+    `Θ = I · N = ${de(I)} A · ${N} = ${de(I*N)} A.`);
+}
+function genH(){
+  const I=rnd([0.5,1,2]), N=rnd([200,500,1000]), lcm=rnd([10,20,25,50]);
+  const H=I*N/(lcm/100);
+  return num(`Spule mit N = ${N}, I = ${de(I)} A, mittlere Feldlinienlänge l = ${lcm} cm. Wie groß ist H in A/m?`, H,'A/m',
+    `H = I · N / l = ${de(I)} A · ${N} / ${de(lcm/100)} m = ${de(H)} A/m.`);
+}
+function genCost(){
+  const P=rnd([900,1200,2000,60,500]), t=rnd([0.5,2,3,10]), ct=rnd([30,35,42]);
+  const k=P/1000*t*ct;
+  return num(`Ein Gerät mit ${P} W läuft ${de(t)} h. Strompreis: ${ct} ct/kWh. Was kostet das (in Cent)?`, k,'ct',
+    `W = P · t = ${de(P/1000)} kW · ${de(t)} h = ${de(P/1000*t)} kWh. Kosten = ${de(P/1000*t)} kWh · ${ct} ct/kWh = ${de(k,2)} ct.`);
+}
+const PREF = [
+  ['500 mA','A',0.5,'m = milli = 10⁻³ → 500 · 0,001 = 0,5 A'],
+  ['0,048 A','mA',48,'1 A = 1000 mA → 0,048 · 1000 = 48 mA'],
+  ['20 mm','m',0.02,'20 mm = 20 · 10⁻³ m = 0,02 m'],
+  ['3,5 kV','V',3500,'k = kilo = 10³ → 3,5 · 1000 = 3500 V'],
+  ['20 kV','V',20000,'20 · 1000 = 20000 V'],
+  ['250 µA','mA',0.25,'µ = 10⁻⁶, m = 10⁻³ → 250 µA = 0,25 mA'],
+  ['2,2 MΩ','kΩ',2200,'M = 10⁶, k = 10³ → 2,2 MΩ = 2200 kΩ'],
+  ['900 W','kW',0.9,'900 W ÷ 1000 = 0,9 kW'],
+  ['0,3 N','mN',300,'0,3 · 1000 = 300 mN'],
+];
+function genPref(){
+  const [a,u,v,e]=rnd(PREF);
+  return num(`Rechne um: ${a} = ? ${u}`, v, u, e, 0.001);
+}
+
+/* ============ Level-Inhalte ============ */
+const mc = (q,right,wrong,e) => ({type:'mc',q,opts:[{t:right,ok:true},...wrong.map(t=>({t}))],e});
+
+const LEVELS = [
+{
+  id:'feld', badge:'N|S', color:'var(--north)', title:'Magnete & Feldlinien',
+  desc:'Pole, Feld, Feldlinien, Anziehen und Abstoßen',
+  learn:`<ul>
+    <li><b>Dauermagnet:</b> Stoff, der seinen Magnetismus lange Zeit behält.</li>
+    <li>Die Kraft ist <b>an den Polen am größten</b>.</li>
+    <li><b>Magnetisches Feld:</b> der Raum, in dem magnetische Kräfte feststellbar sind.</li>
+    <li><b>Feldlinien:</b> gedachte Linien, die das Feld sichtbar machen. Sie zeigen <b>Richtung</b> und <b>Stärke</b> (dicht = stark).</li>
+    <li>Feldlinien sind <b>immer geschlossen</b>, kreuzen sich nie und treten <b>senkrecht</b> aus der Oberfläche aus.</li>
+    <li><b>Außen</b> laufen sie von <b style="color:var(--north)">N</b> nach <b style="color:var(--south)">S</b>, <b>innen</b> von S nach N.</li>
+    <li>Ungleiche Pole (N–S) <b>ziehen sich an</b>, gleiche Pole (N–N, S–S) <b>stoßen sich ab</b>.</li>
+  </ul><div class="fig">${sceneMagnets()}</div>`,
+  pool:()=>[
+    mc('Was ist ein Dauermagnet?','Ein Stoff, der seinen Magnetismus lange Zeit behält',['Ein Magnet, der nur magnetisch ist, solange Strom fließt','Jedes Metall, z. B. Kupfer','Ein Magnet ohne Pole'],'Dauermagnete (Permanentmagnete) behalten ihren Magnetismus lange Zeit. Ein Elektromagnet dagegen braucht Strom.'),
+    mc('Wo ist die magnetische Kraft eines Dauermagneten am größten?','An den Polen',['In der Mitte','Überall gleich','Nur am Nordpol'],'An den Polen (N und S) liegen die Feldlinien am dichtesten, deshalb ist die Kraft dort am größten.'),
+    mc('Was versteht man unter einem magnetischen Feld?','Den Raum, in dem magnetische Kraftwirkungen feststellbar sind',['Die Linien, die man auf den Magneten malt','Die Fläche am Nordpol','Den Strom in einem Leiter'],'Magnetisches Feld = der Raum, in dem magnetische Kräfte wirken.'),
+    mc('Was sind magnetische Feldlinien?','Gedachte Linien, die Richtung und Stärke des Feldes zeigen',['Echte Linien aus Eisenfeilspänen im Magneten','Die elektrischen Leitungen um einen Magneten','Linien, die nur am Südpol entstehen'],'Feldlinien sind gedacht. Sie machen den magnetischen Zustand sichtbar: Richtung und Betrag der Kraftwirkung.'),
+    mc('Wie verlaufen Feldlinien AUSSERHALB eines Magneten?','Vom Nordpol zum Südpol',['Vom Südpol zum Nordpol','Im Kreis um den Nordpol','Gar nicht, nur innen'],'Außen: N → S. Innen: S → N. So entsteht eine geschlossene Linie.'),
+    mc('Wie verlaufen Feldlinien INNERHALB eines Magneten?','Vom Südpol zum Nordpol',['Vom Nordpol zum Südpol','Es gibt innen keine Feldlinien','Quer von oben nach unten'],'Innen laufen sie von S nach N zurück, damit sich die Linie schließt.'),
+    mc('Welche Aussage über Feldlinien ist FALSCH?','Feldlinien kreuzen sich an den Polen',['Feldlinien sind immer geschlossen','Feldlinien treten senkrecht aus der Oberfläche aus','Wo Feldlinien dicht liegen, ist das Feld stark'],'Feldlinien kreuzen sich nie. Die drei anderen Aussagen sind die drei Merkmale aus dem Arbeitsblatt.'),
+    mc('Du hältst den Nordpol eines Magneten an den Südpol eines anderen. Was passiert?','Sie ziehen sich an',['Sie stoßen sich ab','Nichts','Sie werden entmagnetisiert'],'Ungleiche Pole ziehen sich an. Die Feldlinien laufen direkt von N nach S hinüber.'),
+    mc('Zwei Nordpole werden zueinander gehalten. Was passiert?','Sie stoßen sich ab',['Sie ziehen sich an','Nichts','Einer wird zum Südpol'],'Gleiche Pole stoßen sich ab. Die Feldlinien weichen einander aus und drücken zur Seite weg.'),
+    mc('Woran erkennst du auf einem Feldlinienbild, wo das Feld am stärksten ist?','Dort, wo die Linien am dichtesten liegen',['Dort, wo die Linien am längsten sind','Dort, wo keine Linien sind','An der Farbe der Linien'],'Dichte Feldlinien = starkes Feld. An den Polen sind sie am dichtesten.'),
+  ]
+},
+{
+  id:'strom', badge:'⊗', color:'var(--copper)', title:'Strom macht Magnetfeld',
+  desc:'Feld um Leiter, ⊗ und ⊙, Spule, Elektromagnet',
+  learn:`<ul>
+    <li>Um einen stromdurchflossenen Leiter entsteht ein Magnetfeld: <b>konzentrische Kreise</b>. Mit größerem Abstand werden die Kreise weiter auseinander (Feld schwächer).</li>
+    <li>Die <b>Stromrichtung</b> bestimmt die Richtung des Feldes.</li>
+    <li><b>⊗</b> = Strom fließt <b>in die Zeichenebene hinein</b> (du siehst das Ende eines Pfeils). <b>⊙</b> = Strom kommt <b>heraus</b> (Pfeilspitze).</li>
+    <li><b>Rechte Faust:</b> Daumen in Stromrichtung, die Finger zeigen die Feldrichtung. ⊗ → im Uhrzeigersinn, ⊙ → gegen den Uhrzeigersinn.</li>
+    <li><b>Spule:</b> Das Feld konzentriert sich im Inneren. Es entsteht ein <b>Elektromagnet</b> mit Nord- und Südpol.</li>
+    <li>Spule: rechte Hand so um die Spule legen, dass die Finger in Stromrichtung zeigen → der <b>Daumen zeigt zum Nordpol</b>.</li>
+    <li>Geschlossene Feldlinien nennt man <b>Wirbelfeld</b>.</li>
+    <li>Elektromagnet stärker machen: mehr <b>Strom</b>, mehr <b>Windungen</b>, <b>Eisenkern</b>.</li>
+  </ul><div class="fig">${sceneRing(-1,true)}</div>`,
+  pool:()=>[
+    mc('Welche Form hat das Magnetfeld um einen geraden, stromdurchflossenen Leiter?','Konzentrische Kreise um den Leiter',['Gerade Linien parallel zum Leiter','Es gibt kein Feld, nur Strom','Linien von N nach S wie beim Stabmagnet'],'Kreise um den Leiter herum. Je weiter weg, desto größer der Abstand zwischen den Kreisen.'),
+    mc('Wodurch wird die Richtung des Magnetfeldes um einen Leiter bestimmt?','Durch die Stromrichtung',['Durch die Dicke des Leiters','Durch das Leitermaterial','Durch die Spannung der Steckdose'],'Stromrichtung umdrehen = Feldrichtung dreht sich um.'),
+    mc('Was bedeutet das Symbol ⊗ bei einem Leiter?','Der Strom fließt in die Zeichenebene hinein',['Der Strom fließt aus der Zeichenebene heraus','Der Leiter ist kaputt','Es fließt kein Strom'],'⊗ ist das Ende (die Federn) eines Pfeils, der von dir wegfliegt, also hinein ins Blatt.'),
+    mc('Was bedeutet das Symbol ⊙ bei einem Leiter?','Der Strom kommt aus der Zeichenebene heraus',['Der Strom fließt hinein','Der Leiter ist geerdet','Hier ist der Nordpol'],'⊙ ist die Pfeilspitze, die auf dich zukommt: heraus aus dem Blatt.'),
+    genRing(), genRing(), genRing(),
+    mc('Worin unterscheidet sich ein gerader Leiter von einer Spule (gleicher Strom)?','In der Spule konzentriert sich das Feld im Inneren, es entsteht ein Elektromagnet',['Der gerade Leiter hat ein stärkeres Feld','Die Spule hat gar kein Magnetfeld','Es gibt keinen Unterschied'],'Beim langen Leiter verteilt sich das Feld auf die ganze Länge. In der Spule addieren sich die Felder aller Windungen → starker Elektromagnet.'),
+    mc('Wie nennt man allgemein die geschlossene Form der magnetischen Feldlinien?','Wirbelfeld',['Quellenfeld','Kraftfeld','Streufeld'],'Magnetische Feldlinien haben keinen Anfang und kein Ende. Solche geschlossenen Felder heißen Wirbelfeld.'),
+    mc('Wie findest du bei einer Spule den Nordpol?','Rechte Hand: Finger in Stromrichtung um die Spule, Daumen zeigt zum Nordpol',['Der Nordpol ist immer links','Der Nordpol ist dort, wo der Strom hineinfließt','Linke Hand: Daumen zeigt zum Südpol'],'Die Finger folgen dem Strom in den Windungen, der Daumen zeigt zum Nordpol. Dort treten die Feldlinien aus.'),
+    mc('Womit machst du einen Elektromagneten NICHT stärker?','Mit einem Kupferkern statt Eisenkern',['Mit mehr Windungen','Mit mehr Strom','Mit einem Eisenkern'],'Kupfer ist nicht magnetisch. Eisen bündelt die Feldlinien und verstärkt das Feld stark.'),
+    mc('Wo verläuft das Feld bei einer Ringspule mit Eisenring?','Nur im Inneren des Eisenrings, als geschlossener Kreis',['Nur außerhalb des Rings','Von einem Nordpol außen zum Südpol','Es gibt kein Feld'],'Bei der Ringspule bleibt das Feld im Eisenring (magnetischer Leiter). Es gibt keine Pole außen.'),
+  ]
+},
+{
+  id:'groessen', badge:'Φ', color:'var(--pen)', title:'Magnetische Größen',
+  desc:'Fluss Φ, Durchflutung Θ, Feldstärke H, Flussdichte B',
+  learn:`<div class="scroll"><table class="t">
+    <tr><th>Größe</th><th>Zeichen</th><th>Formel</th><th>Einheit</th></tr>
+    <tr><td>Magnetischer Fluss</td><td><b>Φ</b> (Phi)</td><td>alle Feldlinien</td><td>Wb (Weber) = Vs</td></tr>
+    <tr><td>Durchflutung</td><td><b>Θ</b> (Theta)</td><td>Θ = I · N</td><td>A (Ampere)</td></tr>
+    <tr><td>Feldstärke</td><td><b>H</b></td><td>H = I · N / l<sub>m</sub></td><td>A/m</td></tr>
+    <tr><td>Flussdichte</td><td><b>B</b></td><td>B = Φ / A</td><td>T (Tesla) = Vs/m²</td></tr>
+  </table></div>
+  <ul style="margin-top:14px">
+    <li><b>Φ</b> = die Gesamtheit aller Feldlinien (die „Menge“ des Feldes).</li>
+    <li><b>Θ</b>: 1 Windung mit 10 A wirkt genauso wie 10 Windungen mit 1 A oder 40 Windungen mit 0,25 A.</li>
+    <li><b>l<sub>m</sub></b> = mittlere Feldlinienlänge.</li>
+    <li><b>B</b>: gleicher Fluss durch eine <b>kleinere Fläche</b> → <b>größere Flussdichte</b>.</li>
+    <li>Umrechnung: <span class="f">1 T = 1 Vs/m² = 10⁻⁴ Vs/cm²</span>. Also <span class="f">Vs/cm² · 10⁴ = T</span>.</li>
+  </ul>`,
+  pool:()=>[
+    mc('Was ist der magnetische Fluss Φ?','Die Gesamtheit aller Feldlinien eines Magnetfeldes',['Der Strom in der Spule','Die Anzahl der Windungen','Die Kraft auf einen Leiter'],'Φ beschreibt die gesamte „Menge“ an Feldlinien.'),
+    mc('Welche Einheit hat der magnetische Fluss Φ?','Wb (Weber) = Vs',['T (Tesla)','A/m','N (Newton)'],'Φ in Weber (Wb). 1 Wb = 1 Vs.'),
+    mc('Wie lautet die Formel für die Durchflutung Θ?','Θ = I · N',['Θ = I / N','Θ = U · I','Θ = B · A'],'Durchflutung = Strom mal Windungszahl. Einheit: A.'),
+    mc('Welche Einheit hat die Durchflutung Θ?','A (Ampere)',['V (Volt)','T (Tesla)','Wb (Weber)'],'Windungszahl N hat keine Einheit, also bleibt das Ampere übrig.'),
+    mc('Wie lautet die Formel für die magnetische Feldstärke H?','H = I · N / lₘ',['H = Φ / A','H = I · B · l','H = U / R'],'Feldstärke = Durchflutung geteilt durch mittlere Feldlinienlänge. Einheit A/m.'),
+    mc('Wie lautet die Formel für die magnetische Flussdichte B?','B = Φ / A',['B = Φ · A','B = I · N','B = F · l'],'Flussdichte = Fluss pro Fläche. Einheit Tesla (T) = Vs/m².'),
+    mc('Welche Einheit hat die Flussdichte B?','T (Tesla)',['Wb (Weber)','A/m','A'],'1 T = 1 Vs/m².'),
+    mc('Luftspule a) hat 1 Windung und 10 A. Welcher Strom ist bei 10 Windungen nötig, damit sie gleichwertig ist?','1 A',['10 A','100 A','0,1 A'],'Θ muss gleich bleiben: 10 A · 1 = 10 A. Bei 10 Windungen: 10 A / 10 = 1 A.'),
+    mc('Und welcher Strom bei 40 Windungen?','0,25 A',['4 A','0,4 A','400 A'],'I = Θ / N = 10 A / 40 = 0,25 A.'),
+    mc('Der gleiche Fluss geht durch eine große und eine kleine Querschnittsfläche. Wo ist B größer?','In der kleinen Fläche',['In der großen Fläche','Überall gleich','Das hängt vom Strom ab'],'B = Φ / A. Kleinere Fläche A → größeres B.'),
+    num('Eisenkern: H soll 4 A/cm sein, lₘ = 12 cm, N = 1000. Welcher Spulenstrom I ist nötig (in A)?',0.048,'A','I = H · lₘ / N = 4 A/cm · 12 cm / 1000 = 0,048 A = 48 mA.'),
+    num('Rechne um: Pol am Dauermagnet 5 · 10⁻⁵ Vs/cm² = ? T',0.5,'T','Vs/cm² · 10⁴ = T → 5 · 10⁻⁵ · 10⁴ = 5 · 10⁻¹ = 0,5 T.'),
+    num('Rechne um: Pol am Elektromagnet 3 · 10⁻⁴ Vs/cm² = ? T',3,'T','3 · 10⁻⁴ · 10⁴ = 3 · 10⁰ = 3 T.'),
+  ]
+},
+{
+  id:'motor', badge:'F', color:'var(--force)', title:'Motorprinzip & 3-Finger-Regel',
+  desc:'Kraft auf Leiter im Magnetfeld, rechte Hand, F = I·B·l',
+  learn:`<p style="margin-top:0">Liegt ein stromdurchflossener Leiter in einem Magnetfeld, wird er <b>seitlich weggedrückt</b>. Das ist das Prinzip des Elektromotors.</p>
+  <div class="fig">${sceneHand()}</div>
+  <div class="fbox">
+    <div><b>Daumen</b> = Stromrichtung I <span class="muted">(Ursache)</span></div>
+    <div><b>Zeigefinger</b> = äußeres Magnetfeld B, von N nach S <span class="muted">(Vermittlung)</span></div>
+    <div><b>Mittelfinger</b> = Kraftwirkung F <span class="muted">(Wirkung)</span></div>
+  </div>
+  <div class="tip"><b>Eselsbrücke U-V-W:</b> Ursache – Vermittlung – Wirkung = Daumen – Zeigefinger – Mittelfinger. Alle drei Finger stehen senkrecht zueinander.<br><b>⊗</b> (hinein): Daumen zeigt von dir weg. <b>⊙</b> (heraus): Daumen zeigt zu dir.</div>
+  <ul style="margin-top:14px">
+    <li>Warum? Das Leiterfeld und das fremde Feld überlagern sich: auf einer Seite <b>verstärkt</b>, auf der anderen <b>geschwächt</b>. Der Leiter wird zur <b>schwächeren Seite</b> gedrückt.</li>
+    <li>Die Richtung hängt ab von: <b>Richtung des fremden Magnetfelds</b> und <b>Stromrichtung</b>.</li>
+    <li>Kraft wird größer durch: größeren <b>Strom I</b>, größere <b>Flussdichte B</b>, größere wirksame <b>Leiterlänge l</b>.</li>
+  </ul>
+  <div class="fbox">
+    <div><span class="big">F = I · B · l</span><span class="muted">[F] = A · T · m = A · N/(A·m) · m = N</span></div>
+    <div><span class="f">I = F / (B·l)</span><span class="f">B = F / (I·l)</span><span class="f">l = F / (I·B)</span></div>
+  </div>`,
+  pool:()=>{
+    const s=[
+      mc('Bei der Rechte-Hand-Regel zeigt der Daumen …','in Stromrichtung',['in Richtung der Kraft','vom Südpol zum Nordpol','immer nach oben'],'Daumen = Strom (Ursache).'),
+      mc('Bei der Rechte-Hand-Regel zeigt der Zeigefinger …','in Richtung des äußeren Magnetfelds (von N nach S)',['in Stromrichtung','in Richtung der Kraft','von S nach N'],'Zeigefinger = Magnetfeld (Vermittlung), außen immer von N nach S.'),
+      mc('Bei der Rechte-Hand-Regel zeigt der Mittelfinger …','die Richtung der Kraft F',['die Stromrichtung','die Feldrichtung','zum Nordpol'],'Mittelfinger = Kraft (Wirkung).'),
+      mc('Von welchen zwei Ursachen hängt die Richtung der Ablenkkraft ab?','Richtung des fremden Magnetfelds und Stromrichtung',['Leitermaterial und Temperatur','Spannung und Widerstand','Länge und Dicke des Leiters'],'Dreht man eins davon um, dreht sich die Kraft um. Dreht man beide um, bleibt sie gleich.'),
+      mc('Womit wird die Kraft auf den Leiter NICHT größer?','Mit einem dickeren Isoliermantel',['Mit größerem Strom I','Mit größerer Flussdichte B','Mit längerem wirksamen Leiter l'],'F = I · B · l. Nur diese drei Größen zählen.'),
+      mc('Wie lautet die Formel für die Kraft auf einen stromdurchflossenen Leiter?','F = I · B · l',['F = U · I','F = B / (I · l)','F = m · a · l'],'F = I · B · l (Strom · Flussdichte · wirksame Länge).'),
+      mc('Man dreht die Stromrichtung UND die Magnetpole gleichzeitig um. Was passiert mit der Kraft?','Sie zeigt in die gleiche Richtung wie vorher',['Sie dreht sich um','Sie wird null','Sie wird doppelt so groß'],'Zweimal umdrehen hebt sich auf.'),
+      mc('Warum wird der Leiter im Magnetfeld zur Seite gedrückt?','Die Felder überlagern sich: eine Seite wird verstärkt, die andere geschwächt',['Der Leiter wird heiß und dehnt sich aus','Kupfer wird vom Magneten angezogen','Der Strom stößt die Feldlinien ab'],'Der Leiter wird immer zur Seite mit dem schwächeren Feld gedrückt.'),
+      num('I = 5 A, B = 3 T, wirksame Länge l = 20 mm. Wie groß ist F?',0.3,'N','F = I · B · l = 5 A · 3 T · 0,02 m = 0,3 N.'),
+    ];
+    return [...shuffle(s).slice(0,5), genMotorForce(), genMotorForce(), genMotorCurrent(), genMotorForce(), genMotorPoles(), genMotorForce()];
+  },
+  size:11, noShuffleSize:true
+},
+{
+  id:'trafo', badge:'ü', color:'var(--south)', title:'Transformator',
+  desc:'Induktion, Übersetzung, galvanische Trennung, Spartrafo',
+  learn:`<div class="fig">${sceneTrafo()}</div>
+  <ul>
+    <li><b>Aufbau:</b> Primärspule (Eingang), Sekundärspule (Ausgang), gemeinsamer <b>Eisenkern</b>.</li>
+    <li><b>Induktion:</b> Entstehen von Spannung in einem Leiter durch <b>Änderung des Magnetfeldes</b>. Darum braucht ein Trafo <b>Wechselspannung</b>.</li>
+    <li><b>Galvanische Trennung:</b> 2 getrennte Stromkreise, die <b>keine direkte elektrische Verbindung</b> haben (auch beim Optokoppler).</li>
+    <li>Mehr Windungen → mehr Spannung, aber weniger Strom.</li>
+    <li><b>Spartrafo:</b> nur eine Wicklung. Vorteil: kleiner, leichter, billiger. Nachteil: <b>keine galvanische Trennung</b>. Darf nicht für Schutzkleinspannung oder als Trenntrafo verwendet werden.</li>
+  </ul>
+  <div class="fbox">
+    <div><span class="big">ü = U₁/U₂ = N₁/N₂ = I₂/I₁</span></div>
+    <div><span class="muted">Leistung bleibt (ideal) gleich:</span><span class="f">S = U₁·I₁ = U₂·I₂</span></div>
+  </div>`,
+  pool:()=>[
+    mc('Was versteht man unter Induktion?','Entstehen einer Spannung in einem Leiter durch Änderung des Magnetfelds',['Erwärmung eines Leiters durch Strom','Anziehung zweier Magnete','Das Umwickeln eines Eisenkerns'],'Nur ein sich änderndes Magnetfeld induziert eine Spannung.'),
+    mc('Warum funktioniert ein Transformator nicht mit Gleichspannung?','Das Magnetfeld ändert sich nicht, also wird nichts induziert',['Gleichspannung ist zu schwach','Der Eisenkern würde schmelzen','Gleichstrom fließt nicht durch Kupfer'],'Induktion braucht ein sich änderndes Feld. Gleichstrom erzeugt ein konstantes Feld.'),
+    mc('Was bedeutet galvanische Trennung?','Zwei Stromkreise ohne direkte elektrische Verbindung',['Ein Stromkreis ohne Sicherung','Ein Kurzschluss zwischen zwei Leitern','Zwei Spulen auf einer Wicklung'],'Energie wird über das Magnetfeld (Trafo) oder Licht (Optokoppler) übertragen, aber die Leitungen sind nicht verbunden.'),
+    mc('Welche Formel für das Übersetzungsverhältnis ist richtig?','ü = U₁/U₂ = N₁/N₂ = I₂/I₁',['ü = U₁/U₂ = N₂/N₁ = I₁/I₂','ü = U₁ · U₂','ü = I₁/I₂ = N₁/N₂'],'Spannungen wie Windungen, Ströme umgekehrt!'),
+    mc('Welche Seite eines Trafos hat den größeren Strom?','Die Seite mit der kleineren Spannung (weniger Windungen)',['Die Seite mit der größeren Spannung','Beide gleich','Immer die Primärseite'],'Leistung bleibt gleich: U · I = konstant. Kleine Spannung → großer Strom.'),
+    mc('Was ist der Hauptnachteil eines Spartransformators?','Keine galvanische Trennung zwischen Ein- und Ausgang',['Er ist sehr schwer','Er funktioniert nur mit Gleichspannung','Er braucht zwei Eisenkerne'],'Beim Spartrafo gehören Primär- und Sekundärseite zur selben Wicklung.'),
+    mc('Wo darf ein Spartrafo NICHT eingesetzt werden?','Für Schutzkleinspannung, z. B. Spielzeug- oder Klingeltrafo',['Um 400 V auf 230 V anzupassen','Als Stelltrafo im Labor','Zum Anlassen von Motoren'],'Ohne galvanische Trennung könnte Netzspannung am Ausgang anliegen. Gefährlich!'),
+    mc('Was ist ein Vorteil des Spartrafos?','Kleiner, leichter und billiger (weniger Kupfer)',['Er trennt die Stromkreise galvanisch','Er macht aus Gleich- Wechselspannung','Er braucht keinen Eisenkern'],'Weil ein Teil der Wicklung doppelt genutzt wird, spart man Material.'),
+    num('Steckernetzteil 230 V / 24 V. Wie groß ist das Übersetzungsverhältnis ü?',230/24,'','ü = U₁ / U₂ = 230 V / 24 V ≈ 9,58.',0.01),
+    num('Dasselbe Netzteil hat sekundär N₂ = 30 Windungen. Wie viele Windungen hat die Primärwicklung N₁?',287.5,'','N₁ = N₂ · U₁ / U₂ = 30 · 230 V / 24 V = 287,5 ≈ 288 Windungen.',0.01),
+    num('Idealer Trafo: ü = 25, U₂ = 9,2 V. Wie groß ist U₁?',230,'V','U₁ = ü · U₂ = 25 · 9,2 V = 230 V.'),
+    num('Gleicher Trafo: N₁ = 600, ü = 25. Wie groß ist N₂?',24,'','N₂ = N₁ / ü = 600 / 25 = 24.'),
+    num('Gleicher Trafo, Bauleistung 120 VA, U₂ = 9,2 V. Wie groß ist I₂?',120/9.2,'A','I₂ = S / U₂ = 120 VA / 9,2 V ≈ 13,04 A.'),
+    num('Gleicher Trafo, 120 VA, U₁ = 230 V. Wie groß ist I₁?',120/230,'A','I₁ = S / U₁ = 120 VA / 230 V ≈ 0,52 A. (Oder I₁ = I₂ / ü = 13,04 A / 25.)'),
+    num('Trafo 500 VA, 230 V → 24 V, N₁ = 470. Wie groß ist N₂?',470*24/230,'','N₂ = N₁ · U₂ / U₁ = 470 · 24 / 230 ≈ 49 Windungen.',0.02),
+  ]
+},
+{
+  id:'rechnen', badge:'=', color:'var(--ink)', title:'Rechenwerkstatt',
+  desc:'Immer neue Zahlen: F=I·B·l, Trafo, Θ, H, Präfixe, Stromkosten',
+  learn:`<div class="scroll"><table class="t">
+    <tr><th>Vorsatz</th><th>Zeichen</th><th>Faktor</th></tr>
+    <tr><td>Giga</td><td>G</td><td>10⁹ = 1 000 000 000</td></tr>
+    <tr><td>Mega</td><td>M</td><td>10⁶ = 1 000 000</td></tr>
+    <tr><td>Kilo</td><td>k</td><td>10³ = 1000</td></tr>
+    <tr><td>Milli</td><td>m</td><td>10⁻³ = 0,001</td></tr>
+    <tr><td>Mikro</td><td>µ</td><td>10⁻⁶ = 0,000 001</td></tr>
+    <tr><td>Nano</td><td>n</td><td>10⁻⁹</td></tr>
+    <tr><td>Piko</td><td>p</td><td>10⁻¹²</td></tr>
+    <tr><td>Femto</td><td>f</td><td>10⁻¹⁵</td></tr>
+  </table></div>
+  <div class="tip"><b>So rechnest du in der Klausur:</b> Geg. / Ges. aufschreiben → Formel → umstellen → Werte <b>mit Einheit</b> einsetzen (mm in m!) → Ergebnis unterstreichen.<br>Kommazahlen darfst du mit Komma oder Punkt eintippen. Leichtes Runden ist okay.</div>
+  <div class="fbox"><div><span class="muted">Stromkosten:</span><span class="f">W = P · t</span><span class="f">Kosten = W · Preis</span></div></div>`,
+  pool:()=>[genF(),genPref(),genTrafoU(),genTheta(),genFI(),genTrafoN(),genPref(),genH(),genTrafoI(),genCost()],
+  size:10, noShuffleSize:true
+},
+];
+const BOSS = {
+  id:'klausur', badge:'★', color:'var(--north)', title:'Klausur-Mix', boss:true,
+  desc:'15 gemischte Aufgaben aus allen Themen. Schaffst du 3 Sterne?',
+  pool:()=>{
+    const take=(i,n)=>shuffle(LEVELS[i].pool().filter(q=>!q.svg)).slice(0,n);
+    return shuffle([
+      ...take(0,2), ...take(1,2), ...take(2,2), ...take(4,3),
+      genMotorForce(), genMotorForce(), genMotorCurrent(), genRing(),
+      rnd([genF,genTrafoU,genTheta,genFI])(), genPref()
+    ]);
+  }, size:15, noShuffleSize:true
+};
+
+/* ============ Ansichten ============ */
+function starsHTML(n,cls='stars'){ let s=`<span class="${cls}" aria-label="${n} von 3 Sternen">`; for(let i=0;i<3;i++) s+=`<span class="${i<n?'on':''}">★</span>`; return s+'</span>'; }
+
+function home(){
+  const total = [...LEVELS,BOSS].reduce((a,l)=>a+(save.stars[l.id]||0),0);
+  app.innerHTML = `
+  <section class="hero">
+    <h2>Magnetismus <span class="n">spielend</span> für die <span class="s">Klausur</span></h2>
+    <p>Wähle ein Thema. Erst kurz „Merken“ lesen, dann Fragen lösen. Für jede richtige Antwort gibt es XP, für jedes Thema bis zu 3 Sterne. Du hast <b>${total}</b> von ${(LEVELS.length+1)*3} Sternen.</p>
+    <div class="row"><button class="btn ghost" id="spick">Spickzettel: alles auf einer Seite</button></div>
+  </section>
+  <section class="levels">
+    ${[...LEVELS,BOSS].map((l,i)=>`
+      <button class="lvl${l.boss?' boss':''}" data-i="${i}">
+        <span class="badge" style="background:${l.color}">${l.badge}</span>
+        <span><h3>${l.boss?'Endgegner: ':''}${l.title}</h3><p>${l.desc}</p>${starsHTML(save.stars[l.id]||0)}</span>
+      </button>`).join('')}
+  </section>
+  <p class="foot">Fortschritt wird in diesem Browser gespeichert. <button class="linkbtn" id="reset">Zurücksetzen</button></p>`;
+  app.querySelectorAll('.lvl').forEach(b=>b.onclick=()=>{
+    const l=[...LEVELS,BOSS][+b.dataset.i];
+    l.boss ? startQuiz(l) : learn(l);
+  });
+  $('#spick').onclick=spick;
+  $('#reset').onclick=e=>{
+    if (e.target.dataset.sure){ save={xp:0,stars:{}}; store.set(save); updateXP(); home(); }
+    else { e.target.dataset.sure='1'; e.target.textContent='Wirklich zurücksetzen? Nochmal tippen'; }
+  };
+  window.scrollTo(0,0);
+}
+
+function learn(l){
+  app.innerHTML = `<section class="card learn">
+    <div class="eyebrow">Merken</div>
+    <h2>${l.title}</h2>
+    ${l.learn}
+    <div class="row"><button class="btn" id="go">Los geht's: Fragen starten</button><button class="btn ghost" id="back">Zurück</button></div>
+  </section>`;
+  $('#go').onclick=()=>startQuiz(l);
+  $('#back').onclick=home;
+  window.scrollTo(0,0);
+}
+
+function spick(){
+  app.innerHTML = `<section class="spick">
+    <div class="row" style="margin-top:0"><button class="btn ghost" id="back">← Zurück</button></div>
+    ${LEVELS.map(l=>`<div class="card learn"><div class="eyebrow">${l.badge}</div><h3>${l.title}</h3>${l.learn}</div>`).join('')}
+  </section>`;
+  $('#back').onclick=home;
+  window.scrollTo(0,0);
+}
+
+let Q = null;
+function startQuiz(l){
+  let qs = l.pool();
+  if (!l.noShuffleSize) qs = shuffle(qs).slice(0, l.size||10);
+  else qs = qs.slice(0, l.size||qs.length);
+  Q = {l, qs, i:0, right:0, combo:0, wrong:[]};
+  showQ();
+}
+
+function showQ(){
+  const {qs,i} = Q, q = qs[i];
+  let body = '';
+  if (q.type==='mc'){
+    const opts = q.keep ? q.opts : shuffle(q.opts);
+    q._opts = opts;
+    body = `<div class="opts${q.grid?' grid2':''}">${opts.map((o,k)=>`<button class="opt${q.arrows?' arrow':''}" data-k="${k}">${q.arrows?`<span>${o.a}</span>`:''}${o.t}</button>`).join('')}</div>`;
+  } else {
+    body = `<form class="numrow" id="nf"><input id="ans-${i}" inputmode="decimal" autocomplete="off" placeholder="Ergebnis" aria-label="Ergebnis">${q.unit?`<span class="unit">${q.unit}</span>`:''}<button class="btn" type="submit">Prüfen</button></form>`;
+  }
+  app.innerHTML = `<section>
+    <div class="qhead">
+      <button class="x" id="quit" aria-label="Abbrechen">×</button>
+      <div class="bar"><i style="width:${i/qs.length*100}%"></i></div>
+      <span class="combo">${Q.combo>=2?'Serie '+Q.combo:''}</span>
+    </div>
+    <div class="eyebrow">${Q.l.title} · Frage ${i+1} von ${qs.length}</div>
+    <p class="q">${q.q}</p>
+    ${q.svg?`<div class="scene">${q.svg}</div>`:''}
+    ${body}
+    <div id="fb"></div>
+  </section>`;
+  $('#quit').onclick=home;
+  if (q.type==='mc'){
+    app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answerMC(+b.dataset.k));
+  } else {
+    const inp = $('#ans-'+i);
+    setTimeout(()=>inp.focus({preventScroll:true}),50);
+    $('#nf').onsubmit=e=>{ e.preventDefault(); answerNum(inp.value); };
+  }
+  window.scrollTo(0,0);
+}
+
+function answerMC(k){
+  const q = Q.qs[Q.i], ok = !!q._opts[k].ok;
+  app.querySelectorAll('.opt').forEach((b,j)=>{
+    b.disabled=true;
+    if (q._opts[j].ok) b.classList.add('right');
+    else if (j===k) b.classList.add('wrong');
+  });
+  const right = q._opts.find(o=>o.ok);
+  feedback(ok, q, ok ? '' : `Richtig ist: <b>${right.t}</b>`);
+}
+function answerNum(v){
+  const q = Q.qs[Q.i];
+  const x = parseFloat(String(v).replace(/\s/g,'').replace(',', '.'));
+  if (isNaN(x)) { $('#fb').innerHTML = `<p class="muted small">Bitte eine Zahl eingeben, z. B. 0,3</p>`; return; }
+  const ok = Math.abs(x-q.ans) <= Math.max(Math.abs(q.ans)*q.tol, 0.0005);
+  $('#nf').querySelectorAll('input,button').forEach(el=>el.disabled=true);
+  feedback(ok, q, ok ? '' : `Richtig ist: <b>${de(q.ans,3)} ${q.unit}</b> (du hattest ${de(x,4)})`);
+}
+function feedback(ok,q,extra){
+  if (ok){ Q.right++; Q.combo++; save.xp += 10 + Math.min(Q.combo-1,5)*2; }
+  else { Q.combo=0; Q.wrong.push(q); }
+  store.set(save); updateXP();
+  const praise = rnd(['Richtig!','Stark!','Genau so!','Sitzt!','Top!']);
+  $('#fb').innerHTML = `<div class="fb ${ok?'ok':'no'}" role="status">
+    <h3>${ok?praise:'Nicht ganz.'}</h3>
+    ${extra?`<p>${extra}</p>`:''}
+    <p>${q.e}</p>
+    <button class="btn" id="next">${Q.i+1<Q.qs.length?'Weiter':'Ergebnis ansehen'}</button>
+  </div>`;
+  const n=$('#next'); n.focus({preventScroll:true}); n.onclick=next;
+  $('#fb').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function next(){ Q.i++; Q.i<Q.qs.length ? showQ() : result(); }
+
+function result(){
+  const {l,right,qs,wrong} = Q, p = right/qs.length;
+  const st = p>=0.9?3:p>=0.7?2:p>=0.5?1:0;
+  const best = Math.max(st, save.stars[l.id]||0);
+  save.stars[l.id]=best; if (st===3) save.xp+=30; store.set(save); updateXP();
+  const msg = st===3?'Perfekt, das sitzt!':st===2?'Richtig gut!':st===1?'Guter Anfang!':'Nochmal üben lohnt sich.';
+  app.innerHTML = `<section class="card result">
+    ${starsHTML(st,'bigstars')}
+    <h2>${msg}</h2>
+    <p class="score">${right} von ${qs.length} richtig${st===3?' · +30 Bonus-XP':''}</p>
+    <div class="row">
+      <button class="btn" id="again">Nochmal (neue Fragen)</button>
+      ${l.learn?'<button class="btn ghost" id="learn">Merken lesen</button>':''}
+      <button class="btn ghost" id="back">Alle Themen</button>
+    </div>
+    ${wrong.length?`<div class="review"><p class="eyebrow">Das solltest du dir nochmal ansehen</p>${wrong.map(q=>`<div><b>${q.q.replace(/<[^>]+>/g,'')}</b><br>${q.e}</div>`).join('')}</div>`:''}
+  </section>`;
+  $('#again').onclick=()=>startQuiz(l);
+  $('#back').onclick=home;
+  if (l.learn) $('#learn').onclick=()=>learn(l);
+  if (st===3) confetti();
+  window.scrollTo(0,0);
+}
+
+/* ============ Konfetti (N rot, S grün, Kupfer) ============ */
+function confetti(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c=$('#confetti'), x=c.getContext('2d');
+  c.width=innerWidth; c.height=innerHeight;
+  const cs=getComputedStyle(document.documentElement);
+  const cols=['--north','--south','--copper','--pen'].map(v=>cs.getPropertyValue(v).trim());
+  const ps=Array.from({length:120},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,vx:(Math.random()-.5)*2,vy:2+Math.random()*3,r:Math.random()*6,c:rnd(cols),w:6+Math.random()*6}));
+  let t=0;(function f(){
+    x.clearRect(0,0,c.width,c.height);
+    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.r+=.1;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.w/2,-3,p.w,6);x.restore();});
+    if(++t<180) requestAnimationFrame(f); else x.clearRect(0,0,c.width,c.height);
+  })();
+}
+
+$('#home-btn').onclick=home;
+updateXP();
+home();
+</script>
+</body>
+</html>
