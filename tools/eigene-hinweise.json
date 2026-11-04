@@ -1,0 +1,7 @@
+{
+  "netz2": "263 A ergibt sich, wenn man einphasig rechnet (I = P / U). Hochspannungsnetze sind Drehstromnetze: Dann gilt I = P / (√3 · U) ≈ 152 A je Leiter. Frag im Unterricht nach, welche Rechnung gemeint ist.",
+  "leitung_j1_6": "Genau genommen sind die 3 % in DIN 18015-1 eine Empfehlung („sollte“) für Wohngebäude, kein festes Verbot. DIN VDE 0100-520 empfiehlt höchstens 4 %.",
+  "pruef_j1_5": "Die 400 ms sind die maximale Abschaltzeit in TN-Endstromkreisen. Der RCD selbst muss beim Prüfen mit IΔn innerhalb von 300 ms auslösen (selektive S-Typen: 500 ms).",
+  "xkab12": "Diese Aussage ist fachlich falsch: Ungeschirmte Cat-6-Leitungen (U/UTP) gibt es und sie sind sehr verbreitet. Richtig ist nur, dass höhere Kategorien (z. B. Cat 7) meist geschirmt sind. Die Antwort „Wahr“ stammt aus deinen Unterlagen. Klär das am besten mit deiner Lehrkraft.",
+  "lf13_rlp_7": "Die DIN VDE 0701-0702 wurde 2021 ersetzt: Prüfung nach Instandsetzung jetzt nach DIN EN 50678 (VDE 0701), Wiederholungsprüfung nach DIN EN 50699 (VDE 0702). In älteren Unterlagen steht oft noch 0701-0702."
+}

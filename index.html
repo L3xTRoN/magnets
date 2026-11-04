@@ -24,6 +24,7 @@
   --accent:#2743A6; --accent-soft:#E3E8F8; --on-accent:#FFFFFF; --glow:#FFD45C; --copper:#7A4A25;
   --ok:#1D7F53; --ok-bg:#E0F2E8; --bad:#C23324; --bad-bg:#FBE5E2; --warn:#C98A00; --neu:#C9CFC9;
   --shadow:0 1px 0 rgba(0,0,0,.04),0 8px 22px -14px rgba(20,40,60,.35);
+  --surface:var(--card); --c:#A8581F;
   --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
   --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -32,7 +33,7 @@
   :root:not([data-theme="light"]){
     --paper:#141A1D; --card:#1C2428; --card2:#222B30; --ink:#E7ECEA; --muted:#9AA6AB; --line:#323C41;
     --accent:#8FA6FF; --accent-soft:#27305A; --on-accent:#10163A; --copper:#E0A06A;
-    --ok:#3DBB84; --ok-bg:#16352A; --bad:#F0645A; --bad-bg:#3E1F1C; --warn:#F2B04C; --neu:#3A464C;
+    --ok:#3DBB84; --ok-bg:#16352A; --bad:#F0645A; --bad-bg:#3E1F1C; --warn:#F2B04C; --neu:#3A464C; --c:#E08A4A;
     --shadow:0 1px 0 rgba(0,0,0,.2),0 8px 20px -12px rgba(0,0,0,.7);
     color-scheme:dark;
   }
@@ -40,7 +41,7 @@
 :root[data-theme="dark"]{
     --paper:#141A1D; --card:#1C2428; --card2:#222B30; --ink:#E7ECEA; --muted:#9AA6AB; --line:#323C41;
     --accent:#8FA6FF; --accent-soft:#27305A; --on-accent:#10163A; --copper:#E0A06A;
-    --ok:#3DBB84; --ok-bg:#16352A; --bad:#F0645A; --bad-bg:#3E1F1C; --warn:#F2B04C; --neu:#3A464C;
+    --ok:#3DBB84; --ok-bg:#16352A; --bad:#F0645A; --bad-bg:#3E1F1C; --warn:#F2B04C; --neu:#3A464C; --c:#E08A4A;
     --shadow:0 1px 0 rgba(0,0,0,.2),0 8px 20px -12px rgba(0,0,0,.7);
     color-scheme:dark;
 }
@@ -309,6 +310,30 @@ body.tv{padding-bottom:40px}
 .p-flag{background:var(--bad);color:#fff}
 .lfcard.own{border-left:5px solid var(--glow)}
 .note{background:var(--card2);box-shadow:none;font-size:.95rem}
+.sub-h{font-size:.95rem;margin:10px 0 6px;font-family:var(--display)}
+.p-warn{background:var(--glow);color:#2A2118}
+.optc{grid-template-columns:auto minmax(0,1fr);cursor:pointer}
+.optc input{width:22px;height:22px;margin:0}
+.matchgrid{display:grid;gap:8px}
+.mrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:center;padding:8px 10px;border-radius:12px;background:var(--card2);border:2px solid var(--line)}
+.mrow select{width:100%}
+.mrow .ok-t{grid-column:1/-1}
+.mrow.good,.gapw.good select,.gapw.good input{border-color:var(--ok)}
+.mrow.badk,.gapw.badk select,.gapw.badk input{border-color:var(--bad)}
+.gaptext{line-height:2.4}
+.gapw select,.gapw input{min-height:38px;padding:4px 8px;margin:0 2px;max-width:100%}
+.kshort{font:700 1.15rem var(--mono);width:100%;max-width:420px}
+.own-sheet{overflow-x:auto}
+.own-sheet table{border-collapse:collapse;font-size:.9rem;display:block;overflow-x:auto;max-width:100%}
+.own-sheet th,.own-sheet td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+.own-sheet th{background:var(--card2)}
+.own-sheet h3{font-size:1.05rem;margin-top:10px}
+.own-sheet ul,.own-sheet ol{padding-left:1.2em}
+figure{margin:0;display:grid;gap:4px;justify-items:center}
+figure svg{max-width:100%;height:auto}
+figcaption{font-size:.82rem;color:var(--muted);text-align:center}
+pre.term{background:#111;color:#cfe;padding:10px 12px;border-radius:10px;overflow-x:auto;font:13px var(--mono);max-width:100%}
+@media (max-width:520px){.mrow{grid-template-columns:minmax(0,1fr)}}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:20;max-width:min(520px,calc(100vw - 32px));background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:12px;box-shadow:var(--shadow);font-size:.95rem}
 
 @media (min-width:900px){
@@ -349,6 +374,7 @@ body.tv{padding-bottom:40px}
 <script src="ap1/lf12.js"></script>
 <script src="ap1/lf13.js"></script>
 <script src="ap1/arbeitsblaetter.js"></script>
+<script src="ap1/eigene.js"></script>
 <script src="ap1/rechnen.js"></script>
 <script src="ap1/mathe.js"></script>
 <script src="ap1/spiele.js"></script>

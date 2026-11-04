@@ -18,13 +18,13 @@ LT.LF = [
   { n: 11, year: 3, h: 80, title: 'Kommunikationssysteme planen und realisieren', core: 'Kommunikationssysteme zu planen und zu realisieren' },
   { n: 12, year: 4, h: 80, title: 'Multimedia- und serverbasierte Systeme einrichten und administrieren', core: 'multimedia- und serverbasierte Systeme zu planen, einzurichten und zu administrieren' },
   { n: 13, year: 4, h: 60, title: 'Komplexe Informationssysteme ändern und instand halten', core: 'an komplexen informationstechnischen Systemen Änderungs- und Instandhaltungsmaßnahmen zu planen und durchzuführen' },
-  { n: 20, own: true, title: 'Deine Arbeitsblätter', short: 'Arbeitsblätter' },
-  { n: 21, own: true, title: 'Deine Unterlagen · Ausbildungsjahr 1', short: 'Unterlagen Jahr 1' },
-  { n: 22, own: true, title: 'Deine Unterlagen · Ausbildungsjahr 2', short: 'Unterlagen Jahr 2' },
+  { n: 20, own: true, group: 'Arbeitsblätter (Magnetismus, Transformator)', title: 'Deine Arbeitsblätter', short: 'Arbeitsblätter' },
+
 ];
 LT.AP1 = [1, 2, 3, 4, 5, 6];
 LT.AP2 = [7, 8, 9, 10, 11, 12, 13];
-LT.OWN = [20, 21, 22];
+LT.OWN = [20];
+LT.ownImport = d => { d.lfs.forEach(L => { LT.LF.push(Object.assign({ own: true }, L)); LT.OWN.push(L.n); }); d.topics.forEach(t => LT.addTopic(t.lf, t)); };
 const lfById = n => LT.LF.find(L => L.n === n);
 const lfName = n => { const L = lfById(n); return L && L.own ? L.short : 'LF ' + n; };
 LT.ext = { routes: [], acts: {}, after: [], games: [] };
@@ -32,12 +32,12 @@ LT.ext = { routes: [], acts: {}, after: [], games: [] };
 /* ---------- Inhalte registrieren ---------- */
 function hash(s) { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
 function addTopic(lf, t) {
-  const topic = { id: t.id, lf, title: t.title, source: t.source || '', sheet: Array.isArray(t.sheet) ? t.sheet.join('\n') : (t.sheet || ''), ids: [] };
+  const topic = { id: t.id, lf, title: t.title, source: t.source || '', sheet: Array.isArray(t.sheet) ? t.sheet.join('\n') : (t.sheet || ''), html: t.html || '', ids: [] };
   LT.topics.push(topic); LT.byTopic.set(topic.id, topic);
   (t.items || []).forEach(it => {
-    if (!it.q || !it.a || it.a.length < 2) return;
-    let id = topic.id + '-' + hash(it.q); while (LT.items.has(id)) id += 'x';
-    LT.items.set(id, { id, topic: topic.id, lf, q: it.q, a: it.a, e: it.e || '' });
+    if (!it.q || (!it.kind && (!it.a || it.a.length < 2))) return;
+    let id = topic.id + '-' + (it.oid || hash(it.q)); while (LT.items.has(id)) id += 'x';
+    LT.items.set(id, Object.assign({}, it, { id, topic: topic.id, lf, e: it.e || '' }));
     topic.ids.push(id);
   });
 }
@@ -141,7 +141,7 @@ function startSession(mode, ids, title, back) {
   ids = ids.filter(id => LT.items.has(id) && !flagged(id));
   if (!ids.length) { toast('Für diese Auswahl gibt es gerade keine Fragen.'); return; }
   const order = {};
-  ids.forEach(id => { order[id] = shuffle(LT.items.get(id).a.map((_, i) => i)); });
+  ids.forEach(id => { const it = LT.items.get(id); order[id] = it.fixed || (it.kind === 'multi' ? shuffle(it.opts.map((_, i) => i)) : it.kind === 'match' ? shuffle(it.choices.map((_, i) => i)) : it.kind ? null : shuffle(it.a.map((_, i) => i))); });
   S.session = { mode, ids, i: 0, res: [], order, title, back: back || 'start', again: [], started: Date.now(), answered: null };
   save(); go('sitzung');
 }
@@ -232,12 +232,12 @@ function viewLernfelder() {
   const card = L => { const s = summary(lfIds(L.n)); return `<a class="lfcard" href="#lf-${L.n}"><span class="lfno">${L.n}</span><span class="lft"><b>${esc(L.title)}</b><small>${L.h ? L.h + ' Std. · ' : ''}${s.total} Fragen · ${s.sicher} sicher · ${L.n <= 6 ? 'Prüfung Teil 1' : 'Prüfung Teil 2'}</small>${bar(s)}</span><span class="lfp">${s.ready}%</span></a>`; };
   const years = [[1, 'Ausbildungsjahr 1'], [2, 'Ausbildungsjahr 2'], [3, 'Ausbildungsjahr 3'], [4, 'Ausbildungsjahr 4']];
   const own = LT.LF.filter(L => L.own && lfIds(L.n).length);
-  const ownCard = L => { const s = summary(lfIds(L.n)); return `<a class="lfcard own" href="#lf-${L.n}"><span class="lfno">✎</span><span class="lft"><b>${esc(L.title)}</b><small>${s.total} Fragen · ${s.sicher} sicher</small>${bar(s)}</span><span class="lfp">${s.ready}%</span></a>`; };
+  const ownCard = L => { const s = summary(lfIds(L.n)); return `<a class="lfcard own" href="#lf-${L.n}"><span class="lfno">✎</span><span class="lft"><b>${esc(L.title)}</b><small>${s.total} Aufgaben · ${s.sicher} sicher${L.src ? ' · ' + esc(L.src) : ''}</small>${bar(s)}</span><span class="lfp">${s.ready}%</span></a>`; };
   return `
   <h1 class="page-h">Lernen</h1>
   <p class="muted">Alle Lernfelder nach dem KMK-Rahmenlehrplan Informationselektroniker/-in (Beschluss vom 18.12.2020). LF 1–6 kommen vor Teil 1 der Abschlussprüfung, LF 7–13 vor Teil 2. Dein Prüfungsziel stellst du unter „Mehr“ ein.</p>
   <section><h2 class="sec-h">Deine Unterlagen (getrennt von den Lernfeldern)</h2>
-    ${own.length ? `<div class="lfcards">${own.map(ownCard).join('')}</div>` : ''}
+    ${[...new Set(own.map(L => L.group || 'Weitere'))].map(g => `<h3 class="sub-h">${esc(g)}</h3><div class="lfcards">${own.filter(L => (L.group || 'Weitere') === g).map(ownCard).join('')}</div>`).join('')}
     <p class="small muted">Inhalte aus deinem Unterricht. Sie können Fehler enthalten: Wenn dir eine Frage falsch vorkommt, markiere sie mit „Fehler melden“. Markierte Fragen werden nicht mehr abgefragt.</p></section>
   ${years.map(([y, t]) => `<section><h2 class="sec-h">${t}</h2><div class="lfcards">${LT.LF.filter(L => L.year === y).map(card).join('')}</div></section>`).join('')}`;
 }
@@ -260,13 +260,14 @@ function viewLF(n) {
 function viewTopic(id) {
   const t = LT.byTopic.get(id); if (!t) return viewLernfelder();
   const s = summary(t.ids);
-  const rows = t.ids.map(i => { const it = LT.items.get(i); const st = stat(i); const fl = flagged(i); return `<li><details><summary><span class="pill p-${fl ? 'flag' : st}">${fl ? 'Gemeldet' : { neu: 'Neu', arbeit: 'In Arbeit', sicher: 'Sicher' }[st]}</span> ${esc(it.q)}</summary><p class="ans"><b>Antwort:</b> ${esc(it.a[0])}</p>${it.e ? `<p class="muted small">${multiline(it.e)}</p>` : ''}<button class="linkbtn small" data-act="flag" data-id="${i}">${fl ? 'Meldung zurücknehmen' : 'Fehler melden'}</button></details></li>`; }).join('');
+  const rows = t.ids.map(i => { const it = LT.items.get(i); const st = stat(i); const fl = flagged(i); return `<li><details><summary><span class="pill p-${fl ? 'flag' : st}">${fl ? 'Gemeldet' : { neu: 'Neu', arbeit: 'In Arbeit', sicher: 'Sicher' }[st]}</span> ${it.warn ? '<span class="pill p-warn">Hinweis</span> ' : ''}${esc(qText(it))}</summary><p class="ans"><b>Antwort:</b> ${esc(answerText(it))}</p>${it.e ? `<p class="muted small">${multiline(it.e)}</p>` : ''}<button class="linkbtn small" data-act="flag" data-id="${i}">${fl ? 'Meldung zurücknehmen' : 'Fehler melden'}</button></details></li>`; }).join('');
   return `
   <a href="#lf-${t.lf}" class="back">← Lernfeld ${t.lf}</a>
   <h1 class="page-h">${esc(t.title)}</h1>
   ${t.source ? `<p class="tag">${esc(t.source)}</p>` : ''}
   <div class="card stats">${bar(s)}<p><b>${s.ready}%</b> · ${s.sicher} sicher · ${s.arbeit} in Arbeit · ${s.neu} neu</p>
     <div class="row"><button class="btn" data-act="t-quiz" data-id="${t.id}">Fragen üben</button><button class="btn ghost" data-act="t-cards" data-id="${t.id}">Karteikarten</button></div></div>
+  ${t.html ? `<section class="card sheet own-sheet"><h2>Dein Lernzettel</h2>${t.html}</section>` : ''}
   ${t.sheet ? `<section class="card sheet"><h2>Lernzettel</h2>${S.settings.adhs ? chunked(t) : rich(t.sheet)}${t.source ? '' : '<p class="muted small">Zusammenfassung des allgemeinen Fachwissens. Gleiche sie mit deinem Unterricht ab.</p>'}</section>` : ''}
   <section class="card"><h2>Alle Fragen mit Antworten</h2><p class="muted small">Zum Durchlesen und Auswendiglernen. Tippe eine Frage an.</p><ul class="qlist">${rows}</ul></section>`;
 }
@@ -293,6 +294,50 @@ function viewStartAdhs() {
     ${S.session ? `<button class="btn ghost" data-act="resume">Pausierte Runde fortsetzen</button>` : ''}
     <button class="btn ghost sm" data-act="adhs-off">Fokusmodus beenden</button>
   </section>`;
+}
+const stripTags = h => String(h || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+function answerText(it) {
+  switch (it.kind) {
+    case 'multi': return it.ans.map(i => it.opts[i]).join(' · ');
+    case 'match': return it.ans.map((a, i) => (it.rowsText ? it.rowsText[i] : it.rows[i]) + ' → ' + a).join(' · ');
+    case 'gap': { let k = -1; return it.q.replace(/\[\[(\d+)\]\]/g, (m, n) => { const g = it.gaps[+n]; return '[' + (g.text ? (g.show || g.ans[0]) : g.ans) + ']'; }); }
+    case 'short': return it.show || it.ans[0];
+    default: return it.a[0];
+  }
+}
+const qText = it => it.kind === 'gap' ? it.q.replace(/\[\[\d+\]\]/g, '___') : it.q;
+const extras = it => `${it.lead ? `<p class="small muted">${esc(it.lead)}</p>` : ''}${it.fig || ''}${it.pre ? `<p class="small">${esc(it.pre)}</p>` : ''}`;
+const normA = x => String(x || '').toLowerCase().replace(/\s+/g, '').replace(/,/g, '.').replace(/\.$/, '').replace(/ohm/g, 'ω');
+function kindView(it, s, exam) {
+  const done = s.answered === 'done', v = (s.kres && s.kres.vals) || [], res = s.kres && s.kres.parts;
+  const mark = i => done && !exam && res ? (res[i] ? ' good' : ' badk') : '';
+  let body = '';
+  if (it.kind === 'multi') {
+    const ord = it.noshuf ? it.opts.map((_, i) => i) : (s.order[it.id] || it.opts.map((_, i) => i));
+    body = `<p class="small muted">Mehrere Antworten können richtig sein.</p><div class="opts">${ord.map(i => { const right = it.ans.includes(i), on = v.includes(i); const cls = done && !exam ? (right ? ' right' : on ? ' wrong' : '') : ''; return `<label class="opt optc${cls}"><input type="checkbox" name="kmulti" value="${i}" ${on ? 'checked' : ''} ${done ? 'disabled' : ''}><span>${esc(it.opts[i])}</span></label>`; }).join('')}</div>`;
+  } else if (it.kind === 'match') {
+    const ch = s.order[it.id] ? s.order[it.id].map(i => it.choices[i]) : it.choices;
+    body = `<div class="matchgrid">${it.rows.map((r, i) => `<div class="mrow${mark(i)}"><span class="mlab">${it.rowsHtml ? r : esc(r)}</span><select data-k="${i}" ${done ? 'disabled' : ''} aria-label="Zuordnung ${i + 1}"><option value="">– wählen –</option>${ch.map(c => `<option ${v[i] === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select>${done && !exam && res && !res[i] ? `<span class="small ok-t">→ ${esc(it.ans[i])}</span>` : ''}</div>`).join('')}</div>`;
+  } else if (it.kind === 'gap') {
+    let parts = esc(it.q).replace(/\[\[(\d+)\]\]/g, (m, n) => { const i = +n, g = it.gaps[i];
+      const ctl = g.text ? `<input type="text" data-k="${i}" value="${esc(v[i] || '')}" ${done ? 'disabled' : ''} aria-label="Lücke ${i + 1}" autocomplete="off">` : `<select data-k="${i}" ${done ? 'disabled' : ''} aria-label="Lücke ${i + 1}"><option value="">…</option>${g.opts.map(o => `<option ${v[i] === o ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select>`;
+      return `<span class="gapw${mark(i)}">${ctl}${done && !exam && res && !res[i] ? `<b class="ok-t"> ${esc(g.text ? (g.show || g.ans[0]) : g.ans)}</b>` : ''}</span>`; });
+    body = `<p class="gaptext">${parts}</p>`;
+  } else if (it.kind === 'short') {
+    body = `<div class="row"><input type="text" id="kshort" data-k="0" value="${esc(v[0] || '')}" ${done ? 'disabled' : ''} aria-label="Deine Antwort" autocomplete="off" class="kshort"></div>`;
+  }
+  return `<div class="card qcard"><h2 class="q">${multiline(it.kind === 'gap' ? (it.lead ? '' : 'Fülle die Lücken aus.') : it.q)}</h2>${extras(it)}${body}
+    ${done && !exam ? `<div class="fb ${s.kres.ok ? 'fb-ok' : 'fb-bad'}" role="status"><p><b>${s.kres.ok ? 'Richtig!' : 'Leider nicht ganz.'}</b> ${s.kres.ok ? '' : 'Richtig ist: <b>' + esc(answerText(it)) + '</b>'}</p>${it.e ? `<p>${multiline(it.e)}</p>` : ''}<button class="linkbtn small" data-act="flag" data-id="${it.id}">Fehler melden: Diese Frage stimmt nicht</button></div>` : ''}
+    ${done && !exam ? `<button class="btn big" data-act="next" id="nextbtn">${s.i + 1 < s.ids.length ? 'Weiter' : 'Auswerten'}</button>` : `<button class="btn big" data-act="kchk">${exam ? 'Antwort speichern' : 'Prüfen'}</button>`}</div>`;
+}
+function kindCheck(it) {
+  const m = document.getElementById('main'); let vals = [], parts = [];
+  if (it.kind === 'multi') { vals = [...m.querySelectorAll('input[name=kmulti]:checked')].map(x => +x.value); const ok = vals.length === it.ans.length && vals.every(x => it.ans.includes(x)); return { vals, parts: [ok], ok, empty: !vals.length }; }
+  m.querySelectorAll('[data-k]').forEach(el => { vals[+el.dataset.k] = el.value; });
+  if (it.kind === 'match') parts = it.ans.map((a, i) => vals[i] === a);
+  else if (it.kind === 'gap') parts = it.gaps.map((g, i) => g.text ? g.ans.map(normA).includes(normA(vals[i])) : vals[i] === g.ans);
+  else if (it.kind === 'short') parts = [it.ans.map(normA).includes(normA(vals[0]))];
+  return { vals, parts, ok: parts.every(Boolean), empty: vals.filter(x => x).length === 0 };
 }
 function viewUeben() {
   const ids = ap1Ids(), w = wrongIds().length, due = ids.filter(isDue).length;
@@ -322,17 +367,18 @@ function currentQ() { const s = S.session; return s && LT.items.get(s.ids[s.i]);
 function viewSession() {
   const s = S.session; if (!s) return viewUeben();
   if (s.i >= s.ids.length) return finishSession();
-  const it = currentQ(), n = s.ids.length, ord = s.order[it.id] || it.a.map((_, i) => i);
+  const it = currentQ(), n = s.ids.length, ord = s.order[it.id] || (it.a ? it.a.map((_, i) => i) : []);
   const topic = LT.byTopic.get(it.topic);
   const head = `<div class="s-head"><button class="btn ghost sm" data-act="pause">Pause</button><div class="s-prog"><span class="bar single"><i style="width:${s.i / n * 100}%"></i></span><span class="small muted">${s.i + 1} / ${n}</span></div><button class="btn ghost sm" data-act="end">Beenden</button></div>
   <div class="h-row"><p class="eyebrow">${lfName(it.lf)} · ${esc(topic ? topic.title : '')}</p><button class="btn ghost sm" data-act="speak">Vorlesen</button></div>${S.settings.adhs ? runStreak(s) : ''}`;
   if (s.mode === 'cards') {
     const shown = s.answered === 'shown';
-    return `${head}<div class="card qcard"><h2 class="q">${multiline(it.q)}</h2>
-      ${shown ? `<div class="answer"><p class="ans"><b>${esc(it.a[0])}</b></p>${it.e ? `<p class="muted">${multiline(it.e)}</p>` : ''}<button class="linkbtn small" data-act="flag" data-id="${it.id}">Fehler melden: Diese Frage stimmt nicht</button></div>
+    return `${head}<div class="card qcard"><h2 class="q">${multiline(qText(it))}</h2>${extras(it)}
+      ${shown ? `<div class="answer"><p class="ans"><b>${esc(answerText(it))}</b></p>${it.e ? `<p class="muted">${multiline(it.e)}</p>` : ''}<button class="linkbtn small" data-act="flag" data-id="${it.id}">Fehler melden: Diese Frage stimmt nicht</button></div>
       <div class="row grade"><button class="btn bad" data-act="card-no">Nicht gewusst</button><button class="btn ok" data-act="card-yes">Gewusst</button></div>`
       : `<button class="btn big" data-act="flip">Antwort zeigen</button>`}</div>`;
   }
+  if (it.kind) return head + kindView(it, s, s.mode === 'exam');
   const done = s.answered != null && s.answered !== 'shown';
   const exam = s.mode === 'exam';
   const opts = ord.map((oi, k) => {
@@ -346,7 +392,7 @@ function viewSession() {
     const ok = s.answered === 0;
     fb = `<div class="fb ${ok ? 'fb-ok' : 'fb-bad'}" role="status"><p><b>${ok ? 'Richtig!' : 'Leider falsch.'}</b> ${ok ? '' : `Richtig ist: <b>${esc(it.a[0])}</b>`}</p>${it.e ? `<p>${multiline(it.e)}</p>` : ''}${ok ? '' : '<p class="small">Die Frage kommt in dieser Runde noch einmal.</p>'}<button class="linkbtn small" data-act="flag" data-id="${it.id}">Fehler melden: Diese Frage stimmt nicht</button></div>`;
   }
-  return `${head}<div class="card qcard"><h2 class="q">${multiline(it.q)}</h2><div class="opts">${opts}</div>${fb}
+  return `${head}<div class="card qcard"><h2 class="q">${multiline(it.q)}</h2>${extras(it)}<div class="opts">${opts}</div>${fb}
     ${done ? `<button class="btn big" data-act="next" id="nextbtn">${s.i + 1 < n ? 'Weiter' : 'Auswerten'}</button>` : ''}</div>`;
 }
 function runStreak(s) { let n = 0; for (let i = s.res.length - 1; i >= 0 && s.res[i].ok; i--) n++; return n >= 2 ? `<p class="streak">${n} richtig hintereinander. Weiter so!</p>` : ''; }
@@ -364,7 +410,7 @@ function finishSession() {
 function viewResult() {
   const r = S.last; if (!r) return viewUeben();
   const p = pct(r.ok, r.total), exam = r.mode === 'exam';
-  const list = r.wrong.map(id => { const it = LT.items.get(id); if (!it) return ''; const pk = r.picks && r.picks[id]; return `<li><p><b>${esc(it.q)}</b></p>${exam && pk != null && pk >= 0 ? `<p class="small bad-t">Deine Antwort: ${esc(it.a[pk])}</p>` : ''}<p class="small ok-t">Richtig: ${esc(it.a[0])}</p>${it.e ? `<p class="small muted">${multiline(it.e)}</p>` : ''}</li>`; }).join('');
+  const list = r.wrong.map(id => { const it = LT.items.get(id); if (!it) return ''; const pk = r.picks && r.picks[id]; return `<li><p><b>${esc(qText(it))}</b></p>${exam && pk != null && pk >= 0 && !it.kind ? `<p class="small bad-t">Deine Antwort: ${esc(it.a[pk])}</p>` : ''}<p class="small ok-t">Richtig: ${esc(answerText(it))}</p>${it.e ? `<p class="small muted">${multiline(it.e)}</p>` : ''}</li>`; }).join('');
   const mins = Math.floor(r.secs / 60), secs = r.secs % 60;
   const msg = p === 100 ? 'Alles richtig. Genau so!' : p >= 80 ? 'Sehr gut, fast alles sitzt.' : p >= 50 ? 'Gute Basis. Die falschen Fragen kommen wieder dran.' : 'Dranbleiben: Lies die Lernzettel und übe den Fehlerkorb.';
   return `
@@ -431,7 +477,7 @@ function viewMehr() {
       <button class="btn" type="submit">Speichern</button>
     </form>
   </section>
-  ${S.flags && Object.keys(S.flags).length ? `<section class="card"><h2>Gemeldete Fragen (${Object.keys(S.flags).length})</h2><p class="small muted">Diese Fragen hältst du für fehlerhaft. Sie werden nicht abgefragt. Klär sie mit deiner Lehrkraft oder deinem Tabellenbuch.</p><ul class="plain small">${Object.keys(S.flags).filter(id => LT.items.has(id)).map(id => { const it = LT.items.get(id); return `<li>${esc(it.q)} <span class="muted">(${lfName(it.lf)})</span> <button class="linkbtn" data-act="flag" data-id="${id}">zurücknehmen</button></li>`; }).join('')}</ul></section>` : ''}
+  ${S.flags && Object.keys(S.flags).length ? `<section class="card"><h2>Gemeldete Fragen (${Object.keys(S.flags).length})</h2><p class="small muted">Diese Fragen hältst du für fehlerhaft. Sie werden nicht abgefragt. Klär sie mit deiner Lehrkraft oder deinem Tabellenbuch.</p><ul class="plain small">${Object.keys(S.flags).filter(id => LT.items.has(id)).map(id => { const it = LT.items.get(id); return `<li>${esc(qText(it))} <span class="muted">(${lfName(it.lf)})</span> <button class="linkbtn" data-act="flag" data-id="${id}">zurücknehmen</button></li>`; }).join('')}</ul></section>` : ''}
   <section class="card" id="installieren">
     <h2>Aufs iPhone und auf den Fernseher</h2>
     <p class="small"><b>iPhone:</b> Öffne die App in Safari. Tippe auf <b>Teilen</b> (Quadrat mit Pfeil) und dann auf <b>„Zum Home-Bildschirm“</b>. Danach startet sie wie eine App ohne Browserleiste. Läuft sie von einer eigenen Adresse (z. B. GitHub Pages), funktioniert sie danach auch ohne Internet.</p>
@@ -572,10 +618,14 @@ function act(a, el) {
       if (!ok && !s.again.includes(id)) { s.again.push(id); s.ids.push(id); }
       save(); render(); const nb = $('#nextbtn'); if (nb) nb.focus({ preventScroll: true }); break;
     }
-    case 'next': s.i++; s.answered = null; save(); render(); window.scrollTo(0, 0); break;
+    case 'next': s.i++; s.answered = null; s.kres = null; save(); render(); window.scrollTo(0, 0); break;
     case 'flag': { S.flags = S.flags || {}; const id = el.dataset.id; if (S.flags[id]) { delete S.flags[id]; toast('Meldung zurückgenommen. Die Frage wird wieder abgefragt.'); } else { S.flags[id] = 1; toast('Gemeldet. Die Frage wird nicht mehr abgefragt. Unter „Mehr“ siehst du alle gemeldeten Fragen.'); }
       save(); const d = el.closest('details'); const open = d && d.open; render(); break; }
-    case 'speak': { const it = currentQ(); if (!it) return; const ord = s.order[it.id] || it.a.map((_, i) => i); speak(it.q + '. ' + (s.mode === 'cards' ? (s.answered === 'shown' ? 'Antwort: ' + it.a[0] : '') : ord.map((oi, k) => 'ABCDEF'[k] + ': ' + it.a[oi]).join('. '))); break; }
+    case 'kchk': { const it = currentQ(); if (!it) return; const r = kindCheck(it); if (r.empty) { toast('Bitte zuerst eine Antwort eingeben oder auswählen.'); return; }
+      if (s.mode === 'exam') { s.res.push({ id: it.id, ok: r.ok, pick: -1 }); s.i++; s.answered = null; s.kres = null; save(); render(); return; }
+      s.answered = 'done'; s.kres = r; grade(it.id, r.ok); s.res.push({ id: it.id, ok: r.ok }); if (!r.ok && !s.again.includes(it.id)) { s.again.push(it.id); s.ids.push(it.id); }
+      save(); render(); const nb = $('#nextbtn'); if (nb) nb.focus({ preventScroll: true }); break; }
+    case 'speak': { const it = currentQ(); if (!it) return; const ord = s.order[it.id] || (it.a ? it.a.map((_, i) => i) : []); speak(qText(it) + '. ' + (s.mode === 'cards' ? (s.answered === 'shown' ? 'Antwort: ' + answerText(it) : '') : it.kind === 'multi' ? it.opts.join('. ') : it.kind ? '' : (ord || []).map((oi, k) => 'ABCDEF'[k] + ': ' + it.a[oi]).join('. '))); break; }
     case 'speak-sheet': { const t = LT.byTopic.get(el.dataset.id); const txt = document.querySelector('.chunk'); speak(txt ? txt.innerText : t.title); break; }
     case 'chunk': chunkPos[el.dataset.id] = Math.max(0, (chunkPos[el.dataset.id] || 0) + (+el.dataset.d)); render(); { const c = document.querySelector('.sheet'); if (c) c.scrollIntoView({ block: 'start' }); } break;
     case 'adhs-on': S.settings.adhs = true; save(); go('start'); render(); toast('Fokusmodus an. Kurze Runden, eine Sache nach der anderen.'); break;
