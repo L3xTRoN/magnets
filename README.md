@@ -21,7 +21,8 @@ Dann `http://localhost:8000/` öffnen. Für das Handy unterwegs: Repository z. B
 | `index.html` + `ap1/app.js` | Prüfungstrainer: Start, Lernfelder, Üben, Werkstatt, Fortschritt |
 | `ap1/lf1.js` … `ap1/lf6.js` | Fragen und Lernzettel je Lernfeld (345 Fragen) |
 | `ap1/arbeitsblaetter.js` | 75 Fragen aus deinen Arbeitsblättern, erzeugt mit `node tools/build-arbeitsblaetter.js` |
-| `schaltwand.html` | Schaltungen auf einer Übungswand verdrahten |
+| `schaltwand.html` + `schaltwand.js` | Schaltwand: 22 Verdrahtungsübungen (Strom verstehen, Hausinstallation, Sicherungskasten, Schaltschrank) |
+| `labor.html` + `labor.js` | Schaltungslabor: freier Simulator mit Live-Werten, Stromfluss und 14 Challenges |
 | `magnetlabor.html` | Magnetismus, Rechte-Hand-Regel, Transformator (früher `index.html`) |
 | `arbeitsblaetter.html` | Arbeitsblätter 5.1–13.6 Schritt für Schritt |
 | `manifest.webmanifest`, `sw.js`, `icon.svg` | Installierbar und offline nutzbar |

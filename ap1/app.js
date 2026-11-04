@@ -325,6 +325,7 @@ function viewResult() {
 }
 
 const TOOLS = {
+  labor: { title: 'Schaltungslabor', file: 'labor.html', desc: 'Frei bauen wie in einem Simulator: Batterie, Widerstand, Lampe, LED, Schalter, Messgeräte. Live-Werte, Stromfluss und 14 Challenges.' },
   schaltwand: { title: 'Schaltwand', file: 'schaltwand.html', desc: '22 Übungen zum Verdrahten: Strom messen, LED, Licht- und Steckdosenschaltungen, Sicherungskasten mit FI und LS, Schützschaltungen. Passt zu LF 1, 2, 3 und 5.' },
   magnetlabor: { title: 'Magnetlabor', file: 'magnetlabor.html', desc: 'Magnetismus, Rechte-Hand-Regel, Transformator mit Rechenaufgaben. Passt zu LF 1 und LF 5.' },
   arbeitsblaetter: { title: 'Arbeitsblätter', file: 'arbeitsblaetter.html', desc: 'Deine Arbeitsblätter 5.1 bis 13.6 Schritt für Schritt, mit Zeichenaufgaben.' },
