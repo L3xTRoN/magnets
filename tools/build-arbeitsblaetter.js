@@ -18,7 +18,7 @@ function toText(h) {
   s = ent(s).replace(/\*\*\s*\*\*/g, '').replace(/[ \t]+/g, ' ');
   return s.split('\n').map(l => l.trim()).filter(l => l && l !== '-').join('\n');
 }
-const LF = { b51: 1, b53: 1, b55: 1, b59: 1, praefix: 1, tafel: 5, b135: 5, b136: 5 };
+const LF = { b51: 20, b53: 20, b55: 20, b59: 20, praefix: 20, tafel: 20, b135: 20, b136: 20 };
 const out = [];
 ctx.__S.forEach(sh => {
   const lf = LF[sh.id]; if (!lf) return;
@@ -31,7 +31,7 @@ ctx.__S.forEach(sh => {
   out.push({ lf, topic: {
     id: 'ab-' + sh.id,
     title: (/^\d/.test(sh.nr) ? 'Arbeitsblatt ' + sh.nr + ': ' : '') + sh.title,
-    source: 'Aus deinen Arbeitsblättern',
+    source: 'Aus deinen Arbeitsblättern (bitte prüfen)',
     sheet: lessons.map(l => '## ' + l.title + '\n' + toText(l.html)).join('\n'),
     items } });
 });

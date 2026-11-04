@@ -18,10 +18,15 @@ LT.LF = [
   { n: 11, year: 3, h: 80, title: 'Kommunikationssysteme planen und realisieren', core: 'Kommunikationssysteme zu planen und zu realisieren' },
   { n: 12, year: 4, h: 80, title: 'Multimedia- und serverbasierte Systeme einrichten und administrieren', core: 'multimedia- und serverbasierte Systeme zu planen, einzurichten und zu administrieren' },
   { n: 13, year: 4, h: 60, title: 'Komplexe Informationssysteme ändern und instand halten', core: 'an komplexen informationstechnischen Systemen Änderungs- und Instandhaltungsmaßnahmen zu planen und durchzuführen' },
-  { n: 14, year: 0, h: 0, title: 'Wirtschafts- und Sozialkunde (WiSo)', wiso: true },
+  { n: 20, own: true, title: 'Deine Arbeitsblätter', short: 'Arbeitsblätter' },
+  { n: 21, own: true, title: 'Deine Unterlagen · Ausbildungsjahr 1', short: 'Unterlagen Jahr 1' },
+  { n: 22, own: true, title: 'Deine Unterlagen · Ausbildungsjahr 2', short: 'Unterlagen Jahr 2' },
 ];
 LT.AP1 = [1, 2, 3, 4, 5, 6];
-LT.AP2 = [7, 8, 9, 10, 11, 12, 13, 14];
+LT.AP2 = [7, 8, 9, 10, 11, 12, 13];
+LT.OWN = [20, 21, 22];
+const lfById = n => LT.LF.find(L => L.n === n);
+const lfName = n => { const L = lfById(n); return L && L.own ? L.short : 'LF ' + n; };
 LT.ext = { routes: [], acts: {}, after: [], games: [] };
 
 /* ---------- Inhalte registrieren ---------- */
@@ -117,8 +122,8 @@ function summary(ids) {
 }
 const TARGETS = {
   ap1: { label: 'Abschlussprüfung Teil 1', short: 'Teil 1 · LF 1–6', lfs: () => LT.AP1 },
-  ap2: { label: 'Abschlussprüfung Teil 2', short: 'Teil 2 · LF 7–13 und WiSo', lfs: () => LT.AP2 },
-  alle: { label: 'Ganze Ausbildung', short: 'LF 1–13 und WiSo', lfs: () => [...LT.AP1, ...LT.AP2] },
+  ap2: { label: 'Abschlussprüfung Teil 2', short: 'Teil 2 · LF 7–13', lfs: () => LT.AP2 },
+  alle: { label: 'Ganze Ausbildung', short: 'LF 1–13', lfs: () => [...LT.AP1, ...LT.AP2] },
 };
 const tgt = () => TARGETS[S.settings.target] || TARGETS.ap1;
 const ap1Ids = () => [...LT.items.values()].filter(i => tgt().lfs().includes(i.lf)).map(i => i.id);
@@ -131,8 +136,9 @@ function streak() {
 }
 
 /* ---------- Sitzungen ---------- */
+const flagged = id => !!(S.flags && S.flags[id]);
 function startSession(mode, ids, title, back) {
-  ids = ids.filter(id => LT.items.has(id));
+  ids = ids.filter(id => LT.items.has(id) && !flagged(id));
   if (!ids.length) { toast('Für diese Auswahl gibt es gerade keine Fragen.'); return; }
   const order = {};
   ids.forEach(id => { order[id] = shuffle(LT.items.get(id).a.map((_, i) => i)); });
@@ -160,7 +166,7 @@ const TABS = [['start', 'Start'], ['lernfelder', 'Lernen'], ['ueben', 'Üben'], 
 function tabFor(r) {
   if (r.startsWith('lf-') || r.startsWith('thema-')) return 'lernfelder';
   if (r.startsWith('tool-') || r.startsWith('spiel') || r === 'werkstatt') return 'spiele';
-  if (r === 'sitzung' || r === 'ergebnis' || r.startsWith('rechnen') || r === 'formeln') return 'ueben';
+  if (r === 'sitzung' || r === 'ergebnis' || r.startsWith('rechnen') || r === 'formeln' || r === 'mathe') return 'ueben';
   return r;
 }
 
@@ -199,7 +205,7 @@ function viewStart() {
   <section class="tiles">
     <a class="tile" href="#rechnen"><b>Rechentrainer</b><small>Aufgaben mit Lösungsweg</small></a>
     <a class="tile" href="#spiele"><b>Spiele</b><small>Schaltpläne, Farbcode, Labor</small></a>
-    <a class="tile" href="#formeln"><b>Formelsammlung</b><small>Alle Formeln erklärt</small></a>
+    <a class="tile" href="#mathe"><b>Mathe-Grundlagen</b><small>Umstellen, Potenzen, Prozent</small></a>
     <button class="tile" data-act="adhs-on"><b>Fokusmodus</b><small>Kurze Runden, Timer, ADHS-freundlich</small></button>
   </section>
   <section class="grid2">
@@ -217,29 +223,34 @@ function viewStart() {
   </section>
   <section class="card">
     <div class="h-row"><h2>Deine Lernfelder</h2><a href="#lernfelder" class="link">Alle</a></div>
-    <ul class="lflist">${tgt().lfs().map(n => { const ss = summary(lfIds(n)); const L = LT.LF[n - 1]; return `<li><a href="#lf-${n}" class="lfrow"><span class="lfno">${n}</span><span class="lft"><b>${esc(L.title)}</b>${bar(ss)}</span><span class="lfp">${ss.ready}%</span></a></li>`; }).join('')}</ul>
+    <ul class="lflist">${tgt().lfs().map(n => { const ss = summary(lfIds(n)); const L = lfById(n); return `<li><a href="#lf-${n}" class="lfrow"><span class="lfno">${n}</span><span class="lft"><b>${esc(L.title)}</b>${bar(ss)}</span><span class="lfp">${ss.ready}%</span></a></li>`; }).join('')}</ul>
     <p class="muted small">Grün = sicher, Gelb = in Arbeit, Grau = neu. <a href="#mehr" class="link">So wird gezählt</a></p>
   </section>`;
 }
 
 function viewLernfelder() {
-  const card = L => { const s = summary(lfIds(L.n)); return `<a class="lfcard" href="#lf-${L.n}"><span class="lfno">${L.wiso ? 'W' : L.n}</span><span class="lft"><b>${esc(L.title)}</b><small>${L.h ? L.h + ' Std. · ' : ''}${s.total} Fragen · ${s.sicher} sicher · ${L.n <= 6 ? 'Prüfung Teil 1' : 'Prüfung Teil 2'}</small>${bar(s)}</span><span class="lfp">${s.ready}%</span></a>`; };
-  const years = [[1, 'Ausbildungsjahr 1'], [2, 'Ausbildungsjahr 2'], [3, 'Ausbildungsjahr 3'], [4, 'Ausbildungsjahr 4'], [0, 'Begleitend: Wirtschafts- und Sozialkunde']];
+  const card = L => { const s = summary(lfIds(L.n)); return `<a class="lfcard" href="#lf-${L.n}"><span class="lfno">${L.n}</span><span class="lft"><b>${esc(L.title)}</b><small>${L.h ? L.h + ' Std. · ' : ''}${s.total} Fragen · ${s.sicher} sicher · ${L.n <= 6 ? 'Prüfung Teil 1' : 'Prüfung Teil 2'}</small>${bar(s)}</span><span class="lfp">${s.ready}%</span></a>`; };
+  const years = [[1, 'Ausbildungsjahr 1'], [2, 'Ausbildungsjahr 2'], [3, 'Ausbildungsjahr 3'], [4, 'Ausbildungsjahr 4']];
+  const own = LT.LF.filter(L => L.own && lfIds(L.n).length);
+  const ownCard = L => { const s = summary(lfIds(L.n)); return `<a class="lfcard own" href="#lf-${L.n}"><span class="lfno">✎</span><span class="lft"><b>${esc(L.title)}</b><small>${s.total} Fragen · ${s.sicher} sicher</small>${bar(s)}</span><span class="lfp">${s.ready}%</span></a>`; };
   return `
   <h1 class="page-h">Lernen</h1>
   <p class="muted">Alle Lernfelder nach dem KMK-Rahmenlehrplan Informationselektroniker/-in (Beschluss vom 18.12.2020). LF 1–6 kommen vor Teil 1 der Abschlussprüfung, LF 7–13 vor Teil 2. Dein Prüfungsziel stellst du unter „Mehr“ ein.</p>
+  <section><h2 class="sec-h">Deine Unterlagen (getrennt von den Lernfeldern)</h2>
+    ${own.length ? `<div class="lfcards">${own.map(ownCard).join('')}</div>` : ''}
+    <p class="small muted">Inhalte aus deinem Unterricht. Sie können Fehler enthalten: Wenn dir eine Frage falsch vorkommt, markiere sie mit „Fehler melden“. Markierte Fragen werden nicht mehr abgefragt.</p></section>
   ${years.map(([y, t]) => `<section><h2 class="sec-h">${t}</h2><div class="lfcards">${LT.LF.filter(L => L.year === y).map(card).join('')}</div></section>`).join('')}`;
 }
 
 function viewLF(n) {
-  const L = LT.LF[n - 1]; if (!L) return viewLernfelder();
+  const L = lfById(n); if (!L) return viewLernfelder();
   const ts = LT.topics.filter(t => t.lf === n), s = summary(lfIds(n));
   return `
   <a href="#lernfelder" class="back">← Lernen</a>
-  <p class="eyebrow">${L.wiso ? 'Prüfungsbereich Wirtschafts- und Sozialkunde' : `Lernfeld ${n} · ${L.year}. Ausbildungsjahr · ${L.h} Stunden · ${n <= 6 ? 'Teil 1' : 'Teil 2'}`}</p>
+  <p class="eyebrow">${L.own ? 'Deine Unterlagen' : `Lernfeld ${n} · ${L.year}. Ausbildungsjahr · ${L.h} Stunden · ${n <= 6 ? 'Teil 1' : 'Teil 2'}`}</p>
   <h1 class="page-h">${esc(L.title)}</h1>
   ${L.core ? `<blockquote class="kmk">Die Schülerinnen und Schüler verfügen über die Kompetenz, ${esc(L.core)}.<cite>KMK-Rahmenlehrplan, Lernfeld ${n}</cite></blockquote>` : ''}
-  ${L.wiso ? '<p class="muted">WiSo ist ein eigener Prüfungsbereich in Teil 2 der Abschlussprüfung: Ausbildung, Arbeitsrecht, Sozialversicherung, Betrieb und Wirtschaft.</p>' : ''}
+  ${L.own ? '<p class="card note">Diese Inhalte stammen aus deinen Unterlagen und sind von den Lernfeldern getrennt. Sie können Fehler enthalten. Wo mir beim Übernehmen etwas aufgefallen ist, steht ein Hinweis in der Erklärung. Fragen, die dir falsch vorkommen, markierst du mit „Fehler melden“.</p>' : ''}
   <div class="card stats">${bar(s)}<p><b>${s.ready}% Prüfungsreife</b> · ${s.sicher} sicher · ${s.arbeit} in Arbeit · ${s.neu} neu</p>
     <div class="row"><button class="btn" data-act="lf-smart" data-n="${n}">Lernfeld lernen</button><button class="btn ghost" data-act="lf-cards" data-n="${n}">Karteikarten</button></div></div>
   <h2 class="sec-h">Themen</h2>
@@ -249,7 +260,7 @@ function viewLF(n) {
 function viewTopic(id) {
   const t = LT.byTopic.get(id); if (!t) return viewLernfelder();
   const s = summary(t.ids);
-  const rows = t.ids.map(i => { const it = LT.items.get(i); const st = stat(i); return `<li><details><summary><span class="pill p-${st}">${{ neu: 'Neu', arbeit: 'In Arbeit', sicher: 'Sicher' }[st]}</span> ${esc(it.q)}</summary><p class="ans"><b>Antwort:</b> ${esc(it.a[0])}</p>${it.e ? `<p class="muted small">${multiline(it.e)}</p>` : ''}</details></li>`; }).join('');
+  const rows = t.ids.map(i => { const it = LT.items.get(i); const st = stat(i); const fl = flagged(i); return `<li><details><summary><span class="pill p-${fl ? 'flag' : st}">${fl ? 'Gemeldet' : { neu: 'Neu', arbeit: 'In Arbeit', sicher: 'Sicher' }[st]}</span> ${esc(it.q)}</summary><p class="ans"><b>Antwort:</b> ${esc(it.a[0])}</p>${it.e ? `<p class="muted small">${multiline(it.e)}</p>` : ''}<button class="linkbtn small" data-act="flag" data-id="${i}">${fl ? 'Meldung zurücknehmen' : 'Fehler melden'}</button></details></li>`; }).join('');
   return `
   <a href="#lf-${t.lf}" class="back">← Lernfeld ${t.lf}</a>
   <h1 class="page-h">${esc(t.title)}</h1>
@@ -290,6 +301,7 @@ function viewUeben() {
   <div class="modes">
     <button class="mode" data-act="smart"><b>Weiterlernen</b><span>Fällige Wiederholungen zuerst, dann neue Fragen in Lernfeld-Reihenfolge. ${due ? due + ' fällig.' : ''}</span></button>
     <button class="mode" data-act="wrong" ${w ? '' : 'disabled'}><b>Fehlerkorb (${w})</b><span>Alle Fragen, die du zuletzt falsch beantwortet hast.</span></button>
+    <a class="mode" href="#mathe"><b>Mathe-Grundlagen</b><span>Gleichungen, Formeln umstellen, Potenzen, Zehnerpotenzen, Wurzeln, Brüche, Prozent, Dreisatz. Mit Erklärungen.</span></a>
     <a class="mode" href="#rechnen"><b>Rechentrainer</b><span>Rechenaufgaben mit immer neuen Zahlen und vollständigem Lösungsweg.</span></a>
     <a class="mode" href="#formeln"><b>Formelsammlung</b><span>Alle wichtigen Formeln mit Bedeutung und Einheiten.</span></a>
     <button class="mode" data-act="exam"><b>Prüfungssimulation</b><span>30 zufällige Fragen aus ${tgt().short}. Kein Feedback bis zum Schluss, dann Punkte und Note.</span></button>
@@ -297,7 +309,7 @@ function viewUeben() {
   </div>
   <section class="card">
     <h2>Eigene Auswahl</h2>
-    <fieldset class="pick"><legend>Lernfelder</legend>${[...LT.AP1, ...LT.AP2].filter(n => lfIds(n).length).map(n => `<label><input type="checkbox" name="lfsel" value="${n}" ${tgt().lfs().includes(n) ? 'checked' : ''}> ${n === 14 ? 'WiSo' : 'LF ' + n}</label>`).join('')}</fieldset>
+    <fieldset class="pick"><legend>Lernfelder</legend>${[...LT.AP1, ...LT.AP2].filter(n => lfIds(n).length).map(n => `<label><input type="checkbox" name="lfsel" value="${n}" ${tgt().lfs().includes(n) ? 'checked' : ''}> LF ${n}</label>`).join('')}${LT.OWN.filter(n => lfIds(n).length).map(n => `<label><input type="checkbox" name="lfsel" value="${n}"> ${lfName(n)}</label>`).join('')}</fieldset>
     <div class="row">
       <label class="sel">Anzahl <select id="cnt"><option>10</option><option selected>20</option><option>40</option><option value="999">alle</option></select></label>
       <label class="sel">Art <select id="kind"><option value="quiz">Quiz</option><option value="cards">Karteikarten</option></select></label>
@@ -313,11 +325,11 @@ function viewSession() {
   const it = currentQ(), n = s.ids.length, ord = s.order[it.id] || it.a.map((_, i) => i);
   const topic = LT.byTopic.get(it.topic);
   const head = `<div class="s-head"><button class="btn ghost sm" data-act="pause">Pause</button><div class="s-prog"><span class="bar single"><i style="width:${s.i / n * 100}%"></i></span><span class="small muted">${s.i + 1} / ${n}</span></div><button class="btn ghost sm" data-act="end">Beenden</button></div>
-  <div class="h-row"><p class="eyebrow">${it.lf === 14 ? 'WiSo' : 'LF ' + it.lf} · ${esc(topic ? topic.title : '')}</p><button class="btn ghost sm" data-act="speak">Vorlesen</button></div>${S.settings.adhs ? runStreak(s) : ''}`;
+  <div class="h-row"><p class="eyebrow">${lfName(it.lf)} · ${esc(topic ? topic.title : '')}</p><button class="btn ghost sm" data-act="speak">Vorlesen</button></div>${S.settings.adhs ? runStreak(s) : ''}`;
   if (s.mode === 'cards') {
     const shown = s.answered === 'shown';
     return `${head}<div class="card qcard"><h2 class="q">${multiline(it.q)}</h2>
-      ${shown ? `<div class="answer"><p class="ans"><b>${esc(it.a[0])}</b></p>${it.e ? `<p class="muted">${multiline(it.e)}</p>` : ''}</div>
+      ${shown ? `<div class="answer"><p class="ans"><b>${esc(it.a[0])}</b></p>${it.e ? `<p class="muted">${multiline(it.e)}</p>` : ''}<button class="linkbtn small" data-act="flag" data-id="${it.id}">Fehler melden: Diese Frage stimmt nicht</button></div>
       <div class="row grade"><button class="btn bad" data-act="card-no">Nicht gewusst</button><button class="btn ok" data-act="card-yes">Gewusst</button></div>`
       : `<button class="btn big" data-act="flip">Antwort zeigen</button>`}</div>`;
   }
@@ -332,7 +344,7 @@ function viewSession() {
   let fb = '';
   if (done && !exam) {
     const ok = s.answered === 0;
-    fb = `<div class="fb ${ok ? 'fb-ok' : 'fb-bad'}" role="status"><p><b>${ok ? 'Richtig!' : 'Leider falsch.'}</b> ${ok ? '' : `Richtig ist: <b>${esc(it.a[0])}</b>`}</p>${it.e ? `<p>${multiline(it.e)}</p>` : ''}${ok ? '' : '<p class="small">Die Frage kommt in dieser Runde noch einmal.</p>'}</div>`;
+    fb = `<div class="fb ${ok ? 'fb-ok' : 'fb-bad'}" role="status"><p><b>${ok ? 'Richtig!' : 'Leider falsch.'}</b> ${ok ? '' : `Richtig ist: <b>${esc(it.a[0])}</b>`}</p>${it.e ? `<p>${multiline(it.e)}</p>` : ''}${ok ? '' : '<p class="small">Die Frage kommt in dieser Runde noch einmal.</p>'}<button class="linkbtn small" data-act="flag" data-id="${it.id}">Fehler melden: Diese Frage stimmt nicht</button></div>`;
   }
   return `${head}<div class="card qcard"><h2 class="q">${multiline(it.q)}</h2><div class="opts">${opts}</div>${fb}
     ${done ? `<button class="btn big" data-act="next" id="nextbtn">${s.i + 1 < n ? 'Weiter' : 'Auswerten'}</button>` : ''}</div>`;
@@ -403,7 +415,7 @@ function viewMehr() {
     <p>${total} Antworten insgesamt, davon ${pct(totalOk, total)}% richtig · ${s.sicher} von ${s.total} Fragen sicher (${tgt().short})</p>
     <div class="chart" role="img" aria-label="Antworten der letzten 14 Tage">${days.map(d => `<div class="col" title="${pkey(d.k).toLocaleDateString('de-DE')}: ${d.n} Antworten, ${d.ok} richtig"><span class="v">${d.n || ''}</span><i style="height:${d.n / mx * 100}%"></i><span class="d">${pkey(d.k).getDate()}.</span></div>`).join('')}</div>
     <div class="scroll"><table class="tbl"><thead><tr><th>Lernfeld</th><th>Sicher</th><th>In Arbeit</th><th>Neu</th><th>Reife</th></tr></thead><tbody>
-    ${[...LT.AP1, ...LT.AP2].filter(n => lfIds(n).length).map(n => { const ss = summary(lfIds(n)); return `<tr><td>${n === 14 ? 'WiSo' : 'LF ' + n}</td><td>${ss.sicher}</td><td>${ss.arbeit}</td><td>${ss.neu}</td><td>${ss.ready}%</td></tr>`; }).join('')}</tbody></table></div>
+    ${[...LT.AP1, ...LT.AP2].concat(LT.OWN).filter(n => lfIds(n).length).map(n => { const ss = summary(lfIds(n)); return `<tr><td>${lfName(n)}</td><td>${ss.sicher}</td><td>${ss.arbeit}</td><td>${ss.neu}</td><td>${ss.ready}%</td></tr>`; }).join('')}</tbody></table></div>
   </section>
   <section class="card">
     <h2>Einstellungen</h2>
@@ -419,6 +431,7 @@ function viewMehr() {
       <button class="btn" type="submit">Speichern</button>
     </form>
   </section>
+  ${S.flags && Object.keys(S.flags).length ? `<section class="card"><h2>Gemeldete Fragen (${Object.keys(S.flags).length})</h2><p class="small muted">Diese Fragen hältst du für fehlerhaft. Sie werden nicht abgefragt. Klär sie mit deiner Lehrkraft oder deinem Tabellenbuch.</p><ul class="plain small">${Object.keys(S.flags).filter(id => LT.items.has(id)).map(id => { const it = LT.items.get(id); return `<li>${esc(it.q)} <span class="muted">(${lfName(it.lf)})</span> <button class="linkbtn" data-act="flag" data-id="${id}">zurücknehmen</button></li>`; }).join('')}</ul></section>` : ''}
   <section class="card" id="installieren">
     <h2>Aufs iPhone und auf den Fernseher</h2>
     <p class="small"><b>iPhone:</b> Öffne die App in Safari. Tippe auf <b>Teilen</b> (Quadrat mit Pfeil) und dann auf <b>„Zum Home-Bildschirm“</b>. Danach startet sie wie eine App ohne Browserleiste. Läuft sie von einer eigenen Adresse (z. B. GitHub Pages), funktioniert sie danach auch ohne Internet.</p>
@@ -560,6 +573,8 @@ function act(a, el) {
       save(); render(); const nb = $('#nextbtn'); if (nb) nb.focus({ preventScroll: true }); break;
     }
     case 'next': s.i++; s.answered = null; save(); render(); window.scrollTo(0, 0); break;
+    case 'flag': { S.flags = S.flags || {}; const id = el.dataset.id; if (S.flags[id]) { delete S.flags[id]; toast('Meldung zurückgenommen. Die Frage wird wieder abgefragt.'); } else { S.flags[id] = 1; toast('Gemeldet. Die Frage wird nicht mehr abgefragt. Unter „Mehr“ siehst du alle gemeldeten Fragen.'); }
+      save(); const d = el.closest('details'); const open = d && d.open; render(); break; }
     case 'speak': { const it = currentQ(); if (!it) return; const ord = s.order[it.id] || it.a.map((_, i) => i); speak(it.q + '. ' + (s.mode === 'cards' ? (s.answered === 'shown' ? 'Antwort: ' + it.a[0] : '') : ord.map((oi, k) => 'ABCDEF'[k] + ': ' + it.a[oi]).join('. '))); break; }
     case 'speak-sheet': { const t = LT.byTopic.get(el.dataset.id); const txt = document.querySelector('.chunk'); speak(txt ? txt.innerText : t.title); break; }
     case 'chunk': chunkPos[el.dataset.id] = Math.max(0, (chunkPos[el.dataset.id] || 0) + (+el.dataset.d)); render(); { const c = document.querySelector('.sheet'); if (c) c.scrollIntoView({ block: 'start' }); } break;
@@ -569,7 +584,7 @@ function act(a, el) {
     case 'focus-stop': FOCUS.end = null; render(); break;
     case 'break-ok': { const b = $('#breakbox'); if (b) b.remove(); toast('Gute Pause! In 3 Minuten geht es weiter.'); break; }
     case 'break-skip': { const b = $('#breakbox'); if (b) b.remove(); focusStart('fokus', S.settings.focusMin); toast('Weiter geht’s. Neuer Fokus-Block läuft.'); break; }
-    case 'export': { const io = $('#io'); io.hidden = false; io.innerHTML = `<label for="io-t" class="small">Sicherung (Text kopieren und gut aufbewahren):</label><textarea id="io-t" rows="5" readonly>${esc(JSON.stringify({ app: 'ap1-trainer', v: 1, exportedAt: new Date().toISOString(), data: { p: S.p, days: S.days, settings: S.settings, calc: S.calc, games: S.games } }))}</textarea><button class="btn ghost sm" data-act="copy">Kopieren</button>`; break; }
+    case 'export': { const io = $('#io'); io.hidden = false; io.innerHTML = `<label for="io-t" class="small">Sicherung (Text kopieren und gut aufbewahren):</label><textarea id="io-t" rows="5" readonly>${esc(JSON.stringify({ app: 'ap1-trainer', v: 1, exportedAt: new Date().toISOString(), data: { p: S.p, days: S.days, settings: S.settings, calc: S.calc, games: S.games, flags: S.flags } }))}</textarea><button class="btn ghost sm" data-act="copy">Kopieren</button>`; break; }
     case 'copy': { const ta = $('#io-t'); ta.select(); (navigator.clipboard ? navigator.clipboard.writeText(ta.value) : Promise.reject()).then(() => toast('Sicherung kopiert.'), () => toast('Text ist markiert. Kopiere ihn mit Strg+C bzw. „Kopieren“.')); break; }
     case 'import': { const io = $('#io'); io.hidden = false; io.innerHTML = `<label for="io-in" class="small">Sicherung hier einfügen:</label><textarea id="io-in" rows="5"></textarea><p class="small">Oder Datei wählen: <input type="file" id="io-file" accept=".json,.txt,application/json,text/plain"></p><div class="row"><button class="btn ghost sm" data-act="imp-merge">Zusammenführen</button><button class="btn ghost sm" data-act="imp-replace">Ersetzen</button></div><p class="small muted">Zusammenführen behält bei jeder Frage den besseren Stand. Ersetzen überschreibt deinen jetzigen Fortschritt.</p>`;
       $('#io-file').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { $('#io-in').value = String(r.result || ''); toast('Datei geladen. Wähle Zusammenführen oder Ersetzen.'); }; r.onerror = () => toast('Die Datei konnte nicht gelesen werden.'); r.readAsText(f); }; break; }

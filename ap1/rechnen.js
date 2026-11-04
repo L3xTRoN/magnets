@@ -183,11 +183,11 @@
   let cur = null, mix = null;
   const st = id => { const S = A.S; S.calc = S.calc || {}; return S.calc[id] || (S.calc[id] = { n: 0, ok: 0, run: 0, star: false }); };
   function viewList() {
-    const groups = [...new Set(Object.values(G).map(g => g.group))];
+    const groups = [...new Set(Object.values(G).map(g => g.group))].sort((a, b) => (b === 'Mathe-Grundlagen') - (a === 'Mathe-Grundlagen'));
     const stars = Object.values(G).filter(g => st(g.id).star).length;
     return `<a href="#ueben" class="back">← Üben</a><h1 class="page-h">Rechentrainer</h1>
       <p class="muted">Immer neue Zahlen, immer mit Lösungsweg. Ein Stern, wenn du 3 Aufgaben eines Themas hintereinander richtig rechnest. ${stars} von ${Object.keys(G).length} Sternen.</p>
-      <div class="row"><a class="btn" href="#rechnen-mix">Gemischte Aufgaben</a><a class="btn ghost" href="#formeln">Formelsammlung</a></div>
+      <div class="row"><a class="btn" href="#rechnen-mix">Gemischte Aufgaben</a><a class="btn ghost" href="#mathe">Mathe-Grundlagen</a><a class="btn ghost" href="#formeln">Formelsammlung</a></div>
       ${groups.map(gr => `<section><h2 class="sec-h">${gr}</h2><div class="calcgrid">${Object.values(G).filter(g => g.group === gr).map(g => { const s = st(g.id); return `<a class="calc-t${s.star ? ' star' : ''}" href="#rechnen-${g.id}"><b>${g.title}</b><small>${s.star ? '★ geschafft · ' : ''}${s.ok} von ${s.n} richtig</small></a>`; }).join('')}</div></section>`).join('')}`;
   }
   function newTask(id) { const g = G[id]; cur = { id, t: g.gen(), state: 'ask', tip: 0, input: '' }; }
@@ -205,16 +205,19 @@
     const tip1 = cur.tip >= 1 || cur.state !== 'ask' ? `<p class="formula"><span class="small muted">Formel</span><b>${t.formula}</b></p>` : '';
     let sol = '';
     if (cur.state !== 'ask' || cur.tip >= 2) {
-      const ansTxt = t.text ? t.ans : f(t.ans, 4) + (t.unit ? ' ' + t.unit : '');
+      const ansTxt = t.opts ? t.opts[t.right] : t.text ? t.ans : f(t.ans, 6) + (t.unit ? ' ' + t.unit : '');
       sol = `<div class="solution"><p class="small muted">Lösungsweg</p><ol>${t.given.length ? `<li>Gegeben: ${t.given.map(([k, v]) => `${k} = ${v}`).join(', ')}</li>` : ''}<li>Gesucht: ${t.find}</li><li>Formel: ${t.formula}</li>${t.steps.map(x => `<li>${x}</li>`).join('')}<li><b>Ergebnis: ${ansTxt}</b></li></ol>${t.hint ? `<p class="small">${t.hint}</p>` : ''}</div>`;
     }
-    const fb = cur.state === 'right' ? `<div class="fb fb-ok" role="status"><p><b>Richtig!</b> ${s.run >= 3 ? 'Drei in Folge, Stern für dieses Thema!' : `${s.run} in Folge.`}</p></div>` : cur.state === 'wrong' ? `<div class="fb fb-bad" role="status"><p><b>Noch nicht.</b> Deine Antwort: ${A.esc(cur.input)}. Schau dir den Lösungsweg an.</p></div>` : '';
-    return `<a href="#rechnen" class="back">← Rechentrainer</a>
-      <div class="h-row"><p class="eyebrow">${g.group} · ${g.title}${isMix ? ` · Aufgabe ${mix.done + 1} von ${mix.goal}` : ''}</p>${s.star ? '<span class="tag">★</span>' : ''}</div>
+    const fb = cur.state === 'right' ? `<div class="fb fb-ok" role="status"><p><b>Richtig!</b> ${s.run >= 3 ? 'Drei in Folge, Stern für dieses Thema!' : `${s.run} in Folge.`}</p></div>` : cur.state === 'wrong' ? `<div class="fb fb-bad" role="status"><p><b>Noch nicht.</b> Deine Antwort: ${t.opts ? (t.opts[+cur.input] || '') : A.esc(cur.input)}. Schau dir den Lösungsweg an.</p></div>` : '';
+    const math = g.group === 'Mathe-Grundlagen';
+    const learn = g.learn ? `<details class="card learn" ${s.n === 0 ? 'open' : ''}><summary>So geht’s: ${g.title}</summary><div class="learn-body">${g.learn}</div></details>` : '';
+    const opts = t.opts ? `<div class="opts">${t.opts.map((o, i) => { let cls = ''; if (cur.state !== 'ask') { if (i === t.right) cls = ' right'; else if (String(i) === cur.input) cls = ' wrong'; } return `<button class="opt${cls}" data-act="calc-opt" data-i="${i}" ${cur.state !== 'ask' ? 'disabled' : ''}><span class="key">${'ABCD'[i]}</span><span class="mono-o">${o}</span></button>`; }).join('')}</div>` : '';
+    return `<a href="${math && !isMix ? '#mathe' : '#rechnen'}" class="back">← ${math && !isMix ? 'Mathe-Grundlagen' : 'Rechentrainer'}</a>
+      ${learn}<div class="h-row"><p class="eyebrow">${g.group} · ${g.title}${isMix ? ` · Aufgabe ${mix.done + 1} von ${mix.goal}` : ''}</p>${s.star ? '<span class="tag">★</span>' : ''}</div>
       <section class="card qcard"><h2 class="q">${t.q}</h2>${given}
-        <form id="calcform" class="calc-in" autocomplete="off"><label for="calc-a">Ergebnis${t.unit ? ' in ' + t.unit : ''}</label>
+        ${opts}${t.opts ? '' : `<form id="calcform" class="calc-in" autocomplete="off"><label for="calc-a">Ergebnis${t.unit ? ' in ' + t.unit : ''}</label>
           <div class="row"><input id="calc-a" type="text" inputmode="${t.text || t.neg ? 'text' : 'decimal'}" ${cur.state !== 'ask' ? 'disabled' : ''} value="${A.esc(cur.input)}" placeholder="${t.text ? 'z. B. 1011' : 'z. B. 2,5'}"><span class="unit">${t.unit}</span>
-          ${cur.state === 'ask' ? '<button class="btn" type="submit">Prüfen</button>' : ''}</div></form>
+          ${cur.state === 'ask' ? '<button class="btn" type="submit">Prüfen</button>' : ''}</div></form>`}
         ${tip1}${fb}${sol}
         <div class="row">${cur.state === 'ask' ? `${cur.tip < 1 ? '<button class="btn ghost sm" data-act="calc-tip">Formel-Tipp</button>' : ''}${cur.tip < 2 ? '<button class="btn ghost sm" data-act="calc-solve">Lösungsweg zeigen</button>' : ''}` : `<button class="btn" data-act="calc-next" id="calc-next">Nächste Aufgabe</button>`}<button class="btn ghost sm" data-act="calc-speak">Vorlesen</button></div>
       </section>`;
@@ -235,7 +238,10 @@
     if (t.text) ok = raw.replace(/\s/g, '').replace(/^0+(?=\d)/, '') === String(t.ans);
     else { const x = parseFloat(raw.replace(/\s/g, '').replace(/−/g, '-').replace(',', '.').replace(/[^\d.eE+-]/g, ''));
       if (isNaN(x)) { A.toast('Das ist keine Zahl. Schreibe z. B. 2,5'); return; }
-      ok = t.tol === 0 ? Math.abs(x - t.ans) < 1e-9 : Math.abs(x - t.ans) <= Math.max(Math.abs(t.ans) * t.tol, 0.005); }
+      ok = t.tol === 0 ? Math.abs(x - t.ans) < 1e-9 : Math.abs(x - t.ans) <= Math.max(Math.abs(t.ans) * t.tol, t.abs != null ? t.abs : 0.005); }
+    judge(ok, raw);
+  }
+  function judge(ok, raw) {
     const s = st(cur.id); s.n++; cur.input = raw;
     if (ok) { s.ok++; s.run++; if (s.run >= 3 && !s.star) { s.star = true; A.toast('Stern für „' + G[cur.id].title + '“!'); } cur.state = 'right'; }
     else { s.run = 0; cur.state = 'wrong'; }
@@ -244,6 +250,8 @@
     const nb = document.getElementById('calc-next'); if (nb) nb.focus({ preventScroll: true });
   }
   LT.ext.routes.push(['rechnen', a => a ? viewTask(a) : viewList()], ['formeln', () => viewFormeln()]);
+  LT.ext.acts['calc-opt'] = el => { if (!cur || cur.state !== 'ask') return; const i = +el.dataset.i; judge(i === cur.t.right, String(i)); };
+  LT.calcGroupState = st;
   LT.ext.acts['calc-tip'] = () => { cur.tip = 1; A.render(); };
   LT.ext.acts['calc-solve'] = () => { cur.tip = 2; const s = st(cur.id); s.run = 0; A.render(); };
   LT.ext.acts['calc-next'] = () => { const was = cur; if (was.mix) { cur = null; } else newTask(was.id); A.render(); const i = document.getElementById('calc-a'); if (i) i.focus(); };
