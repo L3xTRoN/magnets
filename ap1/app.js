@@ -24,7 +24,8 @@ LT.LF = [
 LT.AP1 = [1, 2, 3, 4, 5, 6];
 LT.AP2 = [7, 8, 9, 10, 11, 12, 13];
 LT.OWN = [20];
-LT.ownImport = d => { d.lfs.forEach(L => { LT.LF.push(Object.assign({ own: true }, L)); LT.OWN.push(L.n); }); d.topics.forEach(t => LT.addTopic(t.lf, t)); };
+LT.ownKmk = { 20: 5 };
+LT.ownImport = d => { d.lfs.forEach(L => { LT.LF.push(Object.assign({ own: true }, L)); LT.OWN.push(L.n); const m = /^LF (\d+)/.exec(L.title); if (m) LT.ownKmk[L.n] = +m[1]; }); d.topics.forEach(t => LT.addTopic(t.lf, t)); };
 const lfById = n => LT.LF.find(L => L.n === n);
 const lfName = n => { const L = lfById(n); return L && L.own ? L.short : 'LF ' + n; };
 LT.ext = { routes: [], acts: {}, after: [], games: [] };
@@ -90,7 +91,7 @@ const multiline = s => esc(s).replace(/\n/g, '<br>');
 /* ---------- Speicher ---------- */
 const KEY = 'ap1-trainer-v1';
 let S;
-function fresh() { return { v: 1, p: {}, days: {}, settings: { name: '', goal: 20, exam: '', size: 15, target: 'ap1', adhs: false, tv: false, focusMin: 10, speak: true }, session: null, last: null }; }
+function fresh() { return { v: 1, p: {}, days: {}, settings: { name: '', goal: 20, exam: '', size: 15, target: 'ap1', adhs: false, tv: false, focusMin: 10, speak: true, mix: true }, session: null, last: null }; }
 function load() {
   S = fresh();
   try { const d = JSON.parse(localStorage.getItem(KEY) || 'null'); if (d && typeof d === 'object') { S = Object.assign(fresh(), d); S.settings = Object.assign(fresh().settings, d.settings || {}); } } catch (e) { /* ohne Speicher weiter */ }
@@ -111,7 +112,7 @@ function grade(id, ok) {
   else { p.bad++; p.b = 0; p.up = ''; p.d = t; p.lg = 0; }
   p.l = t; S.p[id] = p;
   const day = S.days[t] || (S.days[t] = { n: 0, ok: 0 });
-  day.n++; if (ok) day.ok++;
+  day.n++; day.q = (day.q || 0) + 1; if (ok) day.ok++;
 }
 const stat = id => { const p = S.p[id]; return !p || !p.n ? 'neu' : p.b >= SAFE ? 'sicher' : 'arbeit'; };
 const isDue = id => { const p = S.p[id]; return !!(p && p.n && p.d <= dkey()); };
@@ -126,8 +127,11 @@ const TARGETS = {
   alle: { label: 'Ganze Ausbildung', short: 'LF 1–13', lfs: () => [...LT.AP1, ...LT.AP2] },
 };
 const tgt = () => TARGETS[S.settings.target] || TARGETS.ap1;
-const ap1Ids = () => [...LT.items.values()].filter(i => tgt().lfs().includes(i.lf)).map(i => i.id);
-const lfIds = n => LT.topics.filter(t => t.lf === n).flatMap(t => t.ids);
+const mixOn = () => S.settings.mix !== false;
+/* Themen eines Lernfelds; bei „gemischt“ inkl. deiner Unterlagen zu diesem Lernfeld */
+const topicsOf = n => { const base = LT.topics.filter(t => t.lf === n); return (!mixOn() || n > 13) ? base : base.concat(LT.topics.filter(t => LT.ownKmk[t.lf] === n)); };
+const lfIds = n => topicsOf(n).flatMap(t => t.ids);
+const ap1Ids = () => [...new Set(tgt().lfs().flatMap(lfIds))];
 function streak() {
   let k = dkey(), n = 0;
   if (!S.days[k]) k = addDays(k, -1);
@@ -202,6 +206,7 @@ function viewStart() {
     ${ring(s.ready, 'Prüfungsreife')}
   </section>
   ${sess}
+  ${todayPlan(today, due)}
   <section class="tiles">
     <a class="tile" href="#rechnen"><b>Rechentrainer</b><small>Aufgaben mit Lösungsweg</small></a>
     <a class="tile" href="#spiele"><b>Spiele</b><small>Schaltpläne, Farbcode, Labor</small></a>
@@ -229,22 +234,26 @@ function viewStart() {
 }
 
 function viewLernfelder() {
-  const card = L => { const s = summary(lfIds(L.n)); return `<a class="lfcard" href="#lf-${L.n}"><span class="lfno">${L.n}</span><span class="lft"><b>${esc(L.title)}</b><small>${L.h ? L.h + ' Std. · ' : ''}${s.total} Fragen · ${s.sicher} sicher · ${L.n <= 6 ? 'Prüfung Teil 1' : 'Prüfung Teil 2'}</small>${bar(s)}</span><span class="lfp">${s.ready}%</span></a>`; };
+  const card = L => { const s = summary(lfIds(L.n)); const own = mixOn() ? LT.topics.filter(t => LT.ownKmk[t.lf] === L.n).reduce((a, t) => a + t.ids.length, 0) : 0;
+    return `<a class="lfcard" href="#lf-${L.n}"><span class="lfno">${L.n}</span><span class="lft"><b>${esc(L.title)}</b><small>${L.h} Std. · ${s.total} Aufgaben${own ? ` (davon ${own} aus deinem Unterricht)` : ''} · ${L.n <= 6 ? 'Prüfung Teil 1' : 'Prüfung Teil 2'}</small>${bar(s)}</span><span class="lfp">${s.ready}%</span></a>`; };
   const years = [[1, 'Ausbildungsjahr 1'], [2, 'Ausbildungsjahr 2'], [3, 'Ausbildungsjahr 3'], [4, 'Ausbildungsjahr 4']];
-  const own = LT.LF.filter(L => L.own && lfIds(L.n).length);
+  const own = LT.LF.filter(L => L.own && lfIds(L.n).length && (!mixOn() || !LT.ownKmk[L.n]));
   const ownCard = L => { const s = summary(lfIds(L.n)); return `<a class="lfcard own" href="#lf-${L.n}"><span class="lfno">✎</span><span class="lft"><b>${esc(L.title)}</b><small>${s.total} Aufgaben · ${s.sicher} sicher${L.src ? ' · ' + esc(L.src) : ''}</small>${bar(s)}</span><span class="lfp">${s.ready}%</span></a>`; };
   return `
   <h1 class="page-h">Lernen</h1>
-  <p class="muted">Alle Lernfelder nach dem KMK-Rahmenlehrplan Informationselektroniker/-in (Beschluss vom 18.12.2020). LF 1–6 kommen vor Teil 1 der Abschlussprüfung, LF 7–13 vor Teil 2. Dein Prüfungsziel stellst du unter „Mehr“ ein.</p>
-  <section><h2 class="sec-h">Deine Unterlagen (getrennt von den Lernfeldern)</h2>
-    ${[...new Set(own.map(L => L.group || 'Weitere'))].map(g => `<h3 class="sub-h">${esc(g)}</h3><div class="lfcards">${own.filter(L => (L.group || 'Weitere') === g).map(ownCard).join('')}</div>`).join('')}
-    <p class="small muted">Inhalte aus deinem Unterricht. Sie können Fehler enthalten: Wenn dir eine Frage falsch vorkommt, markiere sie mit „Fehler melden“. Markierte Fragen werden nicht mehr abgefragt.</p></section>
-  ${years.map(([y, t]) => `<section><h2 class="sec-h">${t}</h2><div class="lfcards">${LT.LF.filter(L => L.year === y).map(card).join('')}</div></section>`).join('')}`;
+  <div class="card mixbox"><div><b>Deine Unterlagen</b><p class="small muted">${mixOn() ? 'Sind in die passenden Lernfelder einsortiert. Du lernst pro Lernfeld alles zusammen, deine Unterrichtsaufgaben stehen dort oben.' : 'Stehen getrennt unten auf dieser Seite und werden nicht mit den Lernfeldern gemischt.'}</p></div>
+    <div class="seg" role="group" aria-label="Deine Unterlagen"><button data-act="mix-on" aria-pressed="${mixOn()}">Gemischt</button><button data-act="mix-off" aria-pressed="${!mixOn()}">Getrennt</button></div></div>
+  ${years.map(([y, t]) => `<section><h2 class="sec-h">${t}</h2><div class="lfcards">${LT.LF.filter(L => L.year === y).map(card).join('')}</div></section>`).join('')}
+  ${own.length ? `<section><h2 class="sec-h">${mixOn() ? 'Weitere Unterlagen (ohne Lernfeld)' : 'Deine Unterlagen (getrennt)'}</h2>
+    ${[...new Set(own.map(L => L.group || 'Weitere'))].map(g => `<h3 class="sub-h">${esc(g)}</h3><div class="lfcards">${own.filter(L => (L.group || 'Weitere') === g).map(ownCard).join('')}</div>`).join('')}</section>` : ''}
+  <p class="small muted">Lernfelder nach dem KMK-Rahmenlehrplan Informationselektroniker/-in (18.12.2020). LF 1–6 vor Teil 1, LF 7–13 vor Teil 2 der Abschlussprüfung. Deine Unterlagen können Fehler enthalten: Aufgaben mit „Hinweis“ habe ich geprüft, Fragwürdiges meldest du mit „Fehler melden“.</p>`;
 }
 
 function viewLF(n) {
   const L = lfById(n); if (!L) return viewLernfelder();
-  const ts = LT.topics.filter(t => t.lf === n), s = summary(lfIds(n));
+  const ts = topicsOf(n), s = summary(lfIds(n));
+  const tcard = t => { const ss = summary(t.ids); return `<a class="topic${LT.OWN.includes(t.lf) ? ' own' : ''}" href="#thema-${t.id}"><span class="lft"><b>${esc(t.title)}</b>${t.source ? `<span class="tag">${esc(t.source)}</span>` : ''}<small>${t.ids.length} Aufgaben · ${ss.sicher} sicher</small>${bar(ss)}</span><span class="lfp">${ss.ready}%</span></a>`; };
+  const mine = ts.filter(t => LT.OWN.includes(t.lf)), gen = ts.filter(t => !LT.OWN.includes(t.lf));
   return `
   <a href="#lernfelder" class="back">← Lernen</a>
   <p class="eyebrow">${L.own ? 'Deine Unterlagen' : `Lernfeld ${n} · ${L.year}. Ausbildungsjahr · ${L.h} Stunden · ${n <= 6 ? 'Teil 1' : 'Teil 2'}`}</p>
@@ -253,8 +262,9 @@ function viewLF(n) {
   ${L.own ? '<p class="card note">Diese Inhalte stammen aus deinen Unterlagen und sind von den Lernfeldern getrennt. Sie können Fehler enthalten. Wo mir beim Übernehmen etwas aufgefallen ist, steht ein Hinweis in der Erklärung. Fragen, die dir falsch vorkommen, markierst du mit „Fehler melden“.</p>' : ''}
   <div class="card stats">${bar(s)}<p><b>${s.ready}% Prüfungsreife</b> · ${s.sicher} sicher · ${s.arbeit} in Arbeit · ${s.neu} neu</p>
     <div class="row"><button class="btn" data-act="lf-smart" data-n="${n}">Lernfeld lernen</button><button class="btn ghost" data-act="lf-cards" data-n="${n}">Karteikarten</button></div></div>
-  <h2 class="sec-h">Themen</h2>
-  <div class="topics">${ts.map(t => { const ss = summary(t.ids); return `<a class="topic" href="#thema-${t.id}"><span class="lft"><b>${esc(t.title)}</b>${t.source ? `<span class="tag">${esc(t.source)}</span>` : ''}<small>${t.ids.length} Fragen · ${ss.sicher} sicher</small>${bar(ss)}</span><span class="lfp">${ss.ready}%</span></a>`; }).join('')}</div>`;
+  ${mine.length ? `<h2 class="sec-h">Aus deinem Unterricht</h2><div class="topics">${mine.map(tcard).join('')}</div>` : ''}
+  ${gen.length ? `<h2 class="sec-h">${mine.length ? 'Grundwissen zum Lernfeld' : 'Themen'}</h2><div class="topics">${gen.map(tcard).join('')}</div>` : ''}
+  ${!L.own && !mixOn() && LT.LF.some(o => o.own && LT.ownKmk[o.n] === n) ? `<p class="small muted">Deine Unterlagen zu diesem Lernfeld sind gerade getrennt. <button class="linkbtn" data-act="mix-on">Hier mit einmischen</button></p>` : ''}`;
 }
 
 function viewTopic(id) {
@@ -278,6 +288,27 @@ function chunked(t) {
   const i = Math.min(chunkPos[t.id] || 0, parts.length - 1);
   return `<p class="small muted">Abschnitt ${i + 1} von ${parts.length}</p><div class="chunk">${rich(parts[i].join('\n'))}</div>
     <div class="row">${i > 0 ? `<button class="btn ghost sm" data-act="chunk" data-id="${t.id}" data-d="-1">Zurück</button>` : ''}${i + 1 < parts.length ? `<button class="btn sm" data-act="chunk" data-id="${t.id}" data-d="1">Nächster Abschnitt</button>` : '<span class="small ok-t"><b>Alles gelesen.</b> Jetzt Fragen üben!</span>'}<button class="btn ghost sm" data-act="speak-sheet" data-id="${t.id}" data-i="${i}">Vorlesen</button></div>`;
+}
+function todayPlan(today, due) {
+  const steps = [
+    [due === 0, due ? `${due} fällige Wiederholungen` : 'Wiederholungen erledigt', 'smart', 'Wiederholen'],
+    [(today.q || 0) >= 10, `10 Fragen beantworten (${Math.min(10, today.q || 0)}/10)`, 'smart', 'Fragen'],
+    [(today.c || 0) >= 3, `3 Rechenaufgaben (${Math.min(3, today.c || 0)}/3)`, null, 'Rechnen', '#rechnen-mix'],
+    [(today.g || 0) >= 5, `1 Lernspiel (${Math.min(5, today.g || 0)}/5 Antworten)`, null, 'Spielen', '#spiele'],
+  ];
+  const done = steps.filter(x => x[0]).length;
+  return `<section class="card plan-today"><div class="h-row"><h2>Dein Plan für heute</h2><span class="small muted">${done}/4</span></div>
+    <ol class="steps-today">${steps.map(([ok, txt, act, lab, href]) => `<li class="${ok ? 'ok' : ''}"><span class="chk" aria-hidden="true">${ok ? '✓' : ''}</span><span>${txt}</span>${ok ? '' : href ? `<a class="btn ghost sm" href="${href}">${lab}</a>` : `<button class="btn ghost sm" data-act="${act}">${lab}</button>`}</li>`).join('')}</ol>
+    ${done === 4 ? '<p class="small ok-t"><b>Alles geschafft für heute. Stark!</b></p>' : ''}
+    <details class="howto"><summary>So lernst du mit der App am besten</summary>
+      <ol class="plain small">
+        <li><b>Kurz und täglich</b> statt selten und lang: 15–30 Minuten am Tag bringen mehr als 3 Stunden am Sonntag.</li>
+        <li><b>Erst verstehen, dann üben:</b> Bei einem neuen Thema zuerst den Lernzettel lesen, dann die Fragen.</li>
+        <li><b>Wiederholen, wenn es fällig ist:</b> „Weiterlernen“ holt Fragen genau dann zurück, wenn du sie fast vergessen hättest. So bleibt das Wissen dauerhaft.</li>
+        <li><b>Mischen:</b> Fragen, Rechnen und Spiele abwechseln. Das fühlt sich schwerer an, bleibt aber besser hängen.</li>
+        <li><b>Fehler sind Futter:</b> Der Fehlerkorb sammelt alles, was du falsch hattest. Einmal pro Woche leeren.</li>
+        <li><b>Prüfung üben:</b> Einmal pro Woche die Prüfungssimulation. Ab etwa 80 % bist du gut vorbereitet.</li>
+      </ol></details></section>`;
 }
 function viewStartAdhs() {
   const t = dkey(), today = S.days[t] || { n: 0, ok: 0 }, st = streak(), ids = ap1Ids(), s = summary(ids);
@@ -471,6 +502,7 @@ function viewMehr() {
       <label>Datum der nächsten Prüfung (optional) <input id="s-exam" type="date" value="${esc(st.exam)}"></label>
       <label>Tagesziel (Antworten) <input id="s-goal" type="number" min="5" max="300" value="${st.goal}"></label>
       <label>Fragen pro Runde bei „Weiterlernen“ <input id="s-size" type="number" min="5" max="100" value="${st.size}"></label>
+      <label class="check"><input id="s-mix" type="checkbox" ${st.mix !== false ? 'checked' : ''}> Deine Unterlagen in die passenden Lernfelder einmischen (sonst getrennt)</label>
       <label class="check"><input id="s-adhs" type="checkbox" ${st.adhs ? 'checked' : ''}> Fokusmodus (ADHS-freundlich): Mini-Runden mit 5 Fragen, Fokus-Timer mit Pausen, Lernzettel in Häppchen, ruhigere Oberfläche</label>
       <label>Länge einer Fokus-Phase <select id="s-focus">${[5, 10, 15, 20, 25].map(m => `<option value="${m}" ${st.focusMin === m ? 'selected' : ''}>${m} Minuten</option>`).join('')}</select></label>
       <label class="check"><input id="s-tv" type="checkbox" ${st.tv ? 'checked' : ''}> Großbild-Modus (Fernseher, Tablet): große Schrift, Steuerung mit Pfeiltasten</label>
@@ -576,7 +608,7 @@ function saveSettings(e) {
   if (!(goal >= 5 && goal <= 300)) { toast('Tagesziel bitte zwischen 5 und 300 wählen.'); return; }
   if (!(size >= 5 && size <= 100)) { toast('Fragen pro Runde bitte zwischen 5 und 100 wählen.'); return; }
   Object.assign(S.settings, { name: $('#s-name').value.trim().slice(0, 40), goal, size, exam: $('#s-exam').value || '', target: $('#s-target').value,
-    adhs: $('#s-adhs').checked, tv: $('#s-tv').checked, focusMin: parseInt($('#s-focus').value, 10) || 10 });
+    adhs: $('#s-adhs').checked, mix: $('#s-mix').checked, tv: $('#s-tv').checked, focusMin: parseInt($('#s-focus').value, 10) || 10 });
   save(); render(); toast('Einstellungen gespeichert.');
 }
 
@@ -628,6 +660,8 @@ function act(a, el) {
     case 'speak': { const it = currentQ(); if (!it) return; const ord = s.order[it.id] || (it.a ? it.a.map((_, i) => i) : []); speak(qText(it) + '. ' + (s.mode === 'cards' ? (s.answered === 'shown' ? 'Antwort: ' + answerText(it) : '') : it.kind === 'multi' ? it.opts.join('. ') : it.kind ? '' : (ord || []).map((oi, k) => 'ABCDEF'[k] + ': ' + it.a[oi]).join('. '))); break; }
     case 'speak-sheet': { const t = LT.byTopic.get(el.dataset.id); const txt = document.querySelector('.chunk'); speak(txt ? txt.innerText : t.title); break; }
     case 'chunk': chunkPos[el.dataset.id] = Math.max(0, (chunkPos[el.dataset.id] || 0) + (+el.dataset.d)); render(); { const c = document.querySelector('.sheet'); if (c) c.scrollIntoView({ block: 'start' }); } break;
+    case 'mix-on': S.settings.mix = true; save(); render(); toast('Deine Unterlagen sind jetzt in die Lernfelder einsortiert.'); break;
+    case 'mix-off': S.settings.mix = false; save(); render(); toast('Deine Unterlagen stehen jetzt getrennt.'); break;
     case 'adhs-on': S.settings.adhs = true; save(); go('start'); render(); toast('Fokusmodus an. Kurze Runden, eine Sache nach der anderen.'); break;
     case 'adhs-off': S.settings.adhs = false; FOCUS.end = null; save(); render(); toast('Fokusmodus aus.'); break;
     case 'focus-start': focusStart('fokus', S.settings.focusMin); render(); break;
@@ -684,10 +718,12 @@ document.addEventListener('keydown', e => {
 window.addEventListener('hashchange', render);
 window.addEventListener('storage', e => { if (e.key === KEY) { load(); render(); } });
 
+LT.wfPool = () => ap1Ids().map(id => LT.items.get(id)).filter(it => !it.kind && it.a && it.a.length > 1 && !(S.flags || {})[it.id] && it.q.length < 180 && !it.fig);
 /* Schnittstelle für Module (Rechentrainer, Spiele) */
 LT.api = {
   get S() { return S; }, save, toast, go, render, esc, rich, multiline, shuffle, dkey, pct, speak,
-  count(ok) { const t = dkey(); const d = S.days[t] || (S.days[t] = { n: 0, ok: 0 }); d.n++; if (ok) d.ok++; save(); },
+  count(ok, kind = 'c') { const t = dkey(); const d = S.days[t] || (S.days[t] = { n: 0, ok: 0 }); d.n++; d[kind] = (d[kind] || 0) + 1; if (ok) d.ok++; save(); },
+  countG(ok) { this.count(ok, 'g'); },
   best(id, score) { S.games = S.games || {}; const nb = !(S.games[id] >= score); if (nb) S.games[id] = score; save(); return nb; },
 };
 

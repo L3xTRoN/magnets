@@ -246,7 +246,7 @@
     if (ok) { s.ok++; s.run++; if (s.run >= 3 && !s.star) { s.star = true; A.toast('Stern für „' + G[cur.id].title + '“!'); } cur.state = 'right'; }
     else { s.run = 0; cur.state = 'wrong'; }
     if (cur.mix) { mix.done++; if (ok) mix.ok++; }
-    A.count(ok); A.render();
+    A.count(ok, 'c'); A.render();
     const nb = document.getElementById('calc-next'); if (nb) nb.focus({ preventScroll: true });
   }
   LT.ext.routes.push(['rechnen', a => a ? viewTask(a) : viewList()], ['formeln', () => viewFormeln()]);

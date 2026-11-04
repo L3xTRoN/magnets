@@ -46,7 +46,7 @@
     if (!r) return intro(game);
     if (r.q >= r.total || (r.end && Date.now() > r.end && r.ans == null)) return finish(game, r);
     const c = r.cur, done = r.ans != null;
-    const opts = c.opts.map((o, i) => { let cls = ''; if (done) { if (i === c.right) cls = ' right'; else if (i === r.ans) cls = ' wrong'; } return `<button class="opt${cls}${c.big ? ' big' : ''}" data-act="g-pick" data-g="${game.id}" data-i="${i}" ${done ? 'disabled' : ''}><span class="key">${'ABCD'[i]}</span><span>${o}</span></button>`; }).join('');
+    const opts = c.opts.map((o, i) => { let cls = ''; if (done) { if (i === c.right) cls = ' right'; else if (i === r.ans) cls = ' wrong'; } return `<button class="opt${cls}${c.big ? ' big' : ''}" data-act="g-pick" data-g="${game.id}" data-i="${i}" ${done ? 'disabled' : ''}><span class="key">${'ABCDEF'[i]}</span><span>${o}</span></button>`; }).join('');
     const left = r.end ? Math.max(0, Math.ceil((r.end - Date.now()) / 1000)) : null;
     return `${head(game, `${game.timed ? '' : `Frage ${r.q + 1} von ${r.total} · `}${r.ok} Punkte${r.streak >= 2 ? ` · Serie ${r.streak}` : ''}`, left)}
       <section class="card qcard game"><div class="g-prompt">${c.prompt}</div><div class="opts${c.grid ? ' grid' : ''}">${opts}</div>
@@ -176,27 +176,73 @@
   }
   const gMem = { id: 'memory', title: 'Einheiten-Memory', desc: 'Finde die Paare aus Größe und Einheit: Volt, Ampere, Farad, Tesla …' };
 
+
+  /* ---------- Spiel 7: Fehler-Detektiv (Messwerte deuten) ---------- */
+  const FAULTS = [
+    ['none', 'Kein Fehler'], ['openE1', 'Unterbrechung in E1'], ['openE2', 'Unterbrechung in E2'], ['shortE1', 'Kurzschluss in E1'], ['shortE2', 'Kurzschluss in E2'],
+  ];
+  function faultSVG(U, u1, u2, I, b1, b2) {
+    const lamp = (x, y, b, l) => `<circle cx="${x}" cy="${y}" r="${b ? 22 : 0}" fill="var(--glow)" opacity="${b ? 0.35 * b + 0.2 : 0}"/><circle cx="${x}" cy="${y}" r="12" class="pl" style="fill:${b ? 'var(--glow)' : 'var(--card)'}"/><path d="M${x - 8.5} ${y - 8.5}l17 17m0 -17l-17 17" class="pl"/><text x="${x}" y="${y - 20}" class="plbl" text-anchor="middle">${l}</text>`;
+    const meter = (x, y, t) => `<rect x="${x - 34}" y="${y - 11}" width="68" height="22" rx="5" fill="#C7D3BF" stroke="#5C6656"/><text x="${x}" y="${y + 4}" class="plbl" text-anchor="middle" style="fill:#1E2A1A">${t}</text>`;
+    return `<svg viewBox="0 0 300 170" class="plan-svg" role="img" aria-label="Reihenschaltung mit zwei Lampen und Messwerten"><path d="M40 40H260V140H40Z" class="pl"/>
+      <rect x="28" y="83" width="24" height="14" class="mask"/><path d="M26 85H54" class="pl"/><path d="M33 95H47" class="pl" style="stroke-width:5"/><text x="60" y="94" class="plbl">${U} V</text>
+      <rect x="95" y="28" width="30" height="24" class="mask"/>${lamp(110, 40, b1, 'E1')}<rect x="185" y="28" width="30" height="24" class="mask"/>${lamp(200, 40, b2, 'E2')}
+      ${meter(110, 75, 'U1 = ' + u1 + ' V')}${meter(200, 75, 'U2 = ' + u2 + ' V')}${meter(220, 140, 'I = ' + I)}</svg>`;
+  }
+  const gFehler = { id: 'fehler', title: 'Fehler-Detektiv', desc: 'Lampen in Reihe, Messwerte gegeben: Finde den Fehler wie ein Profi mit dem Messgerät.', how: 'Zwei gleiche Lampen sind in Reihe geschaltet. Du siehst, welche Lampe leuchtet, und die Messwerte: Spannung an jeder Lampe und Strom. Finde den Fehler. Merke: An einer Unterbrechung liegt die volle Spannung, über einem Kurzschluss 0 V. 10 Fälle.',
+    gen() { const U = pick([6, 12, 24]), R = pick([20, 40, 60]), f = pick(FAULTS)[0]; const In = U / (2 * R), Is = U / R;
+      const m = { none: [U / 2, U / 2, In, 0.25, 0.25], openE1: [U, 0, 0, 0, 0], openE2: [0, U, 0, 0, 0], shortE1: [0, U, Is, 0, 1], shortE2: [U, 0, Is, 1, 0] }[f];
+      const fmt = x => (Math.round(x * 1000) / 1000).toLocaleString('de-DE'); const opts = FAULTS.map(x => x[1]);
+      const why = { none: 'Beide Lampen teilen sich die Spannung (je die Hälfte) und es fließt Strom. Alles in Ordnung.', openE1: 'Kein Strom, aber die volle Spannung liegt an E1: Dort ist der Kreis unterbrochen.', openE2: 'Kein Strom, die volle Spannung liegt an E2: Dort ist die Unterbrechung.', shortE1: 'An E1 liegen 0 V und der Strom ist doppelt so groß: E1 ist überbrückt (Kurzschluss). E2 bekommt die volle Spannung und leuchtet hell.', shortE2: 'An E2 liegen 0 V, der Strom ist doppelt so groß: E2 ist kurzgeschlossen, E1 leuchtet hell.' }[f];
+      return { prompt: `<p class="small muted">Welcher Fehler liegt vor?</p>${faultSVG(U, fmt(m[0]), fmt(m[1]), fmt(m[2]) + ' A', m[3], m[4])}`, opts, right: FAULTS.findIndex(x => x[0] === f), explain: why }; } };
+
+  /* ---------- Spiel 8: Ohm-Blitz (Kopfrechnen, 60 s) ---------- */
+  const gOhm = { id: 'ohmblitz', title: 'Ohm-Blitz', desc: '60 Sekunden Kopfrechnen: U = R · I, P = U · I. Wie viele schaffst du?', timed: 60, len: 999, how: 'Ohmsches Gesetz und Leistung im Kopf. 60 Sekunden, so viele richtige Antworten wie möglich. Bei einer falschen Antwort siehst du kurz die Lösung.',
+    gen() { const k = rnd(0, 3); let q, a, u;
+      if (k === 0) { const R = pick([2, 4, 5, 10, 20, 50, 100]), I = pick([0.5, 1, 2, 3, 4, 5]); q = `R = ${R} Ω, I = ${String(I).replace('.', ',')} A. U = ?`; a = R * I; u = 'V'; }
+      else if (k === 1) { const R = pick([2, 4, 5, 10, 20, 50]), I = pick([1, 2, 3, 4, 5, 6]); q = `U = ${R * I} V, R = ${R} Ω. I = ?`; a = I; u = 'A'; }
+      else if (k === 2) { const I = pick([1, 2, 3, 4, 5, 10]), R = pick([2, 3, 4, 5, 6, 10, 12, 20]); q = `U = ${R * I} V, I = ${I} A. R = ?`; a = R; u = 'Ω'; }
+      else { const U = pick([12, 24, 230]), I = pick([1, 2, 3, 5, 10]); q = `U = ${U} V, I = ${I} A. P = ?`; a = U * I; u = 'W'; }
+      const w = new Set(); while (w.size < 3) { const x = pick([a * 2, a / 2, a * 10, a + pick([1, 2, 5, 10]), Math.max(1, a - pick([1, 2, 5])), a / 10]); if (x !== a && x > 0) w.add(+x.toFixed(3)); }
+      const opts = shuffle([a, ...w]); return { prompt: `<p class="bigformula">${q}</p>`, opts: opts.map(x => String(x).replace('.', ',') + ' ' + u), right: opts.indexOf(a), explain: '' }; } };
+
+  /* ---------- Spiel 9: Einheiten-Blitz (60 s) ---------- */
+  const PREF = [['k', 3], ['M', 6], ['m', -3], ['µ', -6], ['n', -9]];
+  const gEinh = { id: 'einheitblitz', title: 'Einheiten-Blitz', desc: '60 Sekunden umrechnen: mA in A, kΩ in Ω, µF in nF …', timed: 60, len: 999, how: 'Rechne Einheiten mit Vorsätzen um. k = 10³, M = 10⁶, m = 10⁻³, µ = 10⁻⁶, n = 10⁻⁹. 60 Sekunden.',
+    gen() { const u = pick(['A', 'V', 'Ω', 'W', 'F']); let [p1, e1] = pick(PREF); let [p2, e2] = pick([['', 0], ...PREF.filter(x => x[0] !== p1)]);
+      if (u === 'F') { [p1, e1] = pick([['µ', -6], ['n', -9], ['m', -3]]); [p2, e2] = pick([['n', -9], ['µ', -6], ['p', -12]].filter(x => x[0] !== p1)); }
+      const v = pick([1, 2.2, 4.7, 10, 15, 47, 100, 250, 330, 500]); const a = v * 10 ** (e1 - e2);
+      const fmt = x => Number(x.toPrecision(6)).toLocaleString('de-DE', { maximumFractionDigits: 12 });
+      const w = new Set(); [a * 1000, a / 1000, a * 10, a / 10, a * 1e6, a / 1e6].forEach(x => { if (w.size < 3 && fmt(x) !== fmt(a)) w.add(x); });
+      const opts = shuffle([a, ...w]); return { prompt: `<p class="bigformula">${fmt(v)} ${p1}${u} = ? ${p2}${u}</p>`, opts: opts.map(x => fmt(x) + ' ' + p2 + u), right: opts.indexOf(a), explain: `${p1 || '1'} → ${p2 || 'Grundeinheit'}: Faktor 10^${e1 - e2}` }; } };
+
+  /* ---------- Spiel 10: Wahr oder falsch? (alle Fragen der App, 60 s) ---------- */
+  const gWF = { id: 'wahrfalsch', title: 'Wahr oder falsch?', desc: '60 Sekunden: Stimmt die Antwort zur Frage? Mit allen Fragen aus den Lernfeldern und deinem Unterricht.', timed: 60, len: 999, how: 'Du siehst eine Frage und eine Antwort. Stimmt sie? Schnell entscheiden! Die Fragen kommen aus deinem Prüfungsziel. 60 Sekunden.',
+    gen() { const pool = (LT.wfPool && LT.wfPool()) || []; if (!pool.length) return { prompt: '<p>Keine Fragen vorhanden.</p>', opts: ['Stimmt', 'Stimmt nicht'], right: 0, explain: '' };
+      const it = pick(pool), truth = Math.random() < 0.5, shown = truth ? it.a[0] : pick(it.a.slice(1));
+      return { prompt: `<p class="small muted">${esc(it.q)}</p><p class="wf-ans">${esc(shown)}</p>`, opts: ['Stimmt', 'Stimmt nicht'], right: truth ? 0 : 1, big: true, explain: truth ? '' : `Richtig wäre: ${esc(it.a[0])}` }; } };
+
   /* ---------- Registrierung ---------- */
-  const QUIZ = [gSym, gRead, gFarb, gUms];
-  LT.ext.games.push(gSym, gRead, gPlan, gFarb, gUms, gMem);
+  const QUIZ = [gSym, gRead, gFarb, gUms, gFehler, gOhm, gEinh, gWF];
+  LT.ext.games.push(gFehler, gRead, gPlan, gSym, gWF, gOhm, gEinh, gFarb, gUms, gMem);
   const byId = Object.fromEntries([...QUIZ, gPlan, gMem].map(g => [g.id, g]));
   LT.ext.routes.push(['spiel', id => { const g = byId[id]; if (!g) return null; if (g === gPlan) return puzzleView(); if (g === gMem) return memView(); return roundView(g); }]);
   LT.ext.acts['g-start'] = el => { startRound(byId[el.dataset.g]); A.render(); };
-  LT.ext.acts['g-pick'] = el => { const g = byId[el.dataset.g], r = R[g.id]; if (!r || r.ans != null) return; r.ans = +el.dataset.i; const ok = r.ans === r.cur.right; if (ok) { r.ok++; r.streak++; } else r.streak = 0; A.count(ok);
-    if (g.timed && ok) { r.q++; r.ans = null; r.cur = g.gen(r.q); A.render(); return; } A.render(); const n = document.getElementById('g-next'); if (n) n.focus({ preventScroll: true }); };
+  LT.ext.acts['g-pick'] = el => { const g = byId[el.dataset.g], r = R[g.id]; if (!r || r.ans != null) return; r.ans = +el.dataset.i; const ok = r.ans === r.cur.right; if (ok) { r.ok++; r.streak++; } else r.streak = 0; A.countG(ok);
+    if (g.timed) { if (ok) { r.q++; r.ans = null; r.cur = g.gen(r.q); A.render(); return; } A.render(); setTimeout(() => { if (R[g.id] === r && r.ans != null) { r.q++; r.ans = null; r.cur = g.gen(r.q); A.render(); } }, 1400); return; } A.render(); const n = document.getElementById('g-next'); if (n) n.focus({ preventScroll: true }); };
   LT.ext.acts['g-next'] = el => { const g = byId[el.dataset.g], r = R[g.id]; r.q++; r.ans = null; if (r.q < r.total) r.cur = g.gen(r.q); A.render(); };
   LT.ext.acts['pz-open'] = el => { pz = { i: +el.dataset.i, fill: {}, sel: 0, checked: false }; A.render(); };
   LT.ext.acts['pz-list'] = () => { pz = null; A.render(); };
   LT.ext.acts['pz-next'] = () => { pz = { i: pz.i + 1, fill: {}, sel: 0, checked: false }; A.render(); };
   LT.ext.acts['pz-gap'] = el => { pz.sel = +el.dataset.k; A.render(); };
   LT.ext.acts['pz-sym'] = el => { if (pz.sel == null) { A.toast('Tippe zuerst eine Lücke an.'); return; } pz.fill[pz.sel] = el.dataset.id; pz.checked = false; const n = PUZ[pz.i].gaps.length; for (let k = 1; k <= n; k++) { const j = (pz.sel + k) % n; if (!pz.fill[j]) { pz.sel = j; break; } } A.render(); };
-  LT.ext.acts['pz-check'] = () => { const P = PUZ[pz.i]; if (P.gaps.some((g, k) => !pz.fill[k])) { A.toast('Fülle zuerst alle Lücken.'); return; } pz.checked = true; const ok = P.gaps.every((g, k) => pz.fill[k] === g[3]); A.count(ok); if (ok) { const S = A.S; S.games = S.games || {}; S.games.planDone = S.games.planDone || {}; S.games.planDone[pz.i] = true; A.best('plaene', Object.keys(S.games.planDone).length); } A.render(); };
+  LT.ext.acts['pz-check'] = () => { const P = PUZ[pz.i]; if (P.gaps.some((g, k) => !pz.fill[k])) { A.toast('Fülle zuerst alle Lücken.'); return; } pz.checked = true; const ok = P.gaps.every((g, k) => pz.fill[k] === g[3]); A.countG(ok); if (ok) { const S = A.S; S.games = S.games || {}; S.games.planDone = S.games.planDone || {}; S.games.planDone[pz.i] = true; A.best('plaene', Object.keys(S.games.planDone).length); } A.render(); };
   LT.ext.acts['mem-new'] = () => { memNew(); A.render(); };
   LT.ext.acts['mem-flip'] = el => { const i = +el.dataset.i; if (mem.lock || mem.open.includes(i) || mem.found.includes(mem.cards[i].p)) return; mem.open.push(i);
-    if (mem.open.length === 2) { mem.moves++; const [a, b] = mem.open.map(k => mem.cards[k]); if (a.p === b.p && a.k !== b.k) { mem.found.push(a.p); mem.open = []; A.count(true); } else { mem.lock = true; setTimeout(() => { mem.open = []; mem.lock = false; A.render(); }, 900); } }
+    if (mem.open.length === 2) { mem.moves++; const [a, b] = mem.open.map(k => mem.cards[k]); if (a.p === b.p && a.k !== b.k) { mem.found.push(a.p); mem.open = []; A.countG(true); } else { mem.lock = true; setTimeout(() => { mem.open = []; mem.lock = false; A.render(); }, 900); } }
     A.render(); };
   /* Countdown-Anzeige für das Zeitspiel */
-  setInterval(() => { const t = document.getElementById('g-timer'); if (!t) return; const r = R.farbcode; if (!r || !r.end) return; const left = Math.max(0, Math.ceil((r.end - Date.now()) / 1000)); t.textContent = left + ' s'; if (left === 0 && r.ans == null) A.render(); }, 250);
+  setInterval(() => { const t = document.getElementById('g-timer'); if (!t) return; const id = (location.hash.match(/^#spiel-(.+)$/) || [])[1]; const r = id && R[id]; if (!r || !r.end) return; const left = Math.max(0, Math.ceil((r.end - Date.now()) / 1000)); t.textContent = left + ' s'; if (left === 0 && r.ans == null) A.render(); }, 250);
   LT.ext.after.push(r => { if (r === 'spiele') { pz = null; Object.keys(R).forEach(k => delete R[k]); } });
   LT.SYM = SYM; LT.PUZ = PUZ;
 })();
