@@ -1,0 +1,12 @@
+{
+  "name": "Prüfungstrainer Teil 1",
+  "short_name": "AP1 Trainer",
+  "description": "Fragentrainer für Teil 1 der Abschlussprüfung Informationselektroniker/-in (Lernfelder 1–6).",
+  "lang": "de",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EEF1EE",
+  "theme_color": "#EEF1EE",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
