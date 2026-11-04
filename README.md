@@ -1,6 +1,6 @@
-# Prüfungstrainer Teil 1 – Informationselektroniker/-in
+# Azubi-Trainer – Informationselektroniker/-in
 
-Lern-App für **Teil 1 der Abschlussprüfung** (Lernfelder 1–6), dazu interaktive Übungen. Alles läuft im Browser, ohne Konto und ohne Server.
+Lern-App für die ganze Ausbildung: alle 13 Lernfelder und WiSo (Teil 1 und Teil 2 der Abschlussprüfung), Rechentrainer mit Lösungswegen, Formelsammlung, Lernspiele, Schaltwand, Schaltungslabor, Fokusmodus (ADHS-freundlich) und Großbild-Modus für den Fernseher. Alles läuft im Browser, ohne Konto und ohne Server.
 
 ## Starten
 
@@ -19,13 +19,15 @@ Dann `http://localhost:8000/` öffnen. Für das Handy unterwegs: Repository z. B
 | Datei | Inhalt |
 |---|---|
 | `index.html` + `ap1/app.js` | Prüfungstrainer: Start, Lernfelder, Üben, Werkstatt, Fortschritt |
-| `ap1/lf1.js` … `ap1/lf6.js` | Fragen und Lernzettel je Lernfeld (345 Fragen) |
+| `ap1/lf1.js` … `ap1/lf13.js`, `ap1/wiso.js` | Fragen und Lernzettel je Lernfeld (524 Fragen) |
+| `ap1/rechnen.js` | Rechentrainer (25 Themen, Zufallswerte, Lösungsweg) und Formelsammlung |
+| `ap1/spiele.js` | Lernspiele: Schaltzeichen, Was leuchtet?, Plan-Baumeister, Farbcode, Formel-Akrobat, Memory |
 | `ap1/arbeitsblaetter.js` | 75 Fragen aus deinen Arbeitsblättern, erzeugt mit `node tools/build-arbeitsblaetter.js` |
 | `schaltwand.html` + `schaltwand.js` | Schaltwand: 22 Verdrahtungsübungen (Strom verstehen, Hausinstallation, Sicherungskasten, Schaltschrank) |
 | `labor.html` + `labor.js` | Schaltungslabor: freier Simulator mit Live-Werten, Stromfluss und 14 Challenges |
 | `magnetlabor.html` | Magnetismus, Rechte-Hand-Regel, Transformator (früher `index.html`) |
 | `arbeitsblaetter.html` | Arbeitsblätter 5.1–13.6 Schritt für Schritt |
-| `manifest.webmanifest`, `sw.js`, `icon.svg` | Installierbar und offline nutzbar |
+| `manifest.webmanifest`, `sw.js`, `icon*.png`, `icon.svg` | Installierbar (iPhone: Teilen → Zum Home-Bildschirm) und offline nutzbar |
 
 Struktur nach dem **KMK-Rahmenlehrplan Informationselektroniker/-in vom 18.12.2020**. Laut Rahmenlehrplan werden die Lernfelder 1–6 vor Teil 1 der Abschlussprüfung unterrichtet.
 

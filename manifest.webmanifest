@@ -1,6 +1,6 @@
 {
-  "name": "Prüfungstrainer Teil 1",
-  "short_name": "AP1 Trainer",
+  "name": "Azubi-Trainer Informationselektronik",
+  "short_name": "Azubi-Trainer",
   "description": "Fragentrainer für Teil 1 der Abschlussprüfung Informationselektroniker/-in (Lernfelder 1–6).",
   "lang": "de",
   "start_url": "./index.html",
@@ -8,5 +8,22 @@
   "display": "standalone",
   "background_color": "#EEF1EE",
   "theme_color": "#EEF1EE",
-  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+  "icons": [
+    {
+      "src": "icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
 }
